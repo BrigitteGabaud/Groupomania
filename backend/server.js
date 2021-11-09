@@ -1,14 +1,8 @@
 const express = require('express');
 const http = require('http');
-const userRoutes = require('./routes/user-routes');
 require('dotenv').config({path: './config/.env'});
 require('./config/sequelize'); // connect BDD
-const app = express();
-
-
-// Routes
-app.use('/api/user', userRoutes);
-
+const app = require('./app');
 
 
 // Server
