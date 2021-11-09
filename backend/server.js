@@ -1,7 +1,19 @@
 const express = require('express');
-require('dotenv').config({path: './config/.env'})
+const userRoutes = require('./routes/user-routes');
+require('dotenv').config({path: './config/.env'});
+require('./config/sequelize'); // connect BDD
 const app = express();
 
+
+// Routes
+app.use('/api/user', userRoutes);
+
+
+
+// Server
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}`);
 })
+
+
+
