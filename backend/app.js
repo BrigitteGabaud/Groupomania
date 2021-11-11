@@ -11,6 +11,9 @@ const userRoutes = require('./routes/user-routes');
 /* Crée application express */
 const app = express();
 
+/* Création instance classe sequelize */
+
+
 /* Configuration headers appliquée à toutes les routes (CORS)  */
 /* Permet au front-end d'accéder à l'API */
 app.use((req, res, next) => {
@@ -26,6 +29,12 @@ app.use(helmet());
 /* Fonction transformant le corps de la requête en objet javascript */
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
+
+const db = require('./models')
+// db.sequelize.sync()
+db.sequelize.sync({force:true}).then(() => {
+console.log("Drop and re-sync db.");
+});
 
 
 /* Enregistrement routers */

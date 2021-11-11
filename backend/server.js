@@ -1,11 +1,9 @@
-const express = require('express');
+/* Import dépendances */
 const http = require('http');
-require('dotenv').config({path: './config/.env'});
-require('./config/sequelize'); // connect BDD
 const app = require('./app');
 
 
-// Server
+// Serveur
 /* Renvoi un port valide */
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -19,7 +17,7 @@ const normalizePort = val => {
     return false;
   };
   
-  const port = normalizePort(process.env.PORT || '5000');
+  const port = normalizePort(process.env.PORT || '3000');
   app.set('port', port);
 
   
