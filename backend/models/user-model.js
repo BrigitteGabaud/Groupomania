@@ -1,4 +1,4 @@
-/** Déclaration modele **/
+/** Déclaration modele user **/
 
 /* Export fonction + 2 params: 
     1. 'sequelize'= objet représentant connexion BDD : possède méthode 'define' pour créer un nveau modele

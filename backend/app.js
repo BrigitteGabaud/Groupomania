@@ -7,13 +7,10 @@ const helmet = require('helmet');
 
 /* Import routers */
 const userRoutes = require('./routes/user-routes');
-
+const postRoutes = require('./routes/post-routes');
 
 /* Crée application express */
 const app = express();
-
-/* Création instance classe sequelize */
-
 
 /* Configuration headers appliquée à toutes les routes (CORS)  */
 /* Permet au front-end d'accéder à l'API */
@@ -36,13 +33,14 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const db = require('./models')
 db.sequelize.sync()
-/*  db.sequelize.sync({force:true}).then(() => {
+  /* db.sequelize.sync({force:true}).then(() => {
      console.log("Drop and re-sync db.");
-}); */
+}); */ 
 
 
 /* Enregistrement routers */
 app.use('/api/user', userRoutes);
+app.use('/api/post', postRoutes);
 
 /*Exporte application et la rend dispo dans les autres fichiers */
 module.exports = app;

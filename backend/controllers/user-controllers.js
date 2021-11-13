@@ -17,7 +17,7 @@ exports.signup = async (req, res) => {
     //    return res.status(400).json({ error })
     //  }
      /* cherche user dans db par son ad mail */
-     const emailDb = await db.users.findOne({ where:{ email: req.body.email }})
+     const emailDb = await db.user.findOne({ where:{ email: req.body.email }})
 
      /* vérifie si elle est unique*/
      if(emailDb) {
@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
             email: req.body.email,
             password: hash
          }
-         db.users.create(user) // enregistrement utilisateur dans db
+         db.user.create(user) // enregistrement utilisateur dans db
          .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
          .catch(error => res.status(400).json({ error }))
      })
@@ -54,7 +54,7 @@ exports.login = async (req, res)=> {
       //   return res.status(400).json({ error })
       // }
       /* cherche user dans db par son ad mail */
-      const user = await db.users.findOne({ where:{ email: req.body.email }})
+      const user = await db.user.findOne({ where:{ email: req.body.email }})
       console.log(user);
       /* vérifie si elle est unique*/    
       if(!user) {
@@ -84,21 +84,22 @@ exports.login = async (req, res)=> {
   }
 };
 
+/***  Export de la fonction RECUPERATION tous les utilisateurs (GET) ***/
+exports.getAllUsers = (req, res) => {
+  const users = db.user;
+  console.log('users:' ,users);
+  db.user.findAll()
+  .then(users => res.status(200).json(users))
+  .catch(error => res.status(400).json({ error }));
+};
+
 /*** Export de la fonction RECUPERATION un utilisateur (GET) ***/
 exports.getOneUser = (req, res) => {
-  db.users.findOne({where :{ id: req.params.id }}) // = cherche ds db l'user dont l'id correspond
+  db.user.findOne({where :{ id: req.params.id }}) // = cherche ds db l'user dont l'id correspond
   .then(userResponse => res.status(200).json(userResponse))
   .catch(error => res.status(400).json({ error }));
 };
 
-/***  Export de la fonction RECUPERATION tous les utilisateurs (GET) ***/
-exports.getAllUsers = (req, res) => {
-  const users = db.users;
-  console.log('users:' ,users);
-  db.users.findAll()
-  .then(users => res.status(200).json(users))
-  .catch(error => res.status(400).json({ error }));
-};
 
 /*** Export de la fonction MODIFICATION user (PUT) ***/
 exports.modifyUser = (req, res) => {
@@ -107,7 +108,7 @@ exports.modifyUser = (req, res) => {
   console.log('reqUserId:', reqUserId);
   
   // Cherche l'user concerné dans la BDD 
-  db.users.findOne({where :{id: req.params.id}}) 
+  db.user.findOne({where :{id: req.params.id}}) 
   .then(userResponse => {
     console.log('userResponse : ' ,userResponse);
       // Si l'userId de la BDD correspond à celui de la requête
@@ -143,7 +144,7 @@ exports.deleteUser = (req, res) => {
   console.log('reqUserId:', reqUserId);
   const id = req.params.id;
 
-  db.users.findByPk(id) 
+  db.user.findByPk(id) 
   .then(userResponse => {
     console.log(userResponse.avatar);
     // Si l'userId de la BDD correspond à celui de la requête
@@ -151,7 +152,7 @@ exports.deleteUser = (req, res) => {
           console.log('userResponse.id :', userResponse.id);
       // La sauce est supprimée
       /* Accède à l'objet pour récup url image + nom fichier */
-      db.users.findOne({ where: { id : req.params.id }}) 
+      db.user.findOne({ where: { id : req.params.id }}) 
       /* callback récupère sauce + nom exact fichier */
       .then(user => {
         console.log('USER: ' ,user);
@@ -162,7 +163,7 @@ exports.deleteUser = (req, res) => {
           fs.unlink(`images/${filename}`, (err) => {
             err ? console.log(err) : console.log( 'Image supprimée');
           })
-          db.users.destroy({ where: { id : req.params.id }}) 
+          db.user.destroy({ where: { id : req.params.id }}) 
             .then(() => res.status(200).json({ message:'User supprimé !'}))
             .catch(error => res.status(400).json({ error }));
       })
