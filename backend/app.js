@@ -2,6 +2,7 @@
 /* Import des dépendances */
 require('dotenv').config()
 const express = require('express');
+const path = require('path');
 const helmet = require('helmet');
 
 /* Import routers */
@@ -30,11 +31,14 @@ app.use(helmet());
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
 
+/* Fonction récupèrant image dans dossier image pour envoyer vers frontend */
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 const db = require('./models')
-// db.sequelize.sync()
-db.sequelize.sync({force:true}).then(() => {
-console.log("Drop and re-sync db.");
-});
+db.sequelize.sync()
+/*  db.sequelize.sync({force:true}).then(() => {
+     console.log("Drop and re-sync db.");
+}); */
 
 
 /* Enregistrement routers */

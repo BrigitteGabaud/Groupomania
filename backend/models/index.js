@@ -24,7 +24,7 @@ const db = {}; // crée objet représentant models
 db.Sequelize= Sequelize;// ref bibliothèque Sequelize
 db.sequelize = sequelize; // ref instance sequelize
 
-db.user = require('./user-model')(sequelize, Sequelize) // ajoute une nouvelle valeur dans l'objet (= mot clé)
+db.users = require('./user-model')(sequelize, Sequelize) // ajoute une nouvelle valeur dans l'objet (= mot clé)
 
 //Execution
 module.exports = db;

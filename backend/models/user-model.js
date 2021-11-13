@@ -6,7 +6,7 @@
 module.exports = (sequelize, DataTypes) => {
     
     /* Méthode 'define + 3 params:
-        1. 'userModel' = nom modele --> sequelize créera table 'userModels'
+        1. 'users' = nom modele --> sequelize créera table 'users'
         2. ligne7 à ligne25 = propriétés du modèle --> colonnes de la table */
     return sequelize.define('users', {
         id: {
@@ -15,11 +15,11 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             allowNull: false
         },
-        firstName: {
+        firstname: {
             type: DataTypes.STRING(70),
             allowNull: false,
         },
-        lastName: {
+        lastname: {
             type: DataTypes.STRING(70),
             allowNull: false,
         },
@@ -36,6 +36,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TINYINT,
             allowNull: false,
             defaultValue: 0
+        },
+        avatar: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: ('../images/DefaultUser.html')
         },
         bio: {
             type: DataTypes.STRING(255),
