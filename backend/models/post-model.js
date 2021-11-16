@@ -1,7 +1,6 @@
+"use strict";
+
 /** Déclaration modele post **/
-
-const { Sequelize } = require(".")
-
 module.exports = (sequelize, DataTypes) => {
     
     /* Méthode 'define + 3 params:
@@ -16,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(255),
             allowNull: false,
         }, 
-       /*  date: {
-            type: Sequelize.DATE,
-            defaultValue: Sequelize.NOW
-        } */
+        date: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
+        }
     }, {
     /* 3. option de paramétrage global */
         timestamps: true, 

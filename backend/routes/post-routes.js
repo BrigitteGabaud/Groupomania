@@ -6,7 +6,7 @@ const auth = require('../middlewares/auth');
 const multer = require('../middlewares/multer-config');
 const postCtrl = require('../controllers/post-controllers');
 
-/* Route post: création compte */
+/* Routes post */
 router.post('/', auth, multer,  postCtrl.createPost);
 router.get('/', auth, multer, postCtrl.getAllPosts);
 router.get('/:id', auth, multer, postCtrl.getOnePost);

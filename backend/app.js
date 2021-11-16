@@ -8,6 +8,7 @@ const helmet = require('helmet');
 /* Import routers */
 const userRoutes = require('./routes/user-routes');
 const postRoutes = require('./routes/post-routes');
+const commentRoutes = require('./routes/comment-routes');
 
 /* Crée application express */
 const app = express();
@@ -33,14 +34,15 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const db = require('./models')
 db.sequelize.sync()
-  /* db.sequelize.sync({force:true}).then(() => {
+   /* db.sequelize.sync({force:true}).then(() => {
      console.log("Drop and re-sync db.");
-}); */ 
+});  */
 
 
 /* Enregistrement routers */
 app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
+app.use('/api/comment', commentRoutes);
 
 /*Exporte application et la rend dispo dans les autres fichiers */
 module.exports = app;

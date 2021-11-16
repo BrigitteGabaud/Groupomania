@@ -1,3 +1,4 @@
+"use strict";
 /* Import dépendances */
 const bcrypt = require('bcrypt'); // package hash password
 const jwt = require('jsonwebtoken'); // package génération + vérif token
@@ -11,6 +12,8 @@ const Op = db.Sequelize.Op;
 
 /*** Creation post  ***/
 exports.createPost = (req, res) => {
+    const postContent = req.body
+    console.log("postContent" ,postContent);
     // requete valide
     if (!req.body.content) {
         res.status(400).send({ message: "Le contenu est requis !." });
@@ -20,27 +23,32 @@ exports.createPost = (req, res) => {
     // Creation post
     const post = {
       content: req.body.content,
-      description: req.body.description
+      description: req.body.description,
+      userId: req.body.userId,
     };
+    console.log(post);
   
     // Sauvegarde post dans Bd
-    db.post.create(post)
+    db.posts.create(post)
+    
       .then(data => { res.send(data) })
-      .catch(err => { res.status(500).send({ message: err.message || "Une erreur est survenue pendant le création du post." })});
-  };
+      .catch(err => { res.status(500).send({ message: err.message || "Une erreur est survenue pendant la création du post." })});
+      console.log(post);
+};
+
 
 /***  Export de la fonction RECUPERATION tous les utilisateurs (GET) ***/
 exports.getAllPosts = (req, res) => {
-    const posts = db.post;
+    const posts = db.posts;
     console.log('posts:' ,posts);
-    db.post.findAll()
+    db.posts.findAll()
     .then(posts => res.status(200).json(posts))
     .catch(error => res.status(400).json({ error: error.message }));
 };
 
-/*** Recupération d'un post ***/
+/*** Export de la fonction récupération d'un post (GET) ***/
 exports.getOnePost = (req, res) => {
-    db.post.findOne({where :{ id: req.params.id }}) // = cherche ds db l'user dont l'id correspond
+    db.posts.findOne({where :{ id: req.params.id }}) // = cherche ds db l'user dont l'id correspond
     .then(postResponse => res.status(200).json(postResponse))
     .catch(error => res.status(400).json({ error: error.message }));
 };
@@ -53,7 +61,7 @@ exports.modifyPost = (req, res) => {
     const id = req.params.id;
     
     // Cherche le post concerné dans la BDD 
-    db.post.findByPk(id) 
+    db.posts.findByPk(id) 
     .then(postResponse => {
       console.log('postResponse : ' ,postResponse);
         // Si l'userId de la BDD correspond à celui de la requête
@@ -80,7 +88,7 @@ exports.modifyPost = (req, res) => {
             
     })
     .catch(error => res.status(500).json({ error: error.message }))
-  }
+}
 
 /*** Export de la fonction SUPPRESSION post (DELETE) ***/
 // to do 
@@ -89,7 +97,7 @@ exports.deletePost = (req, res) => {
     console.log('reqUserId:', reqUserId);
     const id = req.params.id;
   
-    db.post.findByPk(id) 
+    db.posts.findByPk(id) 
     .then(postResponse => {
       console.log(postResponse);
       // Si l'userId de la BDD correspond à celui de la requête
@@ -97,7 +105,7 @@ exports.deletePost = (req, res) => {
             console.log('postResponse.id :', postResponse.id);
         // Le post est supprimé
         /* Accède à l'objet pour récup url image + nom fichier */
-        db.post.findByPk(id) 
+        db.posts.findByPk(id) 
         /* callback récupère sauce + nom exact fichier */
         .then(post => {
           console.log('POST: ' ,post);
@@ -108,7 +116,7 @@ exports.deletePost = (req, res) => {
             /* fs.unlink(`images/${filename}`, (err) => {
               err ? console.log(err) : console.log( 'Image supprimée');
             }) */
-            db.post.destroy({ where: { id : req.params.id }}) 
+            db.posts.destroy({ where: { id : req.params.id }}) 
               .then(() => res.status(200).json({ message:'Post supprimé !'}))
               .catch(error => res.status(400).json({ error: error.message }));
         })

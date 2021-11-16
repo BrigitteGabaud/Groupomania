@@ -1,3 +1,5 @@
+"use strict";
+
 /** Déclaration modele user **/
 
 /* Export fonction + 2 params: 

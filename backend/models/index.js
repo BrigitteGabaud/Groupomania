@@ -25,8 +25,31 @@ db.Sequelize= Sequelize;// ref bibliothèque Sequelize
 db.sequelize = sequelize; // ref instance sequelize
 
 // ajoute une nouvelle valeur dans l'objet (= mot clé)
-db.user = require('./user-model')(sequelize, Sequelize) 
-db.post = require('./post-model')(sequelize, Sequelize)
+db.users = require('./user-model')(sequelize, Sequelize);
+db.posts = require('./post-model')(sequelize, Sequelize);
+db.comments = require('./comment-model')(sequelize, Sequelize);
+
+// Ajout clés étrangères
+
+db.users.hasMany(db.posts, { as: "posts" });
+db.posts.belongsTo(db.users, {
+  foreignKey: "userId",
+  as: "users",
+});
+
+db.users.hasMany(db.comments, { as: "comments" });
+db.comments.belongsTo(db.users, {
+  foreignKey: "userId",
+  as: "users",
+});
+
+db.posts.hasMany(db.comments, { as: "comments" });
+db.comments.belongsTo(db.posts, {
+  foreignKey: "postId",
+  as: "posts",
+});
+
+
 
 //Execution
 module.exports = db;
