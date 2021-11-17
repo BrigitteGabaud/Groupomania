@@ -8,16 +8,12 @@ module.exports = (sequelize, DataTypes) => {
         2. ligne7 à ligne25 = propriétés du modèle --> colonnes de la table */
     return sequelize.define('posts', {
         content: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         description: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT,
             allowNull: false,
-        }, 
-        date: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
         }
     }, {
     /* 3. option de paramétrage global */

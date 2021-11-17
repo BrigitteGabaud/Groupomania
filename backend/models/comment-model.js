@@ -4,7 +4,7 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define("comments", {
       content: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       date: {
