@@ -41,7 +41,15 @@ exports.createPost = (req, res) => {
 exports.getAllPosts = (req, res) => {
     const posts = db.posts;
     console.log('posts:' ,posts);
-    db.posts.findAll()
+    db.posts.findAll({ include: [
+      {
+        model: db.comments, 
+        as: 'comments',
+        include: ['user']
+      },
+      "user"
+    ],
+    })
     .then(posts => res.status(200).json(posts))
     .catch(error => res.status(400).json({ error: error.message }));
 };
@@ -93,16 +101,23 @@ exports.modifyPost = (req, res) => {
 /*** Export de la fonction SUPPRESSION post (DELETE) ***/
 // to do 
 exports.deletePost = (req, res) => {
+  
     const reqUserId = req.user.userId;
     console.log('reqUserId:', reqUserId);
+    const params = req.params;
+    console.log("PARAMS", params);
     const id = req.params.id;
+    console.log("ID" , id);
   
-    db.posts.findByPk(id) 
+    db.posts.findByPk(id, {include: "user"})
     .then(postResponse => {
-      console.log(postResponse);
+      console.log("POST RESPONSE" ,postResponse);
+      const Body = req.body.role;
+      console.log("BODY", Body);
       // Si l'userId de la BDD correspond à celui de la requête
-      if(postResponse.id == reqUserId ) {
+      if(Body === "admin" || postResponse.userId === reqUserId ) {
             console.log('postResponse.id :', postResponse.id);
+            console.log('BODY :', Body);
         // Le post est supprimé
         /* Accède à l'objet pour récup url image + nom fichier */
         db.posts.findByPk(id) 
@@ -110,12 +125,12 @@ exports.deletePost = (req, res) => {
         .then(post => {
           console.log('POST: ' ,post);
          
-            /* Extrait nom du fichier à suppr :Récupère imageUrl sauce retournée / base + split autour '/images/' et retourne tableau de 2 elmts avant/ après /images/ */
-            //const filename = user.avatar.split('/images/')[1];
-            /* Fonction suppression fichier: 1er arg= chemin fichier 2e = callback (que faire une fois fichier suppr ? = suppr objet dans la base) */
-            /* fs.unlink(`images/${filename}`, (err) => {
-              err ? console.log(err) : console.log( 'Image supprimée');
-            }) */
+            // /* Extrait nom du fichier à suppr :Récupère imageUrl sauce retournée / base + split autour '/images/' et retourne tableau de 2 elmts avant/ après /images/ */
+            // const filename = db.posts.avatar.split('/images/')[1];
+            // /* Fonction suppression fichier: 1er arg= chemin fichier 2e = callback (que faire une fois fichier suppr ? = suppr objet dans la base) */
+            // fs.unlink(`images/${filename}`, (err) => {
+            //   err ? console.log(err) : console.log( 'Image supprimée');
+            // }) 
             db.posts.destroy({ where: { id : req.params.id }}) 
               .then(() => res.status(200).json({ message:'Post supprimé !'}))
               .catch(error => res.status(400).json({ error: error.message }));
