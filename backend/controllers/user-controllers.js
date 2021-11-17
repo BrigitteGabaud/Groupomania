@@ -40,9 +40,9 @@ exports.signup = async (req, res) => {
       }
       db.users.create(user) // enregistrement utilisateur dans db
       .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
-      .catch(error => res.status(400).json({ error }))
+      .catch(error => res.status(400).json({ error: `L'utilisateur n'a pas pu être enregistré.` }))
     })
-    .catch(error => res.status(500).json({ error })); 
+    .catch(error => res.status(500).json({ error: `L'utilisateur n'a pas pu être créé.` })); 
   } catch(err){
     return res.status(500).json({ err })
   }

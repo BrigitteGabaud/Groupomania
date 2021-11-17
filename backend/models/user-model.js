@@ -1,4 +1,8 @@
 "use strict";
+const role = {
+    Admin: 'admin',
+    Basic: 'basic'
+};
 
 /** Déclaration modele user **/
 
@@ -20,24 +24,36 @@ module.exports = (sequelize, DataTypes) => {
         firstname: {
             type: DataTypes.STRING(70),
             allowNull: false,
+            validate: {
+                notNull: {msg: 'Le champ Prénom est requis.'}
+            }
         },
         lastname: {
             type: DataTypes.STRING(70),
             allowNull: false,
+            validate: {
+                notNull: {msg: 'Le champ Nom est requis.'}
+            }
         },
         email: {
             type: DataTypes.STRING(120),
             unique: 'email_unique',
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notNull: {msg: 'Le champ Email est requis.'}
+            }
         },
         password: {
             type: DataTypes.STRING(120),
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notNull: {msg: 'Le champ Mot de passe est requis.'}
+            }
         },
         role: {
-            type: DataTypes.TINYINT,
+            type: DataTypes.STRING(20),
             allowNull: false,
-            defaultValue: 0
+            defaultValue: role.Basic
         },
         avatar: {
             type: DataTypes.STRING,

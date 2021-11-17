@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define('posts', {
         content: {
             type: DataTypes.TEXT,
-            allowNull: false,
+            allowNull: false
         },
         description: {
             type: DataTypes.TEXT,
-            allowNull: false,
+            allowNull: true,
         }
     }, {
     /* 3. option de paramétrage global */
