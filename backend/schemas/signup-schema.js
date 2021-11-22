@@ -1,9 +1,14 @@
 "use strict";
 // Import Joi
 const joi = require('joi');
+const joiPassword = require("joi-password");
 
-// Construction schema validation email + pasword
-const schemaSignup = joi.object({
+// Construction schema validation email + password
+const schemaSignup = 
+
+joi
+
+.object({
     firstname: joi.string()
     .alphanum()
     .min(3)
@@ -21,10 +26,19 @@ const schemaSignup = joi.object({
     .required()
     .pattern(new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)),
 
-    password: joi.string()
+    password: joiPassword.joiPassword
+    .string()
     .min(8)
-    .required(),
+    .minOfSpecialCharacters(2)
+    .minOfLowercase(2)
+    .minOfUppercase(2)
+    .minOfNumeric(2)
+    .noWhiteSpaces()
+    .required()
+    .messages({
+        "message" :"Votre mot de passe doit comporter au moins 8 caractères, dont minimum 2 majuscules, 2 minuscules, 2 chiffres et 2 caractères spéciaux. Il ne doit pas comporter d'espace."
+    }),
+})
 
-});
 
 module.exports = schemaSignup;
