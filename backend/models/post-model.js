@@ -7,6 +7,12 @@ module.exports = (sequelize, DataTypes) => {
         1. 'users' = nom modele --> sequelize créera table 'users'
         2. ligne7 à ligne25 = propriétés du modèle --> colonnes de la table */
     return sequelize.define('posts', {
+        id: {
+            type: DataTypes.INTEGER, 
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false
+        },
         content: {
             type: DataTypes.TEXT,
             allowNull: false

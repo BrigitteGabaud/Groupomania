@@ -33,17 +33,17 @@ db.comments = require('./comment-model')(sequelize, Sequelize);
 
 db.users.hasMany(db.posts, { as: "posts", onDelete: 'CASCADE' });
 db.posts.belongsTo(db.users, {
-  as: "user", // crée FK 'userId' dans posts
+  as: "post_fk_user", // crée FK 'postFkUserId' dans posts
 });
 
 db.users.hasMany(db.comments, { as: "comments", onDelete: 'CASCADE' });
 db.comments.belongsTo(db.users, {
-  as: "user" // crée FK 'userId' dans comments
+  as: "comment_fk_user" // crée FK 'commentFkUserId' dans comments
 });
 
 db.posts.hasMany(db.comments, { as: "comments", onDelete: 'CASCADE' });
 db.comments.belongsTo(db.posts, {
-  as: "post", // crée FK 'postId' dans comments
+  as: "comment_fk_post", // crée FK 'commentFkPostId' dans comments
 });
 
 

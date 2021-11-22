@@ -40,9 +40,9 @@ exports.signup = async (req, res) => {
       }
       db.users.create(user) // enregistrement utilisateur dans db
       .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
-      .catch(error => res.status(400).json({ error: `L'utilisateur n'a pas pu être enregistré.` }))
+      .catch(error => res.status(400).json({ error: error.message /* `L'utilisateur n'a pas pu être enregistré.` */ }))
     })
-    .catch(error => res.status(500).json({ error: `L'utilisateur n'a pas pu être créé.` })); 
+    .catch(error => res.status(500).json({error: error.message/* : `L'utilisateur n'a pas pu être créé.` */ })); 
   } catch(err){
     return res.status(500).json({ err })
   }
@@ -60,13 +60,14 @@ exports.login = async (req, res)=> {
     /* cherche user dans db par son ad mail */
     const user = await db.users.findOne({ where:{ email: req.body.email }})
     console.log(user);
-    /* vérifie si elle est unique*/    
+    /* si elle n'y est pas*/    
     if(!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !'}); 
     }
     /* Compare mdp req à celui db */
     bcrypt.compare(req.body.password, user.password)
     .then(valid => {
+      // si différent
         if (!valid) {
           return res.status(401).json({ error: 'Mot de passe incorrect !'});
         }
@@ -74,7 +75,8 @@ exports.login = async (req, res)=> {
           /* Renvoie obj json avec user id + token et confirm authentification */
           userId: user.id,
           token: jwt.sign( // appel fonction jwt
-            { userId: user.id }, // 1er arg = "paylod" avec données à encoder
+            { userId: user.id, 
+              userRole: user.role }, // 1er arg = "paylod" avec données à encoder
             //'RANDOM_SECRET_TOKEN',
             process.env.SECRET_KEY_JWT, // 2e arg = clé secrète pour encodage
             { expiresIn: '8h'} // 3e arg config delai expiration token

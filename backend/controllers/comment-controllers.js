@@ -20,15 +20,19 @@ exports.createComment = (req, res) => {
     const comment = {
       content: commentData.content,
       date: commentData.date,
-      userId: commentData.userId,
-      postId: commentData.postId
+      commentFkUserId: commentData.commentFkUserId,
+      commentFkPostId: commentData.commentFkPostId
+      
     };
-  
+    console.log(commentData);
+    console.log("commentData.userId",commentData.userId );
+    console.log("commentData.postId", commentData.postId);
     // Sauvegarde post dans Bd
     db.comments.create(comment)
       .then(commentResponse => { res.send(commentResponse) })
       .catch(err => { res.status(500).send({ message: err.message || "Une erreur est survenue pendant la création du commentaire." })});
   };
+
 
 /*** Export de la fonction récupération d'un commentaire par l'userId (GET) ***/
 exports.getOneComment = (req, res) => {
@@ -39,75 +43,108 @@ exports.getOneComment = (req, res) => {
     .catch(error => res.status(400).json({ error: error.message }));
 };
 
-/*** Export de la fonction MODIFICATION commentaire (PUT) ***/
-exports.modifyComment = (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    console.log("token: ",token);
-    const decodedToken = jwt.verify(token, process.env.SECRET_KEY_JWT);
-    console.log("decoded T : " ,decodedToken);
-    const userId = decodedToken.userId
-    console.log("userId : " ,userId);
 
+/*** Export de la fonction MODIFICATION commentaire (PUT) ***/
+exports.modifyComment = async (req, res) => {
+  try {
     // Récupère l'id de l'utilisateur effectuant la requête
-    const id = req.params.id;
-    console.log(id);
-    const commentObject = req.body.comment
-    
-    // Cherche le post concerné dans la BDD 
-    db.comments.findByPk(id, {include: "users"}) 
-    .then(oldComment => {
-      console.log('oldComment : ' ,oldComment);
-        // Si l'userId de la BDD ne correspond pas à celui de la requête
-        if( !oldComment.id == userId ) {
-          console.log('oldComment.id :' , oldComment.id);
-             /* envoie un message d'erreur et arrête le code (return)*/
-             return res.status(403).json({message: `Vous devez être l'auteur du commentaire pour pouvoir le modifier.` })
-        }
-        /* Le post est modifié */
-        // modifie l'identifiant de l'objet créé
-        oldComment.update({...commentObject}, {where: { id:id}})
-        .then(() => res.status(200).json({ message: 'Commentaire modifié !'}))
-        .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du commentaire`}));
-    })
-    .catch(error => res.status(500).json({ error: error.message }))
+    const reqUser = req.user;
+    console.log('reqUser:', reqUser);
+    const commentId = req.params.id;
+    const newComment = req.body;
+    console.log("newComment", newComment);
+    console.log(  reqUser.userId);
+    console.log(commentId);
+
+    // cherche l'user dans la bdd grâce à son id
+    const User = await db.users.findOne({ where : {id: reqUser.userId }})
+
+    // Si cet id n'est pas trouvé
+    if(!User) {
+      return res.status(401).json({ error: 'Utilisateur non trouvé !'}); 
+
+    // Si ok, vérifie que les rôles correspondent
+    } else if (reqUser.userRole !== User.role) {
+       return res.status(403).json({ message: ` Vous n'êtes pas autorisé à effectuer cette action.` })
+
+    // Si ok cherche le commentaire concerné
+    } else {
+      const Comment = await db.comments.findByPk(commentId)
+      console.log("Comment", Comment);
+      // Si non trouvé
+      if( !Comment ) {
+        return res.status(400).json({ message: ` Commentaire non trouvé.` })
+
+      // Si ok, vérifie si admin ou créateur du commentaire
+    } else if (reqUser.userRole === "admin" || User.id === Comment.commentFkUserId)
+
+      // Modifie le commentaire
+      Comment.update({...newComment})
+      .then(() => res.status(200).json({ message: 'Commentaire modifié !'}))
+      .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du commentaire`}));
+      }
+  }
+  catch(error) {
+    return res.status(500).json({ error: error.message })
+  }
 }
+
 
 /*** Export de la fonction SUPPRESSION post (DELETE) ***/
 // to do 
-exports.deleteComment = (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    console.log("token: ",token);
-    const decodedToken = jwt.verify(token, process.env.SECRET_KEY_JWT);
-    console.log("decoded T : " ,decodedToken);
-    const userId = decodedToken.userId
-    console.log("userId : " ,userId);
+exports.deleteComment = async (req, res) => {
+  try {
+    const reqUser = req.user;
+    console.log("reqUser", reqUser );
+    const postId = req.params.id;
+    console.log(reqUser.userId);
+    
+    // cherche l'user dans la bdd grâce à son id
+    const User = await db.users.findOne({ where : {id: reqUser.userId }})
+    console.log("User" ,User);
+    console.log("reqUser.userRole",reqUser.userRole);
+    console.log("User.role", User.role);
+    console.log(reqUser.userRole !== User.role);
+    // Si cet id n'est pas trouvé
+    if(!User) {
+     
+    return res.status(401).json({ error: 'Utilisateur non trouvé !'}); 
 
-    // Récupère l'id de l'utilisateur effectuant la requête
-    const id = req.params.id;
-    console.log(id);
-  
-    db.posts.findByPk(id, { include: "users" }) 
-    .then(commentResponse => {
-      console.log(commentResponse);
-      // Si l'userId de la BDD correspond à celui de la requête
-      if(commentResponse.id == userId ) {
-            console.log('commentResponse.id :', commentResponse.id);
-        // Le comment est supprimé
-        /* Accède à l'objet pour récup url image + nom fichier */
-        db.comments.findByPk(id) 
-        /* callback récupère sauce + nom exact fichier */
-        .then(comment => {
-          console.log('comment: ', comment);
-         
-            db.comments.destroy({ where: { id : id }}) 
-              .then(() => res.status(200).json({ message:'Commentaire supprimé !'}))
-              .catch(error => res.status(400).json({ error: error.message || `Une erreur s'est produite pendant la suppression du commentaire` }));
-        })
-        .catch(error => res.status(500).json({ message: error.message }));
-      } else {
-        // Sinon renvoie une erreur et stoppe le code
-        return res.status(401).json({message: '401: unauthorized request' })
-      }
-    })
+    
+     // Si ok, vérifie que les rôles correspondent
+    } else if (reqUser.userRole !== User.role) {
+      console.log("reqUser.userRole",typeof reqUser.userRole);
+      console.log("User.role",typeof User.role);
+
+      return res.status(403).json({ message: ` Vous n'êtes paaaaas autorisé à effectuer cette action.` })
+
+    // Si ok cherche le commentaire concerné
+  } else {
+    const Comment = await db.comments.findByPk(postId)
+    console.log(Comment);
+    console.log(reqUser.userRole === "admin");
+    console.log(Comment.id === Comment.commentFkUserId);
+    console.log(Comment.id);
+    console.log(Comment.commentFkUserId);
+    // Si non trouvé
+    if( !Comment ) {
+      return res.status(400).json({ message: ` Commentaire non trouvé.` })
+      
+      // Si ok, vérifie si admin ou créateur du commentaire
+    } else if (reqUser.userRole === "admin" || reqUser.userId === Comment.commentFkUserId){
+
+      // si ok : supprime commentaire
+      Comment.destroy() 
+        .then(() => res.status(200).json({ message:'Commentaire supprimé !'}))
+        .catch(error => res.status(400).json({ error: error.message }));
+    } else {
+
+      // Sinon
+      return res.status(403).json({ message: ` Vous n'êtes pas autorisé à effectuer cette action.` })
+    }  
+  }  
   }
-  
+  catch (err) {
+    return res.status(500).json({ err })
+  }
+}

@@ -1,8 +1,5 @@
 "use strict";
-const role = {
-    Admin: 'admin',
-    Basic: 'basic'
-};
+/* const role = require('./role-model'); */
 
 /** Déclaration modele user **/
 
@@ -47,13 +44,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(120),
             allowNull: false,
             validate: {
-                notNull: {msg: 'Le champ Mot de passe est requis.'}
+                notNull: {msg: 'Le champ Nom est requis.'}
             }
         },
         role: {
             type: DataTypes.STRING(20),
+            primaryKey: true,
             allowNull: false,
-            defaultValue: role.Basic
+            defaultValue: "user"
         },
         avatar: {
             type: DataTypes.STRING,
