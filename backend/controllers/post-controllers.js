@@ -1,7 +1,5 @@
 "use strict";
 /* Import dépendances */
-const bcrypt = require('bcrypt'); // package hash password
-const jwt = require('jsonwebtoken'); // package génération + vérif token
 
 const fs = require('fs'); // Donne accès aux opérations liées aux syst de fichiers (modif /suppr) 
 
