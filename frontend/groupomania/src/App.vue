@@ -1,28 +1,58 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <header-top></header-top>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  import Header from './views/Header'
+
+  export default {
+    name: 'App',
+    components: {
+      'header-top': Header
+    }
   }
-}
+
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+img {
+  max-width: 100%;
+  border-radius: 8px;
 }
-</style>
+.card {
+  max-width: 100%;
+  width: 540px;
+  background:white;
+  border-radius: 16px;
+  padding:32px;
+}
+.card__title {
+  text-align:center;
+  font-weight: 800;
+}
+.card__subtitle {
+  text-align: center;
+  color:#666;
+  font-weight: 500;
+}
+
+   .button {
+    background: #2196F3;
+    color:white;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 15px;
+    border: none;
+    width: 100%;
+    padding: 16px;
+    transition: .4s background-color;
+  }
+  .button--disabled {
+  background:#cecece;
+  color:#ececec
+  }
+</style>  
