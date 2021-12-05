@@ -1,14 +1,14 @@
 <template>
-    <Signup></Signup>
+    <Login></Login>
 </template>
 
 <script>
 
-import Signup from '@/components/Auth/Signup.vue'
+import Login from '@/components/Auth/Login.vue'
 export default {
      name: "Connexion",
      components: {
-         Signup
+         Login
      }
 }
 </script>
