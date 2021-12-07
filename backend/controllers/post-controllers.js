@@ -39,14 +39,14 @@ exports.createPost = (req, res) => {
 /***  Export de la fonction RECUPERATION tous les posts (GET) ***/
 exports.getAllPosts = (req, res) => {
   const posts = db.posts;
-  console.log('posts:' ,posts);
+  console.log('posts:', db.posts);
   db.posts.findAll({ include: [
     {
       model: db.comments, 
       as: 'comments',
-      include: ['comment_user']
+      include: ['comment_fk_user']
     },
-    "user"
+    "post_fk_user"
   ],
   })
   .then(posts => res.status(200).json(posts))
@@ -78,7 +78,7 @@ exports.getAllPostFromOneUser = (req, res) => {
 
 /*** Export de la fonction récupération d'un post (GET) ***/
 exports.getOnePost = (req, res) => {
-  db.posts.findOne({where :{ id: req.params.id }}) // = cherche ds db l'user dont l'id correspond
+  db.posts.findOne({where :{ id: req.params.id }}) // = cherche ds db le post dont l'id correspond
   .then(postResponse => res.status(200).json(postResponse))
   .catch(error => res.status(400).json({ error: error.message }));
 };
