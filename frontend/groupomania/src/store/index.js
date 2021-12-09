@@ -18,17 +18,19 @@ const defaultUser = {
 }
 
 // Local Storage
-let userLogin = sessionStorage.getItem('userLogin');
-console.log('user Login' ,userLogin);
+let user = sessionStorage.getItem('user');
+console.log('user local storage' ,user);
 
-if (!userLogin) {
- userLogin = defaultUser;
+if (!user) {
+ user = defaultUser;
 } else {
   try {
-    userLogin = JSON.parse(userLogin); // transforme local storage sous forme tab
-    instance.defaults.headers.common['Authorization'] = userLogin.token; // défini header autorisation pour utiliser token
+    user = JSON.parse(user); // récupère user depuis local storage
+    instance.defaults.headers.common['Authorization'] = user.token; // défini header autorisation pour utiliser token
+    console.log(('user:' , user));
   } catch (ex) {
-    userLogin = defaultUser;
+    console.log('erreur recup' ,ex.data);
+    user = defaultUser;
   }
 }
 
@@ -37,8 +39,7 @@ if (!userLogin) {
   state: {
     webSiteName: 'Groupomania',
     status: '', // status de base
-    userLogin: defaultUser,
-
+    user: user,
     post: {
       id: '',
       content: '',
@@ -58,19 +59,18 @@ if (!userLogin) {
     setStatus: function(state, status) { // Défini le status
       state.status= status;
     },
-    logUser:function(state, userLogin) { // user loggé
-      instance.defaults.headers.common['Authorization'] = userLogin.token; // quand logué récupère token dans header
-      console.log('userLogin.token', userLogin.token);
-      sessionStorage.setItem('userLogin', JSON.stringify(userLogin));// initialise storage en string
-      console.log('mut' ,sessionStorage.setItem('userLogin', JSON.stringify(userLogin)));
-      state.userLogin = userLogin;
+    logUser:function(state, user) { // user loggé
+      instance.defaults.headers.common['Authorization'] = user.token; // quand logué récupère token dans header
+      sessionStorage.setItem('user', JSON.stringify(user));// sauvegarde token
+      console.log('mut' ,sessionStorage.setItem('user', JSON.stringify(user)));
+      state.user = user;
     },
     userInfos: function (state, userInfos) { // récupère infos user
       state.userInfos = userInfos;
     }, 
     logout: function(state) {
-      state.userLogin = defaultUser;
-      localStorage.removeItem('userLogin');
+      state.user = defaultUser;
+      sessionStorage.removeItem('user');
     }
 
   },
@@ -105,7 +105,7 @@ if (!userLogin) {
       })
       })
     },
-     /*  getUserInfos:({commit}) => {
+/*       getInfosOfUser:({commit}, userInfos) => {
       
       instance.get(`/user/${userId}`)
       .then(function(response) {
@@ -114,7 +114,7 @@ if (!userLogin) {
       .catch(function(error) {
         commit('userInfos', error.message);
       })
-    },  */ 
+    },    */
   }
 })
 

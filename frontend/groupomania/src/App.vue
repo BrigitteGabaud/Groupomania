@@ -3,23 +3,27 @@
 
     <the-header></the-header>
 
-    <div class="container">
+    <div class="container-app">
 
       <router-view/>
       
     </div>
 
+    <the-footer></the-footer>
+
   </div>
 </template>
 
 <script>
-
   import TheHeader from '@/components/TheHeader'
+  import TheFooter from '@/components/TheFooter'
 
   export default {
     name: 'App',
     components: { 
-      'the-header': TheHeader }
+      'the-header': TheHeader,
+      'the-footer': TheFooter
+    }
   }
 
 </script>
@@ -45,20 +49,19 @@ img {
   color:#666;
   font-weight: 500;
 }
-
-   .button {
-    background: #2196F3;
-    color:white;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 15px;
-    border: none;
-    width: 100%;
-    padding: 16px;
-    transition: .4s background-color;
-  }
-  .button--disabled {
-  background:#cecece;
-  color:#ececec
-  }
+.button {
+background: #2196F3;
+color:white;
+border-radius: 8px;
+font-weight: 800;
+font-size: 15px;
+border: none;
+width: 100%;
+padding: 16px;
+transition: .4s background-color;
+}
+.button--disabled {
+background:#cecece;
+color:#ececec
+}
 </style>  

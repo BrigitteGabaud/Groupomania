@@ -43,6 +43,7 @@
             </div>
 
         </div>
+
     </div>
 </template>
 
@@ -53,6 +54,68 @@
 
     export default {
         name: 'Login ',
+        data: function() {
+            return {
+                mode: 'login', 
+                firstname: '',
+                lastname: '',
+                email: '',
+                password: '',
+            }
+        },
+        computed: {
+            validatedFields: function() {
+                if (this.mode == 'create') {
+                    if (this.firstname != "" && this.lastname != "" && this.email != "" && this.password != "") {
+                    return true;
+                    } else {
+                    return false;
+                    }
+                } else { // si mode login
+                    if (this.email != "" && this.password != "") {
+                    return true;
+                    } else {
+                    return false;
+                    }
+                }
+            },
+            ...mapState(['status']) // = récupère state "status" dans store = status variable
+        },
+        methods: {
+            switchToCreateAccount: function() {
+                this.mode = 'create';
+            },
+            switchToLogin: function() {
+                this.mode = 'login';
+            },
+            login: function() {
+                //const self = this;
+                this.$store.dispatch('login', {
+                    email: this.email,
+                    password: this.password,
+                }).then(function() {
+                    //self.$router.push('/Profile')
+                    window.location.href = 'http://localhost:8080'// redirige vers Home
+                }).catch(function(error) {
+                    console.log(error)
+                })
+            },
+            signup: function() {
+                const self = this;
+                this.$store.dispatch('signup', { // appel APi via actions dans store/index
+                    firstname: this.firstname,
+                    lastname: this.lastname,
+                    email: this.email,
+                    password: this.password,
+                }).then(function() {
+                    self.switchToLogin(); // redirige vers fenêtre login
+            
+                }).catch(function(error) {
+                    console.log(error)
+                })
+            }
+        },
+        props: ['reveleLogin', 'toggleLogin']
        /* data: function() {
             return { 
                 mode: 'login', 
@@ -121,75 +184,15 @@
             },
             props: ['reveleLogin', 'toggleLogin']
         },*/
-           data: function() {
-            return {
-                mode: 'login', 
-                firstname: '',
-                lastname: '',
-                email: '',
-                password: '',
-            }
-        },
-        mounted: function () {
-            console.log(this.$store.state.user);
+           
+       /*  mounted: function () {
+            console.log('state user' ,this.$store.state.user);
                 if (this.$store.state.user.userId != -1) { // = connecté
-                this.$router.push('/Profile');
+                this.$router.push('/');
                 return ;
                 }
-        }, 
-        computed: {
-            validatedFields: function() {
-                if (this.mode == 'create') {
-                    if (this.firstname != "" && this.lastname != "" && this.email != "" && this.password != "") {
-                    return true;
-                    } else {
-                    return false;
-                    }
-                } else { // si mode login
-                    if (this.email != "" && this.password != "") {
-                    return true;
-                    } else {
-                    return false;
-                    }
-                }
-            },
-            ...mapState(['status']) // = récupère state "status" dans store = status variable
-        },
-        methods: {
-            switchToCreateAccount: function() {
-                this.mode = 'create';
-            },
-            switchToLogin: function() {
-                this.mode = 'login';
-            },
-            login: function() {
-                //const self = this;
-                this.$store.dispatch('login', {
-                    email: this.email,
-                    password: this.password,
-                }).then(function() {
-                    //self.$router.push('/Profile')
-                    window.location.href = 'http://localhost:8080/Profile'// redirige vers Home
-                }).catch(function(error) {
-                    console.log(error)
-                })
-            },
-            signup: function() {
-                const self = this;
-                this.$store.dispatch('signup', { // appel APi via actions dans store/index
-                    firstname: this.firstname,
-                    lastname: this.lastname,
-                    email: this.email,
-                    password: this.password,
-                }).then(function() {
-                    self.switchToLogin(); // redirige vers fenêtre login
-            
-                }).catch(function(error) {
-                    console.log(error)
-                })
-            }
-        },
-        props: ['reveleLogin', 'toggleLogin']
+        },  */
+        
     }
 
   
@@ -197,7 +200,7 @@
 </script>
 
 
-<style scopped>
+<style scoped>
     .bloc-login {
         position: fixed;
         top: 0;

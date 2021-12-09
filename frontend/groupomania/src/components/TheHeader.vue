@@ -1,6 +1,6 @@
 <template>
 
-    <div class="container mt-5">
+    <div class="container-header ">
 
         <nav class="navbar .navbar-expand-md">
 
@@ -58,7 +58,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.container-header {
+    position: fixed;
+    top: 0;
+    height: 50px;
+    background: gray;
+    color: black;
+    width: 100%;
+    text-align: center;
+    line-height: 50px;
+    font-size: 20px;
+
+}
 .button {
     padding:8px;
     border: none;
@@ -69,8 +81,19 @@ export default {
     flex:1;
     min-width: 100px;
 } 
-li {
+.navbar {
+    display: flex;
+    justify-content: center!important;
     list-style-type: none;
+    
 }
+li {
+    margin-right: 20px;
+}
+li a {
+    text-decoration: none;
+    color: black;
+}
+
 
 </style>
