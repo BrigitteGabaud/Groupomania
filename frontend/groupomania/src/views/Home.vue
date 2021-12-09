@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
      <posts-list></posts-list>
 
     </div>
@@ -20,9 +20,16 @@ export default {
     'posts-list': PostsList,
     
     },
+    mounted: function () {
+        console.log('state user' ,this.$store.state.user);
+            if (this.$store.state.user.userId == -1) { // = non connecté
+            this.$router.push('/Connexion');
+            return ;
+            }
+    }
 }
 </script>
 
-<style>
+<style >
 
 </style>

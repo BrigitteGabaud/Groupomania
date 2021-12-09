@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container-profile">
 
         <profile-of-user ></profile-of-user> 
 
