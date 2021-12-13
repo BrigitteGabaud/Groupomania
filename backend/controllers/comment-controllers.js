@@ -8,25 +8,22 @@ const db = require('../models');
 
 /*** Creation commentaire ***/
 exports.createComment = (req, res) => {
-    const commentData = req.body
-    console.log(commentData);
+  // Creation comment
+  const comment = {
+    content: req.body.content,
+    date: req.body.date,
+    userId: req.body.userId,
+    postId: req.body.postId
+  };
+    
     // requete valide
     if (!req.body.content) {
         res.status(400).send({ message: "Le contenu est requis !." });
         return;
     }
   
-    // Creation comment
-    const comment = {
-      content: commentData.content,
-      date: commentData.date,
-      commentFkUserId: commentData.commentFkUserId,
-      commentFkPostId: commentData.commentFkPostId
-      
-    };
-    console.log(commentData);
-    console.log("commentData.userId",commentData.userId );
-    console.log("commentData.postId", commentData.postId);
+    
+    
     // Sauvegarde post dans Bd
     db.comments.create(comment)
       .then(commentResponse => { res.send(commentResponse) })

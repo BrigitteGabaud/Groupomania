@@ -22,8 +22,7 @@ exports.createPost = (req, res) => {
   const post = {
     content: req.body.content,
     description: req.body.description,
-    //userId: req.body.userId,
-    postFkUserId: req.body.postFkUserId
+    userId: req.body.userId
   };
   console.log(post);
 

@@ -37,7 +37,7 @@ joi
     .required()
     .messages({
         "message" :"Votre mot de passe doit comporter au moins 8 caractères, dont minimum 2 majuscules, 2 minuscules, 2 chiffres et 2 caractères spéciaux. Il ne doit pas comporter d'espace."
-    }),
+    })
 })
 
 

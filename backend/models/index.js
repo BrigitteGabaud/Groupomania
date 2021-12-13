@@ -31,19 +31,22 @@ db.comments = require('./comment-model')(sequelize, Sequelize);
 
 // Ajout clés étrangères
 
-db.users.hasMany(db.posts, { as: "posts", onDelete: 'CASCADE' });
+db.users.hasMany(db.posts, { foreignKey: "userId", as: "posts", onDelete: 'CASCADE' });
 db.posts.belongsTo(db.users, {
-  as: "post_fk_user", // crée FK 'postFkUserId' dans posts
+  foreignKey: "userId", // crée FK 'postFkUserId' dans posts
+  as: "post_fk_user", // Si je veux l'appeler dans back
 });
 
-db.users.hasMany(db.comments, { as: "comments", onDelete: 'CASCADE' });
+db.users.hasMany(db.comments, { foreignKey: "userId", as: "comments", onDelete: 'CASCADE' });
 db.comments.belongsTo(db.users, {
-  as: "comment_fk_user" // crée FK 'commentFkUserId' dans comments
+  foreignKey: "userId", // crée FK 'postFkUserId' dans posts
+  as: "comment_fk_user" // Si je veux l'appeler dans back
 });
 
-db.posts.hasMany(db.comments, { as: "comments", onDelete: 'CASCADE' });
+db.posts.hasMany(db.comments, { foreignKey: "postId", as: "comments", onDelete: 'CASCADE' });
 db.comments.belongsTo(db.posts, {
-  as: "comment_fk_post", // crée FK 'commentFkPostId' dans comments
+  foreignKey: "postId", // crée FK 'postFkUserId' dans posts
+  as: "comment_fk_post", // Si je veux l'appeler dans back
 });
 
 

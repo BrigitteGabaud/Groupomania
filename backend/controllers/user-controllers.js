@@ -67,16 +67,17 @@ exports.login = async (req, res)=> {
     /* Compare mdp req à celui db */
     bcrypt.compare(req.body.password, user.password)
     .then(valid => {
+      console.log(user);
       // si différent
         if (!valid) {
           return res.status(401).json({ error: 'Mot de passe incorrect !'});
         }
         res.status(200).json({
           /* Renvoie obj json avec user id + token et confirm authentification */
+          userRole: user.role,
           userId: user.id,
           token: jwt.sign( // appel fonction jwt
-            { userId: user.id, 
-              userRole: user.role }, // 1er arg = "paylod" avec données à encoder
+            { userId: user.id }, // 1er arg = "paylod" avec données à encoder
             //'RANDOM_SECRET_TOKEN',
             process.env.SECRET_KEY_JWT, // 2e arg = clé secrète pour encodage
             { expiresIn: '8h'} // 3e arg config delai expiration token
@@ -127,9 +128,16 @@ exports.modifyUser = (req, res) => {
           // Récupère toutes les informations du user
           ...JSON.parse(req.body.user), 
           // Génère l'image url
-          imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+          avatar: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
           // = Si req.file n'existe pas: on prend le corps de la requête
           } : { ...req.body}; 
+          if(userResponse.avatar != 'http://localhost:3000/images/Bestiole_jaune.jpg') {
+            // récupère le segment après "image" et le supprime pour ne pas stocker les images
+            const fileName = userResponse.avatar.split("/images/")[1]
+            fs.unlink(`images/${fileName}`, (err) => {
+              err? console.log(err) : console.log("image supprimée");
+            })
+          }
           // modifie l'identifiant de l'objet créé
           userResponse.update({...userObject})
           .then(() => res.status(200).json({ message: 'User modifié !'}))

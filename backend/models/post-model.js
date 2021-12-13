@@ -20,6 +20,14 @@ module.exports = (sequelize, DataTypes) => {
         description: {
             type: DataTypes.TEXT,
             allowNull: true,
+        },
+        userId: {
+            type: DataTypes.INTEGER, 
+            allowNull: false,
+            references: {
+                model: "users",
+                key: "id"
+            }
         }
     }, {
     /* 3. option de paramétrage global */
