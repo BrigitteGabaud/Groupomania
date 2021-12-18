@@ -8,9 +8,14 @@
                 <router-link to="/">Accueil</router-link>
             </li>
 
-            <li
+            <li v-if="!user"
                 @click="toggleLogin" :toggleLogin="toggleLogin">
                 <router-link to="/Connexion">Connexion</router-link>
+
+            </li>
+
+            <li v-else @click="logout" class="logout"> 
+                Déconnexion
             </li>
 
             <li >
@@ -29,19 +34,17 @@
 <script>
 import Login from '@/components/Auth/Login'
 
-//import UserProfile from '@/components/Profile/UserProfile'
 
 export default {
     name: "TheHeader",
     data() {
         return {
             reveleLogin: false, // = props
-           // reveleProfile: false
+            user: false
         }
     },
     components: {
-        'login': Login,
-       // 'userProfile': UserProfile
+        'login': Login
     },
     methods: {
         toggleLogin: function() {
@@ -50,10 +53,25 @@ export default {
         toggleSignup: function() {
             this.reveleSignup = !this.reveleSignup
         },
-        /* toggleProfile: function() {
-            this.reveleProfile = !this.reveleProfile
-        }, */
-    }
+        isUserLoggedIn: function() {
+            let user = sessionStorage.getItem('user');
+            
+            if(user) {
+                this.user = JSON.parse(user);
+                this.user == true
+            } else {
+                this.user == false
+            }
+        },
+        logout: function() {
+        this.$store.commit('logout');
+        this.$router.push('/Connexion');
+      }
+    },
+    
+    mounted() {
+        this.isUserLoggedIn()
+    }   
  
 }
 </script>
@@ -93,6 +111,9 @@ li {
 li a {
     text-decoration: none;
     color: black;
+}
+.logout {
+    cursor: pointer;
 }
 
 
