@@ -10,21 +10,28 @@ const db = require('../models');
 
 /*** Creation post  ***/
 exports.createPost = (req, res) => {
-  const postContent = req.body
-  console.log("postContent" ,postContent);
-  // requete valide
-  if (!req.body.content) {
+  const postInfos = req.body
+  console.log("postInfos" ,JSON.parse(postInfos.post));
+  // requete valide ?
+  if (!postInfos.post) {
+    console.log('postInfos.content', postInfos.content);
       res.status(400).send({ message: "Le contenu est requis !." });
       return;
   }
 
   // Creation post
-  const post = {
-    content: req.body.content,
-    description: req.body.description,
-    userId: req.body.userId
+  let post = {
+    content: postInfos.content,
+    description: postInfos.description,
+    userId: req.user.userId
   };
-  console.log(post);
+  console.log('POST',post);
+
+  if(req.file)
+  {
+    // Génère l'image url
+    post.image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  } 
 
   // Sauvegarde post dans Bd
   db.posts.create(post)
@@ -129,41 +136,59 @@ exports.modifyPost = async (req, res) => {
 exports.deletePost = async (req, res) => {
   try {
   const reqUser = req.user;
-  console.log(reqUser);
+  console.log('reqUser', reqUser);
   const postId = req.params.id;
-  console.log(reqUser.userId);
-
+  console.log('reqUser.userId', reqUser.userId);
   // cherche l'user dans la bdd grâce à son id
   const User = await db.users.findOne({ where : {id: reqUser.userId }})
-  
+  console.log('??', reqUser.userRole !== User.role);
+  console.log('reqUser.userRole', reqUser.userRole);
+  console.log('User.role', User.role);
+
   // Si cet id n'est pas trouvé
-  if(!User) {
+  if(!User) 
+  {
     return res.status(401).json({ error: 'Utilisateur non trouvé !'}); 
 
     // Si ok, vérifie que les rôles correspondent
-  } else if (reqUser.userRole !== User.role) {
-    return res.status(403).json({ message: ` Vous n'êtes pas autorisé à effectuer cette action.` })
+  } 
+  
+  else if (reqUser.userRole !== User.role) 
+  {
+    return res.status(403).json({ message: ` Vous n'êtes pas pas autorisé à effectuer cette action.` })
 
     // Si ok cherche le post concerné
-  } else {
+  }
+  else 
+  {
     const Post = await db.posts.findByPk(postId)
-
+    console.log('post', Post);
       // Si non trouvé
-      if( !Post ) {
+      if( !Post ) 
+      {
         return res.status(400).json({ message: ` Post non trouvé.` })
 
       // Si ok, vérifie si admin ou créateur du post
-    } else if (reqUser.userRole === "admin" || User.id === Post.postFkUserId){
+      } 
+      else if (reqUser.userRole === "admin" || User.id === Post.userId)
+      
+      {
+        console.log('true??',User.id === Post.postId)
+        // si ok : supprime post
+        Post.destroy() 
+          .then(() => res.status(200).json({ message:'Post supprimé !'}))
+          .catch(error => res.status(400).json({ error: error.message || `Une erreur s'est produite pendant la suppression du post.` }));
+      } 
 
-      // si ok : supprime post
-      Post.destroy() 
-        .then(() => res.status(200).json({ message:'Post supprimé !'}))
-        .catch(error => res.status(400).json({ error: error.message || `Une erreur s'est produite pendant la suppression du post.` }));
-    } else {
-
-      // Sinon
-      return res.status(403).json({ message: ` Vous n'êtes pas autorisé à effectuer cette action.` })
-    }  
+      else 
+      {
+        console.log(reqUser.userRole === "admin" || User.id === Post.postId);
+        console.log('User.id', User.id);
+        console.log('Post.userIdId', Post.userId);
+        console.log('true?',User.id === Post.userId)
+        // Sinon
+        return res.status(403).json({ message: ` Vous n'êtes pas autorisé à effectuer cette action.` })
+      }  
   }  
   }
   catch (err) {

@@ -73,12 +73,11 @@ exports.login = async (req, res)=> {
           return res.status(401).json({ error: 'Mot de passe incorrect !'});
         }
         res.status(200).json({
-          /* Renvoie obj json avec user id + token et confirm authentification */
+          /* Renvoie obj json avec userid/ userRole + token et confirm authentification == frontend */
           userRole: user.role,
           userId: user.id,
           token: jwt.sign( // appel fonction jwt
-            { userId: user.id }, // 1er arg = "paylod" avec données à encoder
-            //'RANDOM_SECRET_TOKEN',
+            { userId: user.id, userRole: user.role  }, // 1er arg = "paylod" avec données à encoder == backend
             process.env.SECRET_KEY_JWT, // 2e arg = clé secrète pour encodage
             { expiresIn: '8h'} // 3e arg config delai expiration token
           )
