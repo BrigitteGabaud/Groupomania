@@ -13,8 +13,7 @@
                     
                     <p>{{ post.post_fk_user.firstname}}</p>
                     <p>{{ post.content }}</p>
-                    <p>{{ post.description}}</p>
-                    <img src= post.image>
+                    <img :src= post.image>
                     <p>{{ post.userId }}</p>
 
                     <div>

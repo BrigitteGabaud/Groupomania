@@ -31,7 +31,9 @@ export default {
     data() {
         return {
             content: '',
-            image: ''
+            description: '',
+            image: '',
+            user: ''
         }
     },
     computed: {
@@ -42,27 +44,22 @@ export default {
             } else {
                 return false;
             }
-        }
+        },
+       
     },
     methods: {
-        createPost() {
+        createPost: function() {
             let formData = new FormData();
-            
-            let postInfos = {
-                userId : sessionStorage.getItem('user'),
-                content: this.content, 
-                description: this.description,
-            };
-            console.log('post', postInfos.content);
 
-            formData.append("post", JSON.stringify(postInfos))
+            formData.append("content", JSON.stringify(this.content))
+            formData.append("userId", JSON.stringify(this.user.userId))
 
             if(document.getElementById("postImage").value !== "") {
 
                 console.log(document.getElementById("postImage").value);
                 formData.append('image', document.getElementById("postImage").files[0])
             }
-            
+            console.log(formData.getAll("post"));
             axios({
                 method: "post",
                 url: `http://localhost:3000/api/post`,
@@ -70,6 +67,7 @@ export default {
                     "Content-Type":"multipart/form-data",
                 },
                 data: formData
+                
            })
            
             
@@ -81,14 +79,17 @@ export default {
             .catch(error => {
                 if(error.response) {
                     console.log(error.response);
-                    console.log('post 2', postInfos);
                 }
             }) 
 
-            console.log('post 3', postInfos);
         }
 
              
+    },
+    mounted() {
+         
+        this.user = JSON.parse(sessionStorage.getItem('user'))
+
     }
         
 }
@@ -107,8 +108,5 @@ export default {
     height: 250px;
     margin-bottom: 10px;
 }
-.btn-outline-secondary {
-    background:#cecece;
-    color:#ececec       
-}
+
 </style>
