@@ -2,21 +2,22 @@
     <div class="container-post-create">
          <div class="card" id="create-post">
 
-            <h3>Exprimez-vous !</h3> <br>
+            <h4>Exprimez-vous !</h4> <br>
 
             <input id="content" v-model="content"  class="form-control" type="text" placeholder="Quoi de neuf ?"> <br>
 
-            <form id="form"  >
+            <div class="file-input"  >
 
-                <input  type="file" id="postImage" accept="image/*">
-
-                <button type="button" class="btn btn-secondary mt-2 col-4" 
-                        :class="{'btn-outline-secondary' : !validatedFields}"
+                <input type="file" id="file" class="file" accept="image/*">
+                <label for="file" >Choisir une image</label>
+                
+                <button type="button" class="btn mt-2 col-4 " 
+                        :class="{'btn-outline' : !validatedFields}"
                         @click="createPost()"
                         >Publier
                 </button>
 
-            </form>
+            </div>
 
         </div>
     </div>
@@ -54,10 +55,10 @@ export default {
             formData.append("content", JSON.stringify(this.content))
             formData.append("userId", JSON.stringify(this.user.userId))
 
-            if(document.getElementById("postImage").value !== "") {
+            if(document.getElementById("file").value !== "") {
 
-                console.log(document.getElementById("postImage").value);
-                formData.append('image', document.getElementById("postImage").files[0])
+                console.log(document.getElementById("file").value);
+                formData.append('image', document.getElementById("file").files[0])
             }
             console.log(formData.getAll("post"));
             axios({
@@ -98,15 +99,60 @@ export default {
 
 <style scoped>
 .container-post-create {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 100px;
+    z-index: 2;
 }
 #create-post {
     height: 250px;
+    margin-top: 20px;
     margin-bottom: 10px;
+    background-color: #d7d2d0;
+    padding-top: 10px;
+    margin-top: 100px;
+}
+.file-input {
+    display: flex;
+    justify-content: space-between;
+}
+.file {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+}
+.file-input label {
+    display: block;
+    position: relative;
+    width: 157px;
+    height: 38px;
+    margin-top: 0.5rem!important;
+    border-radius: 3px;
+    background: #243653;
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+}
+.btn {
+    background-color: #243653;
+    box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
+    color: white;
+    outline: none;
+    border: none;
+    position: relative;
+}
+.btn:hover, .file-input label:hover  {
+    background-color:#d1515a!important;
+    color: white;
+    top: 2px;
 }
 
 </style>
