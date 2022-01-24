@@ -2,9 +2,9 @@
     <div class="container-post-create">
          <div class="card" id="create-post">
 
-            <h4>Exprimez-vous !</h4> <br>
+            <h4>Quoi de neuf ?</h4> <br>
 
-            <input id="content" v-model="content"  class="form-control" type="text" placeholder="Quoi de neuf ?"> <br>
+            <textarea id="content" v-model="content"  class="form-control" type="text" placeholder="Ajoutez votre texte ici."></textarea><br>
 
             <div class="file-input"  >
 
@@ -107,12 +107,12 @@ export default {
     z-index: 2;
 }
 #create-post {
-    height: 250px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    background-color: #d7d2d0;
-    padding-top: 10px;
-    margin-top: 100px;
+    width: 50%;
+    height: 25%;
+    background-color: rgba(193,178,175, 0.90);
+    box-shadow: 0 0 10px 3px rgba(0,0,0,0.9);
+    margin-top: 10%;
+    padding: 15px 10px;
 }
 .file-input {
     display: flex;

@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
+  <div id="container-app">
 
     <the-header></the-header>
 
-    <div class="container-app">
+    <div class="container-views">
 
       <router-view/>
       
@@ -28,17 +28,30 @@
 
 </script>
 
-<style>
+<style >
+
+body {
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+}
+#app{
+  height: auto;
+}
+#container-app {
+  width: 100%;
+  height: 100vh;
+}
 img {
   max-width: 100%;
   border-radius: 8px;
 }
 .card {
-  max-width: 100%;
-  width: 540px;
-  background:white;
-  border-radius: 16px;
+  max-width: 70%;
+  width: 70%;
   padding:32px;
+  border: none;
+  border-radius: 3px;
 }
 .card__title {
   text-align:center;
@@ -46,12 +59,12 @@ img {
 }
 .card__subtitle {
   text-align: center;
-  color:#666;
+  color:#667;
   font-weight: 500;
 }
 .button {
-background: #2196F3;
-color:white;
+background: rgba(209,81,90,255);
+color:black;
 border-radius: 8px;
 font-weight: 800;
 font-size: 15px;

@@ -6,7 +6,7 @@
 
             <li v-for="post in listPosts" :key="post.id">
 
-                <div class="card">
+                <div>
 
                  <h1>{{ post.id }}</h1>
 
@@ -49,6 +49,7 @@
 
 <script>
     import axios from 'axios'
+   // import DateTime from 'luxon'
 
     export default {
         name: "PostsList",
@@ -81,6 +82,8 @@
                     
                     this.listPosts = res.data;
                     console.log('listposts', this.listPosts);
+                    
+
                 })
             },
             getOnePost: function(id) {
@@ -159,13 +162,40 @@
     align-items: center;
     justify-content: center;
     margin-top: 100px;
+    
+}
+.card {
+    background-color: rgba(179,167,164, 0.90);
+    box-shadow: 0 0 10px 3px rgba(0,0,0,0.9);
+    margin-bottom: 100px;
+    width: 50%;
+    padding: 1%;
 }
 ul li {
     list-style-type: none;
     margin-bottom: 5px;
 }
-.btn  {
-    margin-right: 1px!important;
+li {
+    width: 100%;
+}
+img {
+    width: 100%;
+    border-radius: 3px;
+}
+.btn {
+    background-color: #243653;
+    box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
+    color: white;
+    outline: none;
+    border: none;
+    position: relative;
+    margin-right: 1px;
+}
+.btn:hover, .file-input label:hover  {
+    background-color:#d1515a!important;
+    color: white;
+    top: 2px;
 }
 p {
     margin-top:36px;
