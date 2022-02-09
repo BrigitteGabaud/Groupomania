@@ -16,23 +16,25 @@
                     <img :src= post.image>
                     <p>{{ post.userId }}</p>
 
-                    <div>
-
-                        <button class="btn btn-primary col-4 ">Commenter</button>
+                    <div class='container-buttons'>
+                        
+                        <button class="btn col-2 ">
+                           <fa icon='comment-dots'/> 
+                        </button>
 
                         <a href="#create-post"
                             v-if="post.userId == user.userId"
-                            class="btn btn-primary col-4 "
+                            class="btn col-2 "
                             @click='modifyPost(post.id)'
                             >
-                            Modifier
+                             <fa icon='edit'/>
                         </a>
 
                         <button v-if="post.userId == user.userId || user.userRole == 'admin' "  
                                 @click='deletePost(post.id)' 
-                                class="btn btn-primary col-4"
-                                
-                                >Supprimer
+                                class="btn col-2"
+                                >
+                                <fa icon='trash'/>
                         </button>
 
                     </div>
@@ -182,15 +184,19 @@ img {
     width: 100%;
     border-radius: 3px;
 }
+.container-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
 .btn {
     background-color: #243653;
     box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
-    border-radius: 3px;
+    border-radius: 50px;
     color: white;
     outline: none;
     border: none;
     position: relative;
-    margin-right: 1px;
+    margin-right: 5px;
 }
 .btn:hover, .file-input label:hover  {
     background-color:#d1515a!important;
