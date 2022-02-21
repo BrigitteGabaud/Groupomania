@@ -9,12 +9,12 @@
             <div class="file-input"  >
 
                 <input type="file" id="file" class="file" accept="image/*">
-                <label for="file" >Choisir une image</label>
+                <label for="file" ><fa icon= 'image'/></label>
                 
                 <button type="button" class="btn mt-2 col-4 " 
-                        :class="{'btn-outline' : !validatedFields}"
-                        @click="createPost()"
-                        >Publier
+                        :class="{'btn-outline disabled' : !validatedFields}"
+                        @click="createPost()">
+                        <fa icon= 'paper-plane'/>
                 </button>
 
             </div>
@@ -71,7 +71,6 @@ export default {
                 
            })
            
-            
             .then((response) => {
                 console.log(response);
                 document.getElementById("content").value = ""
@@ -105,14 +104,25 @@ export default {
     align-items: center;
     justify-content: center;
     z-index: 2;
+    width: 100%;
+    height: 25%;
 }
 #create-post {
-    width: 50%;
-    height: 25%;
     background-color: rgba(193,178,175, 0.90);
     box-shadow: 0 0 10px 3px rgba(0,0,0,0.9);
-    margin-top: 10%;
+    margin-top: 30%;
     padding: 15px 10px;
+}
+#create-post h4 {
+    font-size: 1.1rem;
+    padding-left: 2%;
+    padding-bottom: 2%;
+}
+br {
+    display: none;
+}
+#content::placeholder {
+    font-size: 0.8rem;
 }
 .file-input {
     display: flex;
@@ -127,11 +137,11 @@ export default {
 .file-input label {
     display: block;
     position: relative;
-    width: 157px;
-    height: 38px;
+    width: 30px;
+    height: 30px;
     margin-top: 0.5rem!important;
-    border-radius: 3px;
-    background: #243653;
+    border-radius: 50%;
+    background: #d1515a;
     box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
@@ -139,20 +149,54 @@ export default {
     color: #fff;
     cursor: pointer;
     transition: transform .2s ease-out;
+    margin-top:  1rem!important;
+    margin-left: 10px;
 }
 .btn {
-    background-color: #243653;
+    /* height: 30px; */
+    line-height: 15px;
+    width: 30px;
+    background-color: #d1515a;
     box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
-    border-radius: 3px;
+    border-radius: 50%;
     color: white;
     outline: none;
     border: none;
     position: relative;
+    margin-top:  1rem!important;
+    margin-right: 10px;
+    padding: 2px;
+}
+.svg-inline--fa {
+    vertical-align: middle;
+    margin-left: -0.125em;
 }
 .btn:hover, .file-input label:hover  {
-    background-color:#d1515a!important;
+    background-color:#243653!important;
     color: white;
     top: 2px;
+}
+.btn:focus {
+    outline: none!important;
+    box-shadow: none;
+}
+
+/* Ecrans tablette et plus */
+@media (min-width: 768px) {
+    #create-post {
+        width: 50%;
+        height: 25%;
+        margin-top: 15%;
+        margin-bottom: 5%;
+        padding: 15px 10px;
+    }
+    #create-post h4 {
+        font-size: 1.3rem;
+        padding-left: 1%;
+    }
+    #content::placeholder {
+        font-size: 1rem;
+    }
 }
 
 </style>
