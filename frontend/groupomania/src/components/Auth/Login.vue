@@ -1,57 +1,139 @@
 <template>
-    <div class="bloc-login" v-if="reveleLogin">
+    <div id="bloc-login" v-if="reveleLogin">
 
-        <div v-on:click="toggleLogin" class="overlay"></div>
+        <div  class="overlay"></div>
 
         <div class="login card">
-            <div v-on:click="toggleLogin" class="btn-login btn btn-white">X</div>
+            
+            <h4
+                v-if="mode == 'login'" 
+                class="card-title"
+                >Bienvenue !  Veuillez vous connecter
+            </h4>
+            <h4 
+                v-else class="card-title"
+                >Vous souhaitez nous rejoindre ? Créez votre compte !
+            </h4>
 
-            <h1 v-if="mode == 'login'" class="card-title">Connexion</h1>
-            <h1 v-else class="card-title">Inscription</h1>
+            <p  
+                v-if="mode == 'login'"
+                class="card-subtitle" 
+                @click="switchToCreateAccount">Pas encore de compte ?&nbsp; 
+                <span class="card_action" >Créer un compte </span></p>
 
-            <p v-if="mode == 'login'" class="card-subtitle" @click="switchToCreateAccount">Pas encore de compte ?&nbsp;  <span class="card_action" >Créer un compte </span></p>
-            <p v-else class="card-subtitle" @click="switchToLogin">Déjà un compte ? &nbsp;<span class="card_action" > Se connecter</span></p>
+            <p  
+                v-else class="card-subtitle"
+                @click="switchToLogin">Déjà un compte ? &nbsp;
+                <span class="card_action" > Se connecter</span></p>
 
-            <form v-if="mode == 'create'" class="form-row" >
-                <input v-model="firstname" class="form-row_input" type="text" placeholder="Prénom"/>
-                <input v-model="lastname" class="form-row_input" type="text" placeholder="Nom"/>
-            </form>
+            <div class="container-form">
 
-            <form class="form-row">
-                <input v-model="email" class="form-row_input" type="text" placeholder="Adresse mail"/> 
-            </form>
+                <form class="form-bloc">
 
-            <form class="form-row">
-                <input v-model="password" class="form-row_input" type="password" placeholder="Mot de passe"/>
-            </form>
+                    <div  
+                        class="form-row" 
+                        id="identity"
+                        v-if="mode == 'create'"
+                        @submit.prevent="submitForm">
 
-            <div class="form-row" v-if="mode == 'login' && status == 'error_login'">
-                Adresse mail et/ou mot de passe invalide.
-            </div>
-            <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
-                Adresse mail déjà utilisée.
-            </div>
+                        <label for="firstname">Entrez votre prénom</label>    
+                        <input 
+                            v-model="firstname" 
+                            class="form-row_input" 
+                            type="text" 
+                            required
+                            placeholder="Prénom"/>
+                            
+                        <p v-if="!firstnameIsValid" class="error-message">Votre prénom doit comporter entre 3 et 30 caractères alphabétiques.</p>
+                    
+                        <label for="laststname">Entrez votre nom</label>  
+                        <input 
+                            v-model="lastname" 
+                            class="form-row_input" 
+                            type="text" 
+                            required
+                            placeholder="Nom"/>
 
-            <div class="form-row">
-                <button  @click="login()" class="button" :class="{'button--disabled' : !validatedFields}"  v-if="mode == 'login'">
-                    <span v-if="status == 'loading'">Connexion en cours...</span>
-                    <span v-else>Connexion</span>
-                </button>
-                    <button @click="signup()" class="button" :class="{'button--disabled' : !validatedFields}"  v-else> <span v-if="status == 'loading'">Création en cours...</span>
-                    <span v-else>Créer mon compte</span>
-                </button>
+                        <p v-if="!lastnameIsValid" class="error-message">Votre nom doit comporter entre 3 et 30 caractères alphabétiques.</p>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <label for="email">Entrez votre email</label>  
+                        <input 
+                            v-model="email" 
+                            class="form-row_input" 
+                            id="email"
+                            type="text"
+                            required 
+                            placeholder="Adresse mail"/> 
+                        
+                        <p v-if="!emailIsValid" class="error-message">Votre email doit avoir un format valide.</p>
+                        <p v-if="mode == 'create' && status == 'error_create'">
+                        Adresse mail déjà utilisée.</p>
+                
+
+                    </div>
+
+                    <div class="form-row">
+                        
+                        <label for="password">Entrez votre mot de passe</label>  
+                        <input 
+                            v-model="password" 
+                            class="form-row_input" 
+                            id="password"
+                            type="password" 
+                            required
+                            placeholder="Mot de passe"/>
+                       
+                        <p v-if="!passwordIsValid" class="error-message">Votre mot de passe doit comporter minimum 8 caractères, dont 2 majuscules, 2 minuscules, 2 chiffres et 2 caractères spéciaux. Il ne doit pas comporter d'espace.</p>
+                       
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <button 
+                            type= "submit"
+                            @click=" login() " 
+                            class="btn" 
+                            
+                            v-if="mode == 'login'">
+                            <span v-if="status == 'loading'">Connexion en cours...</span>
+                            <span v-else>Connexion</span>
+
+                        </button>
+
+                        <button 
+                            type= "submit"
+                            @click="signup()" 
+                            class="btn" 
+                             
+                            v-else> 
+                            <span v-if="status == 'loading'">Création en cours...</span>
+                            <span v-else>Créer mon compte</span>
+
+                        </button>
+
+                    </div>
+
+                </form>
             </div>
 
         </div>
 
     </div>
+
 </template>
+ <p v-if="mode == 'login' && status == 'error_login'">
+                        Adresse mail et/ou mot de passe invalide.</p>
 
 <script>
     //import axios from 'axios'
     
     import { mapState } from 'vuex' 
-
+    
     export default {
         name: 'Login ',
         data: function() {
@@ -61,16 +143,28 @@
                 lastname: '',
                 email: '',
                 password: '',
+                
+            }
+        },
+        props: ['reveleLogin', 'toggleLogin'],
+        directives: {
+            focus: {
+                beforeMount: function(el) {
+                    el.focus
+                }
             }
         },
         computed: {
-            validatedFields: function() {
+            // Vérification des champs
+            completedFields: function() {
+                
                 if (this.mode == 'create') {
                     if (this.firstname != "" && this.lastname != "" && this.email != "" && this.password != "") {
                     return true;
                     } else {
                     return false;
                     }
+                    
                 } else { // si mode login
                     if (this.email != "" && this.password != "") {
                     return true;
@@ -201,17 +295,12 @@
 
 
 <style scoped>
-    .bloc-login {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+    #bloc-login {
+        margin: 0 auto;
         width: 100%;
-        height: 100;
+        opacity: 1 !important;
         display: flex;
         justify-content: center;
-        align-items: center;
     }
     .overlay {
         background: rgba(0,0,0,0.5);
@@ -222,28 +311,36 @@
         right: 0;
     }
     .login {
-        background: #f1f1f1;
+        background: rgb(193,178,175);
         color: #333;
-        padding: 50px;
-        position: fixed;
+        padding: 15px;
     }
-    .btn-login {
+    /* .btn {
         position: absolute;
         top: 10px;
         right: 10px;
-    }
+    } */
     .card-title {
-        display: flex;
-        justify-content: center;
+        text-align: center;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
     }
     .card-subtitle {
         display: flex;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
+        font-size: 0.8rem;
         margin-bottom: 10px!important;
     }
     .card_action {
-        color: blue;
-        text-decoration: underline;
+        color: #d1515a;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .container-form {
+        margin: 0 auto;
+        width: 100%;
     }
     .form-row {
         display: flex;
@@ -251,29 +348,93 @@
         gap: 12px;
         flex-wrap: wrap;
     }
-    
-  .form-row_input {
-    padding:8px;
-    border: none;
-    border-radius: 8px;
-    background:#f2f2f2;
-    font-weight: 500;
-    font-size: 16px;
-    flex:1;
-    min-width: 100px;
-  }
-  .form-row_input::placeholder {
-    color:#aaaaaa;
-  }
-  /* button {
-    padding:8px;
-    border: none;
-    border-radius: 8px;
-    background:#a5a3a3!important;
-    font-weight: 500!important;
-    font-size: 16px;
-    flex:1;
-    min-width: 100px;
-  } */
+    #identity {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .error-message {
+        font-size: 12px;
+        margin-top: 0;
+        margin-bottom: 0;
+        line-height: 25px;
+    }
+    .form-row label {
+        display: block;
+        color: black;
+        font-size: 0.9rem;
+        text-align: start!important;
+    }
+    .form-row_input {
+        display: block;
+        width: 100%;
+        height: 30px;
+        padding: 5px 0;
+        border: none;
+        background:none;
+        border-bottom: 2px solid black;
+        outline-color: #d1515a;
+        font-weight: 500;
+        font-size: 16px;
+    }
+    .form-row_input#email::placeholder, .form-row_input#password::placeholder {
+        color:#797777!important;
+        font-size: 0.9rem;
+    }
+    .btn {
+        background-color: #243653;
+        box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
+        border-radius: 3px;
+        color: white;
+        outline: none;
+        border: none;
+        position: relative;
+        margin: 0 auto;
+    }
+    .btn:hover  {
+        background-color:#d1515a!important;
+        color: white;
+        top: 2px;
+    }
+
+    /* Ecrans tablette et plus */
+    @media (min-width: 768px) {
+        #bloc-login {
+            width: 80%;
+        }
+        .login {
+            padding: 30px;
+        }
+        .card-title {
+            font-size: 1.4rem;
+        }
+        .card-subtitle {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            font-size: 15px;
+            margin-bottom: 10px!important;
+        }
+        .form-row_input {
+            display: block;
+            width: 100%;
+            height: 45px;
+            padding: 5px 0px;
+            border: none;
+            background:none;
+            border-bottom: 2px solid black;
+            outline-color: #d1515a;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        .form-row_input#email::placeholder, .form-row_input#password::placeholder {
+            color:#797777!important;
+            font-size: 0.9rem;
+        }
+        .btn {
+            
+        }
+    }
+
+
 
 </style>   
