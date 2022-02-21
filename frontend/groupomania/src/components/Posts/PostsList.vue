@@ -2,29 +2,54 @@
     
     <div  class="container-posts">
 
-        <ul class="card">
+        <ul >
 
             <li v-for="post in listPosts" :key="post.id">
 
-                <div>
+                <div class="card" id="post">
 
-                 <h1>{{ post.id }}</h1>
+                    <div class="publication-infos">
 
+                        <div class="container-avatar">
+                            <img class="img" :src= userInfos.avatar>
+                        </div>  
+                        <div class="publication-infos--name-date">
+                            <p><strong>{{ post.post_fk_user.firstname}}</strong></p>
+                            <p>Publié le {{ userInfos.createdAt}}</p>
+                        </div>
+                        
+                    </div>    
+
+                    <div class="container-post--image">
+                        <img :src= post.image>
+                    </div>
                     
-                    <p>{{ post.post_fk_user.firstname}}</p>
-                    <p>{{ post.content }}</p>
-                    <img :src= post.image>
-                    <p>{{ post.userId }}</p>
+                    <p class="post-comment">{{ post.content }}</p>
+
+                    <p class="post-comment--title">Commentaires</p>
+
+                    <div class="input-group-sm mb-1" id="post-input">
+                        <input type="text" 
+                        class="form-control" 
+                        id="post-input--comment"
+                        placeholder="Votre commentaire" 
+                        aria-label="Votre commentaire" 
+                        aria-describedby="button-addon2">
+
+                        <button 
+                        class="btn btn-input" 
+                        type="button" 
+                        id="post-input--button">
+                        <fa icon='comment-dots'/>
+                        </button>
+                    </div>
 
                     <div class='container-buttons'>
-                        
-                        <button class="btn col-2 ">
-                           <fa icon='comment-dots'/> 
-                        </button>
 
                         <a href="#create-post"
                             v-if="post.userId == user.userId"
-                            class="btn col-2 "
+                            class="btn col-2"
+                            id="edit-icon"
                             @click='modifyPost(post.id)'
                             >
                              <fa icon='edit'/>
@@ -49,6 +74,9 @@
 
 </template>
 
+<h1>{{ post.id }}</h1>
+<p>{{ post.userId }}</p>
+
 <script>
     import axios from 'axios'
    // import DateTime from 'luxon'
@@ -63,7 +91,17 @@
                 listPosts: [],
                 listComments: [],
                 content: '',
-                image: ''
+                image: '',
+                userInfos:{
+                    firstname:'',
+                    lastname: '',
+                    email: '',
+                    role: '',
+                    avatar: '',
+                    bio: '',
+                    createdAt: '',
+                    updatedAt: ''
+                }
             }
         },
         computed: {
@@ -120,14 +158,35 @@
                     console.log(`Une erreur est survenue pendant la suppression du post. ${error.message}`);
                 })
             },
-            getInfosOfUser: function() {
+            getUserInStorage: function() {
                 let user = sessionStorage.getItem('user');
                 
                 if(user) {
                     this.user = JSON.parse(user);
                 }
             },
-            
+            getInfosOfUser: function() {
+                let user = sessionStorage.getItem('user');
+                console.log('user local storage' ,user);
+                user = JSON.parse(user);
+                console.log(user);
+                let userId = user.userId;
+                console.log('userId', userId);
+                
+                return axios
+                .get(`http://localhost:3000/api/user/` +`${userId}`)
+                .then((res) => {
+                    console.log(this.userInfos = res.data); 
+                    this.firstname = res.data.firstname ,
+                    this.lastname = res.data.lastname,
+                    this.email = res.data.email,
+                    this.role = res.data.role,
+                    this.bio = res.data.bio,
+                    this.avatar = res.data.avatar,
+                    this.createdAt = res.data.createdAt,
+                    this.updatedAt = res.data.updatedAt
+                })
+            },
         },
         created() {
            
@@ -142,15 +201,14 @@
         },
         mounted() {
             if (this.$store.state.user.userId == -1) { // = non connecté
-            this.$router.push('/Connexion');
+            //this.$router.push('/Connexion');
+            console.log('erreur !');
             return ;
             }
             this.getAllPosts()
-            this.getInfosOfUser()
+            this.getUserInStorage()
             this.getOnePost()
-            
-           
-           
+            this.getInfosOfUser()
         }
     
     }
@@ -163,32 +221,88 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 100px;
-    
+    margin-top: 10px;
+    width: 100%;
 }
-.card {
-    background-color: rgba(179,167,164, 0.90);
+#post {
+    background-color: rgba(193,178,175, 0.90);
     box-shadow: 0 0 10px 3px rgba(0,0,0,0.9);
-    margin-bottom: 100px;
-    width: 50%;
+    margin-bottom: 10px;
     padding: 1%;
+}
+ul {
+    padding: 0;
+    width: 100%;
 }
 ul li {
     list-style-type: none;
     margin-bottom: 5px;
+    display: flex!important;
+    flex-direction: column!important;
+    align-items: center;
 }
-li {
+ul li:last-child {
+    margin-bottom: 50px;
+}
+.container-avatar {
+    width: 40%;
+}
+.container-post--image {
     width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+.post-comment {
+    margin: 0;
+    padding: 5px;
+    font-size: 0.8rem;
+}
+.post-comment--title {
+    font-size: 0.9em;
+    font-weight:500;
+    margin: 5px;
+}
+.publication-infos {
+    display: flex;
+    margin-bottom: 10px;
+}
+.publication-infos--name-date {
+    display: flex;
+    flex-direction: column;
+}
+.publication-infos--name-date p{
+    margin: 0;
+    padding: 2px 0 2px 10px;
+    font-size: 0.8rem;
 }
 img {
     width: 100%;
     border-radius: 3px;
 }
+#post-input {
+    display: flex;
+}
+#post-input--comment {
+    border-radius: 3px 0 0 3px;
+}
+#post-input--comment:focus{
+    border-color: #243653!important;
+    outline-color: #243653!important;
+}
+#post-input--button{
+    border-radius: 0  3px 3px 0;
+    box-shadow: none;
+    margin: 0;
+    padding-bottom: 3px;
+}
 .container-buttons {
     display: flex;
     justify-content: flex-end;
+    margin-top: 10px;
 }
 .btn {
+    width:30px;
+    height: 30px;
     background-color: #243653;
     box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
     border-radius: 50px;
@@ -197,6 +311,8 @@ img {
     border: none;
     position: relative;
     margin-right: 5px;
+    padding: 1px;
+    text-align: center;
 }
 .btn:hover, .file-input label:hover  {
     background-color:#d1515a!important;
@@ -208,5 +324,61 @@ p {
     margin-left: 5px;
 }
 
+/* Ecrans tablette et plus */
+@media (min-width: 768px) {
+    .card {
+        width: 50%;
+        padding: 1%;
+    }
+    .container-avatar {
+        width: 20%;
+    }
+    .publication-infos--name-date p{
+        margin: 0;
+        padding: 2px 0 2px 10px;
+        font-size: 0.9rem;
+    }
+    img {
+        width: 100%;
+        border-radius: 3px;
+    }
+    .post-comment {
+        font-size: 0.9rem;
+    }
+    .post-comment--title {
+        font-size: 1em;
+    }
+    #post-input {
+        height: 40px;
+    }
+    #post-input--button{
+        height: 40px;
+        padding-bottom: 3px;
+    }
+    .container-buttons {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .btn {
+        background-color: #243653;
+        box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
+        border-radius: 50px;
+        color: white;
+        outline: none;
+        border: none;
+        position: relative;
+        margin-right: 5px;
+    }
+    .btn:hover, .file-input label:hover  {
+        background-color:#d1515a!important;
+        color: white;
+        top: 2px;
+    }
+    p {
+        margin-top:36px;
+        margin-left: 5px;
+    }
+
+}
 </style>
 
