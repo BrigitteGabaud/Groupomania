@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+// Pages
 import Home from '@/views/Home.vue'
 import Profile from '@/views/Profile.vue'
 import Connexion from '@/views/Connexion.vue'
 import Admin from '@/views/Admin.vue'
 
 
-
+// Création du routes
 const routes = [
   {
     path: '/',
@@ -29,9 +31,11 @@ const routes = [
   }
 ]
 
+// Création du router
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
 
+// Exportation du router
 export default router
