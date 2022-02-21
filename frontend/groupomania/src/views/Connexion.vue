@@ -1,6 +1,6 @@
 <template>
 
-    <div class="background-image" alt='Salle de pause'>
+    <div class="background-image" alt='Image salle de pause'>
         <div class="card">
             Bonjour, envie de nous rejoindre ? <br>
             Connectez-vous !
@@ -11,13 +11,13 @@
 </template>
 
 <script>
-
 import Login from '@/components/Auth/Login.vue'
+
 export default {
-     name: "Connexion",
-     components: {
-         Login
-     }
+    name: "Connexion",
+    components: {
+        Login
+    }
 }
 </script>
 
@@ -34,7 +34,7 @@ export default {
     position: absolute;
     top: 50%;
     left: 50%;
-    max-width: 40%;
+    width: 70%;
     transform: translate(-50%, -50%);
     display: flex;
     justify-content: center;
@@ -42,6 +42,14 @@ export default {
     background-color: #BEBCBD;
     opacity: 0.95;
     text-align: center;
+    padding: 15px 9px;
     box-shadow: 0 0 10px 5px rgba(0,0,0,1);
 }
+/* Ecrans tablette et plus */
+@media (min-width: 768px) {
+    .card {
+    max-width: 40%;
+    }
+}
+
 </style>
