@@ -7,13 +7,15 @@
             <img
                 class="navbar-brand"
                 id="logo"
-                src="@/assets/icon-left-font-monochrome-black_opttt.png" alt="Logo Groupomania">
+                src="@/assets/icon-left-font-monochrome-black_opttt.png" 
+                alt="Logo Groupomania">
 
 
 
             <button
                 class="navbar-toggler "
                 type="button"
+                alt="Ouvrir ou fermer la navigation"
                 data-bs-toggle="collapse"
                 data-bs-target="#nav-list"
                 aria-expanded="false"
@@ -28,21 +30,30 @@
                 <ul class="navbar-nav">
 
                     <li class="nav-item active ">
-                        <router-link to="/">Accueil </router-link>
+
+                        <router-link aria-label="Aller vers la page accueil" to="/">Accueil </router-link>
+
                     </li>
 
                     <li class="nav-item" >
-                        <router-link to="/Profile">Profil</router-link>
+
+                        <router-link  aria-label="Aller vers la page profil" to="/Profile" >Profil</router-link>
+
                     </li>
 
                     <li class="nav-item"
                         v-if="!user"
                         @click="toggleLogin" :toggleLogin="toggleLogin">
-                        <router-link to="/Connexion">Connexion </router-link>
+
+                        <router-link aria-label="Aller vers la fenêtre de connexion" to="/Connexion">Connexion </router-link>
 
                     </li>
 
-                    <li v-else @click="logout" class="nav-item logout">
+                    <li 
+                        v-else aria-label="Se déconnecter" 
+                        @click="logout" 
+                        class="nav-item logout">
+
                         Déconnexion
                     </li>
 
@@ -88,14 +99,6 @@ export default {
                 this.user == false
             }
         },
-        toggleHamburger: function() {
-            const menu = document.querySelector('.nav-list');
-            const btnMenu = document.querySelector('btn-toggle-container')
-
-            btnMenu.addEventListener('click', function() {
-                menu.classList.toggle('active-menu')
-            })
-        },
         logout: function() {
         this.$store.commit('logout');
         this.$router.push('/Connexion');
@@ -126,7 +129,7 @@ export default {
 img#logo.navbar-brand {
     padding-bottom: 0;
     margin-right: 0;
-    height: 3rem;
+    height: 4.8rem;
     margin-left: 5%;
 }
 #nav-list {
@@ -142,11 +145,15 @@ img#logo.navbar-brand {
 .nav-item a  {
     text-decoration: none;
     color: black;
-    font-size: 1rem;
+    font-size: 1.6rem;
 }
 .logout {
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.6rem;
+}
+button .navbar-toggler-icon  {
+    width: 2.5em;
+    height: 2.5em;
 }
 button:focus {
     outline: none!important;
@@ -184,15 +191,15 @@ button:focus {
         height: 70px;
     }
     img#logo.navbar-brand {
-        height: 4rem;
+        height: 6.4rem;
         margin-left: 5%;
     }
     .nav-item a  {
-        font-size: 1.2rem;
+        font-size: 1.92rem;
     }
     .logout {
         cursor: pointer;
-        font-size: 1.2rem;
+        font-size: 1.92rem;
     }
 }
 

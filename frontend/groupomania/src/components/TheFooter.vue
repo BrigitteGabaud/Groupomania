@@ -21,7 +21,7 @@ export default {
   width: 100%;
   text-align: center;
   /* line-height: 50px; */
-  font-size: 15px;
+  font-size: 1.6rem;
   z-index: 5;
 }
 </style>

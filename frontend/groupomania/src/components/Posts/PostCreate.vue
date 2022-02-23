@@ -2,19 +2,36 @@
     <div class="container-post-create">
          <div class="card" id="create-post">
 
-            <h4>Quoi de neuf ?</h4> <br>
+            <h2>Quoi de neuf ?</h2> <br>
 
-            <textarea id="content" v-model="content"  class="form-control" type="text" placeholder="Ajoutez votre texte ici."></textarea><br>
+            <label for="Ajoutez votre texte ici."></label>
+
+            <textarea 
+                id="content" 
+                v-model="content"  
+                class="form-control" 
+                type="text" 
+                placeholder="Ajoutez votre texte ici.">
+            </textarea><br>
 
             <div class="file-input"  >
 
-                <input type="file" id="file" class="file" accept="image/*">
-                <label for="file" ><fa icon= 'image'/></label>
+                <input 
+                    type="file" 
+                    id="file" 
+                    class="file" 
+                    tableindex="-1" 
+                    accept="image/*">
+
+                <label for="file" alt="image à joindre au post" ><fa icon= 'image'/></label>
                 
-                <button type="button" class="btn mt-2 col-4 " 
-                        :class="{'btn-outline disabled' : !validatedFields}"
-                        @click="createPost()">
-                        <fa icon= 'paper-plane'/>
+                <button 
+                    type="submit" 
+                    class="btn mt-2 col-4 " 
+                    alt="Publier mon commentaire"
+                    :class="{'btn-outline disabled' : !validatedFields}"
+                    @click="createPost()">
+                    <fa icon= 'paper-plane'/>
                 </button>
 
             </div>
@@ -113,8 +130,9 @@ export default {
     margin-top: 30%;
     padding: 15px 10px;
 }
-#create-post h4 {
-    font-size: 1.1rem;
+#create-post h2 {
+    font-size: 1.76rem;
+    font-weight: 500;
     padding-left: 2%;
     padding-bottom: 2%;
 }
@@ -122,7 +140,7 @@ br {
     display: none;
 }
 #content::placeholder {
-    font-size: 0.8rem;
+    font-size: 1.28rem;
 }
 .file-input {
     display: flex;
@@ -139,7 +157,7 @@ br {
     position: relative;
     width: 30px;
     height: 30px;
-    margin-top: 0.5rem!important;
+    margin-top: 0.8rem!important;
     border-radius: 50%;
     background: #d1515a;
     box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
@@ -149,7 +167,7 @@ br {
     color: #fff;
     cursor: pointer;
     transition: transform .2s ease-out;
-    margin-top:  1rem!important;
+    margin-top:  1.6rem!important;
     margin-left: 10px;
 }
 .btn {
@@ -163,13 +181,15 @@ br {
     outline: none;
     border: none;
     position: relative;
-    margin-top:  1rem!important;
+    margin-top:  1.6rem!important;
     margin-right: 10px;
     padding: 2px;
 }
-.svg-inline--fa {
+.svg-inline--fa.fa-w-16  {
     vertical-align: middle;
     margin-left: -0.125em;
+    width: 1.5em;
+    height: 1.5em;
 }
 .btn:hover, .file-input label:hover  {
     background-color:#243653!important;
@@ -190,12 +210,12 @@ br {
         margin-bottom: 5%;
         padding: 15px 10px;
     }
-    #create-post h4 {
-        font-size: 1.3rem;
+    #create-post p {
+        font-size: 2.08rem;
         padding-left: 1%;
     }
     #content::placeholder {
-        font-size: 1rem;
+        font-size: 1.6rem;
     }
 }
 

@@ -6,14 +6,14 @@
 
       <div class="card-profile">
       
-        <h2 class="card-title">{{ firstname }} {{ lastname }} </h2>
+        <h1 class="card-title">{{ firstname }} {{ lastname }} </h1>
 
         <div><hr></div>
 
         <div  id="infos-profile" :class="userInfos">
 
           <div class="images">
-            <h6>Photo de profil:</h6>
+            <h2 class="infos-title">Photo de profil:</h2>
 
             <div class="container-img">
               <img class="img" :src= avatar>
@@ -21,9 +21,9 @@
           </div>
 
           <div class="infos">
-            <h5> E-mail:</h5>
+            <h2 class="infos-title"> E-mail:</h2>
             <p>{{ email }} </p>
-            <h5> Description:</h5>
+            <h2 class="infos-title"> Description:</h2>
             <p>{{ bio }} </p>
             <p>{{ role }} </p>
           </div>
@@ -132,14 +132,14 @@ export default {
   width: 70%;
   height: auto;
   background-color: rgba(193,178,175, 0.90);
-  box-shadow: 0 0 10px 3px rgba(0,0,0,0.9);
+  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.9);
   padding: 15px 10px;
-  border-radius: 0.25rem;
+  border-radius: 0.4rem;
 }
 .card-title {
   display: flex;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.76rem;
 }
 #infos-profile {
   display: flex;
@@ -167,10 +167,11 @@ export default {
   padding:10px;
   margin-top: 10px;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 1.44rem;
 }
-h5 {
-  font-size: 1rem;
+.infos-title {
+  font-size: 1.44rem;
+  font-weight: 500;
 }
 .btn  {
   justify-content: center;
@@ -184,15 +185,12 @@ h5 {
     max-width: 500px;
   }
   .card-title {
-    font-size: 1.3rem;
+    font-size: 2.08rem;
   }
   #infos-profile {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-  }
-  h6 {
-    margin-bottom: 10px;
   }
   .container-img {
     width: 120px;

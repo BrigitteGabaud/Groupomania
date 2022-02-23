@@ -11,7 +11,7 @@
                     <div class="publication-infos">
 
                         <div class="container-avatar">
-                            <img class="img" :src= userInfos.avatar>
+                            <img class="img" alt="Photo de profil" :src= userInfos.avatar>
                         </div>  
                         <div class="publication-infos--name-date">
                             <p><strong>{{ post.post_fk_user.firstname}}</strong></p>
@@ -21,26 +21,30 @@
                     </div>    
 
                     <div class="container-post--image">
-                        <img :src= post.image>
+                        <img alt="image du post" :src= post.image>
                     </div>
                     
                     <p class="post-comment">{{ post.content }}</p>
 
                     <p class="post-comment--title">Commentaires</p>
 
+                    <label for="Votre commentaire"></label>
+
                     <div class="input-group-sm mb-1" id="post-input">
                         <input type="text" 
-                        class="form-control" 
-                        id="post-input--comment"
-                        placeholder="Votre commentaire" 
-                        aria-label="Votre commentaire" 
-                        aria-describedby="button-addon2">
+                            class="form-control" 
+                            id="post-input--comment"
+                            placeholder="Votre commentaire" 
+                            aria-label="Votre commentaire" 
+                            aria-describedby="button-addon2">
 
                         <button 
-                        class="btn btn-input" 
-                        type="button" 
-                        id="post-input--button">
-                        <fa icon='comment-dots'/>
+                            class="btn btn-input" 
+                            type="submit" 
+                            role="button"
+                            alt="Publier le commentaire"
+                            id="post-input--button">
+                            <fa icon='comment-dots'/>
                         </button>
                     </div>
 
@@ -49,17 +53,19 @@
                         <a href="#create-post"
                             v-if="post.userId == user.userId"
                             class="btn col-2"
+                            type="submit" 
+                            alt="Modifier le commentaire"
                             id="edit-icon"
-                            @click='modifyPost(post.id)'
-                            >
-                             <fa icon='edit'/>
+                            @click='modifyPost(post.id)'>
+                            <fa icon='edit'/>
                         </a>
 
                         <button v-if="post.userId == user.userId || user.userRole == 'admin' "  
-                                @click='deletePost(post.id)' 
-                                class="btn col-2"
-                                >
-                                <fa icon='trash'/>
+                            @click='deletePost(post.id)' 
+                            class="btn col-2"
+                            type="submit" 
+                            alt="Supprimer le commentaire">
+                            <fa icon='trash'/>
                         </button>
 
                     </div>
@@ -255,10 +261,10 @@ ul li:last-child {
 .post-comment {
     margin: 0;
     padding: 5px;
-    font-size: 0.8rem;
+    font-size: 1.28rem;
 }
 .post-comment--title {
-    font-size: 0.9em;
+    font-size: 1.28rem;
     font-weight:500;
     margin: 5px;
 }
@@ -273,7 +279,7 @@ ul li:last-child {
 .publication-infos--name-date p{
     margin: 0;
     padding: 2px 0 2px 10px;
-    font-size: 0.8rem;
+    font-size: 1.28rem;
 }
 img {
     width: 100%;
@@ -284,6 +290,7 @@ img {
 }
 #post-input--comment {
     border-radius: 3px 0 0 3px;
+    font-size: 1.2rem;
 }
 #post-input--comment:focus{
     border-color: #243653!important;
@@ -294,6 +301,16 @@ img {
     box-shadow: none;
     margin: 0;
     padding-bottom: 3px;
+}
+.svg-inline--fa.fa-w-16,
+.svg-inline--fa.fa-w-18, 
+.svg-inline--fa.fa-w-14 {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+}
+.svg-inline--fa.fa-w-18 {
+    margin-top: 6px;
 }
 .container-buttons {
     display: flex;
@@ -336,17 +353,17 @@ p {
     .publication-infos--name-date p{
         margin: 0;
         padding: 2px 0 2px 10px;
-        font-size: 0.9rem;
+        font-size: 1.44rem;
     }
     img {
         width: 100%;
         border-radius: 3px;
     }
     .post-comment {
-        font-size: 0.9rem;
+        font-size: 1.44rem;
     }
     .post-comment--title {
-        font-size: 1em;
+        font-size: 1.44rem;
     }
     #post-input {
         height: 40px;
