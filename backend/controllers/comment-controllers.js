@@ -1,6 +1,7 @@
 "use strict";
 /* Import dépendances */
 const jwt = require('jsonwebtoken'); // package génération + vérif token
+const dayjs = require('dayjs');
 
 /* Import dossier models */
 const db = require('../models');
@@ -8,26 +9,30 @@ const db = require('../models');
 
 /*** Creation commentaire ***/
 exports.createComment = (req, res) => {
+  let date = dayjs(new Date()).format("YYYY-MM-DD");
+
+  const userId = req.body.userId
+  console.log('userId', userId);
+  const postId = req.params.id;
+  console.log('postId', postId);
   // Creation comment
   const comment = {
     content: req.body.content,
-    date: req.body.date,
     userId: req.body.userId,
-    postId: req.body.postId
+    postId: req.body.postId,
+    date: date
   };
     
-    // requete valide
-    if (!req.body.content) {
-        res.status(400).send({ message: "Le contenu est requis !." });
-        return;
-    }
-  
-    
-    
-    // Sauvegarde post dans Bd
-    db.comments.create(comment)
-      .then(commentResponse => { res.send(commentResponse) })
-      .catch(err => { res.status(500).send({ message: err.message || "Une erreur est survenue pendant la création du commentaire." })});
+  // requete valide
+  if (!req.body.content) {
+      res.status(400).send({ message: "Le contenu est requis !." });
+      return;
+  }
+
+  // Sauvegarde post dans Bd
+  db.comments.create(comment)
+    .then(commentResponse => { res.send(commentResponse) })
+    .catch(err => { res.status(500).send({ message: err.message || "Une erreur est survenue pendant la création du commentaire." })});
   };
 
 

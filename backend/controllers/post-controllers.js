@@ -2,6 +2,7 @@
 
 /* Import dépendances */
 const fs = require('fs'); // Donne accès aux opérations liées aux syst de fichiers (modif /suppr) 
+const dayjs = require('dayjs');
 
 
 /* Import dossier models */
@@ -11,11 +12,15 @@ const db = require('../models');
 /*** Creation post  ***/
 exports.createPost = (req, res) => {
   const postInfos = req.body
+  console.log('postInfos', postInfos);
+  let date = dayjs(new Date()).format("YYYY-MM-DD");
+  console.log('date',date );
 
   // Creation post
   let post = {
     content: postInfos.content,
-    userId: req.user.userId
+    userId: req.user.userId,
+    date: date
   };
 
   if(req.file)
@@ -35,7 +40,7 @@ exports.createPost = (req, res) => {
 /***  Export de la fonction RECUPERATION tous les posts (GET) ***/
 exports.getAllPosts = (req, res) => {
   const posts = db.posts;
-  db.posts.findAll({ include: [
+  posts.findAll({ include: [
     {
       model: db.comments, 
       as: 'comments',
