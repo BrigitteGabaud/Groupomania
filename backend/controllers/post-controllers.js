@@ -2,8 +2,6 @@
 
 /* Import dépendances */
 const fs = require('fs'); // Donne accès aux opérations liées aux syst de fichiers (modif /suppr) 
-const dayjs = require('dayjs');
-
 
 /* Import dossier models */
 const db = require('../models');
@@ -13,14 +11,11 @@ const db = require('../models');
 exports.createPost = (req, res) => {
   const postInfos = req.body
   console.log('postInfos', postInfos);
-  let date = dayjs(new Date()).format("YYYY-MM-DD");
-  console.log('date',date );
 
   // Creation post
   let post = {
     content: postInfos.content,
-    userId: req.user.userId,
-    date: date
+    userId: req.user.userId
   };
 
   if(req.file)
@@ -86,49 +81,66 @@ exports.getOnePost = (req, res) => {
 /*** Export de la fonction MODIFICATION post (PUT) ***/
 exports.modifyPost = async (req, res) => {
   try {
-  // Récupère l'id de l'utilisateur effectuant la requête
-  const reqUser = req.user;
-  console.log('reqUser:', reqUser);
-  const postId = req.params.id;
-  const newPost = req.body;
-  console.log(  reqUser.userId);
+    // Récupère l'id de l'utilisateur effectuant la requête
+    const reqUser = req.user;
+    const postId = req.params.id;
+    const newPost = req.body;
+    
+    // cherche l'user dans la bdd grâce à son id
+    const User = await db.users.findOne({ where : {id: reqUser.userId }})
   
-  // cherche l'user dans la bdd grâce à son id
-  const User = await db.users.findOne({ where : {id: reqUser.userId }})
-
-  // Si cet id n'est pas trouvé
-  if(!User) {
-    return res.status(401).json({ error: 'Utilisateur non trouvé !'}); 
-
-    // Si ok, vérifie que les rôles correspondent
-  } else if (reqUser.userRole !== User.role) {
-    return res.status(403).json({ message: ` Vous n'êtes pas autorisé à effectuer cette action.` })
-
-    // Si ok cherche le post concerné
-  } else {
-    const Post = await db.posts.findByPk(postId)
-
-    // Si non trouvé
-    if( !Post ) {
-      return res.status(400).json({ message: ` Post non trouvé.` })
+    // Si cet id n'est pas trouvé
+    if(!User) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé !'}); 
+      
+      // Si ok, vérifie que les rôles correspondent (user de la req et user ds db)
+    } else if (reqUser.userRole !== User.role) {
+      return res.status(403).json({ message: ` Vous n'est pas autorisé à effectuer cette action.` })
+      
+      // Si ok cherche le post concerné avec son id
+    } else {
+      const Post = await db.posts.findByPk(postId)
+      
+      // Si non trouvé
+      if( !Post ) {
+        return res.status(400).json({ message: ` Post non trouvé.` })
 
       // Si ok, vérifie si admin ou créateur du post
-    } else if (reqUser.userRole === "admin" || User.id === Post.postFkUserId)
+      } else if (reqUser.userRole !== "admin" && User.id !== Post.postFkUserId){
 
-    // modifie le post
-    Post.update({...newPost})
-    .then(() => res.status(200).json({ message: 'Post modifié !'}))
-    .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du post` }));
-  }       
+        // Si ok et si le post modifié contient une image
+        if(req.file) {
+          
+          // Génère la nouvelle image url
+          newPost.image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+
+          // Supprime l'ancienne image du dossier 
+          const filename = Post.image.split('/images/')[1];
+          fs.unlink(`images/${filename}`, () => {
+
+            // Puis modifie le post
+            Post.update({...newPost})
+            .then(() => res.status(200).json({ message: 'Post modifié !'}))
+            .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du post` }));
+          })
+          // Si le post modifié ne contient pas d'image
+        } else { 
+
+          // Modifie le contenu texte
+          Post.update({...newPost})
+          .then(() => res.status(200).json({ message: 'Post modifié !'}))
+          .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du post` }));
+        }
+      }
+    }       
   }
   catch(error) {
     return res.status(500).json({ error: error.message })
   }
 }
 
-
 exports.deletePost = async (req, res) => {
-    try {
+  try {
     const reqUser = req.user;
     const postId = req.params.id;
 
@@ -137,7 +149,7 @@ exports.deletePost = async (req, res) => {
 
     // Si cet id n'est pas trouvé
     if(!User) {
-      return res.status(401).json({ error: 'Utilisateur non trouvé !'}); 
+      return res.status(404).json({ error: 'Utilisateur non trouvé !'}); 
 
       // Si ok, vérifie que les rôles correspondent
     } else if (reqUser.userRole !== User.role) {
@@ -146,19 +158,34 @@ exports.deletePost = async (req, res) => {
       // Si ok cherche le post concerné
     } else  {
       const Post = await db.posts.findByPk(postId)
-
+      console.log('Post', Post);
         // Si non trouvé
         if( !Post ) {
-          return res.status(400).json({ message: ` Post non trouvé.` })
+          return res.status(404).json({ message: ` Post non trouvé.` })
 
         // Si ok, vérifie si admin ou créateur du post
         } 
         else if (reqUser.userRole === "admin" || User.id === Post.userId) {
 
-          // si ok : supprime post
-          Post.destroy() 
-            .then(() => res.status(200).json({ message:'Post supprimé !'}))
-            .catch(error => res.status(400).json({ error: error.message || `Une erreur s'est produite pendant la suppression du post.` }));
+          // Si pas d'image
+          if(!Post.image) {
+            // Supprime le contenu du post
+            Post.destroy() 
+              .then(() => res.status(200).json({ message:'Post supprimé !'}))
+              .catch(error => res.status(400).json({ error: error.message || `Une erreur s'est produite pendant la suppression du post.` }));
+          } else {
+
+            // Si image la supprime du dossier
+            const filename = Post.image.split('/images/')[1];
+            fs.unlink(`images/${filename}`, () => {
+
+              // Puis supprime le post
+              Post.destroy() 
+              .then(() => res.status(200).json({ message:'Post supprimé !'}))
+              .catch(error => res.status(400).json({ error: error.message || `Une erreur s'est produite pendant la suppression du post.` }));
+            })
+          }
+            
         } else {
           
           // Sinon
