@@ -28,32 +28,38 @@
 
 </script>
 
-<style >
+<style>
 
+html {
+  font-size: 62.5%;
+}
 body {
   padding: 0;
   width: 100%;
   height: 100vh;
+  background-image: url("../src/assets/break_room.jpg");
+  background-size: cover;
+  background-attachment: fixed;
 }
 #app{
   height: auto;
 }
 #container-app {
   width: 100%;
-  height: 100vh;
+  height: 100%;
 }
 img {
   max-width: 100%;
   border-radius: 8px;
 }
 .card {
-  max-width: 70%;
-  width: 70%;
+  max-width: 80%;
+  width: 80%;
   padding:32px;
   border: none;
   border-radius: 3px;
 }
-.card__title {
+/* .card__title {
   text-align:center;
   font-weight: 800;
 }
@@ -61,20 +67,35 @@ img {
   text-align: center;
   color:#667;
   font-weight: 500;
+} */
+.btn {
+    height: 30px; 
+    line-height: 15px;
+    width: 30px;
+    background-color: #d1515a;
+    box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    color: white;
+    outline: none;
+    border: none;
+    position: relative;
+    margin-top:  0.8rem!important;
+    margin-right: 10px;
+    padding: 2px;
 }
-.button {
-background: rgba(209,81,90,255);
-color:black;
-border-radius: 8px;
-font-weight: 800;
-font-size: 15px;
-border: none;
-width: 100%;
-padding: 16px;
-transition: .4s background-color;
-}
-.button--disabled {
-background:#cecece;
-color:#ececec
-}
+ /* .button {
+  background: rgba(209,81,90,255);
+  color:black;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 15px;
+  border: none;
+  width: 100%;
+  padding: 16px;
+  transition: .4s background-color;
+} */
+/*.button--disabled {
+  background:#cecece;
+  color:#ececec
+} */
 </style>  

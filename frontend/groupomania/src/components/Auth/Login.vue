@@ -5,15 +5,15 @@
 
         <div class="login card">
             
-            <h4
+            <h1
                 v-if="mode == 'login'" 
                 class="card-title"
                 >Bienvenue !  Veuillez vous connecter
-            </h4>
-            <h4 
+            </h1>
+            <h1 
                 v-else class="card-title"
                 >Vous souhaitez nous rejoindre ? Créez votre compte !
-            </h4>
+            </h1>
 
             <p  
                 v-if="mode == 'login'"
@@ -69,7 +69,7 @@
                             required 
                             placeholder="Adresse mail"/> 
                         
-                        <p v-if="!emailIsValid" class="error-message">Votre email doit avoir un format valide.</p>
+                        
                         <p v-if="mode == 'create' && status == 'error_create'">
                         Adresse mail déjà utilisée.</p>
                 
@@ -87,7 +87,7 @@
                             required
                             placeholder="Mot de passe"/>
                        
-                        <p v-if="!passwordIsValid" class="error-message">Votre mot de passe doit comporter minimum 8 caractères, dont 2 majuscules, 2 minuscules, 2 chiffres et 2 caractères spéciaux. Il ne doit pas comporter d'espace.</p>
+                        
                        
 
                     </div>
@@ -128,6 +128,7 @@
 </template>
  <p v-if="mode == 'login' && status == 'error_login'">
                         Adresse mail et/ou mot de passe invalide.</p>
+<p v-if="!passwordIsValid" class="error-message">Votre mot de passe doit comporter minimum 8 caractères, dont 2 majuscules, 2 minuscules, 2 chiffres et 2 caractères spéciaux. Il ne doit pas comporter d'espace.</p>
 
 <script>
     //import axios from 'axios'
@@ -194,6 +195,7 @@
                     console.log(error)
                 })
             },
+            
             signup: function() {
                 const self = this;
                 this.$store.dispatch('signup', { // appel APi via actions dans store/index
@@ -208,89 +210,8 @@
                     console.log(error)
                 })
             }
-        },
-        props: ['reveleLogin', 'toggleLogin']
-       /* data: function() {
-            return { 
-                mode: 'login', 
-                firstname: '',
-                lastname: '',
-                email: '',
-                password: '',
-            }
-        },
-        computed: {
-            validatedFields: function() {
-                if (this.mode == 'create') {
-                    if (this.firstname != "" && this.lastname != "" && this.email != "" && this.password != "") {
-                    return true;
-                    } else {
-                    return false;
-                    }
-                } else { // si mode login
-                    if (this.email != "" && this.password != "") {
-                    return true;
-                    } else {
-                    return false;
-                    }
-                }
-            },
-            
-        },
-        methods: {
-            switchToCreateAccount: function() {
-                this.mode = 'create';
-            },
-            switchToLogin: function() {
-                this.mode = 'login';
-            },
-            login: function() {
-                const user = {
-                    email: this.email,
-                    password: this.password 
-                }
-                axios
-                    .post("http://localhost:3000/api/user/login", user)
-                    .then(response => {
-                        console.log(response);
-                    }) 
-                    .catch(error => {
-                        console.log(error.response);
-                    })
-            },
-            signup: function() {
-                const user = {
-                    firstname: this.firstname,
-                    lastname: this.lastname,
-                    email: this.email,
-                    password: this.password 
-                }
-                axios
-                    .post("http://localhost:3000/api/user/signup", user)
-                    .then(response => {
-                        console.log(response);
-                        this.switchToLogin()
-                    }) 
-                    .catch(error => {
-                        console.log(error.response);
-
-                    })
-            },
-            props: ['reveleLogin', 'toggleLogin']
-        },*/
-           
-       /*  mounted: function () {
-            console.log('state user' ,this.$store.state.user);
-                if (this.$store.state.user.userId != -1) { // = connecté
-                this.$router.push('/');
-                return ;
-                }
-        },  */
-        
+        }
     }
-
-  
-
 </script>
 
 
@@ -315,14 +236,9 @@
         color: #333;
         padding: 15px;
     }
-    /* .btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    } */
     .card-title {
         text-align: center;
-        font-size: 1.1rem;
+        font-size: 1.76rem;
         margin-bottom: 12px;
     }
     .card-subtitle {
@@ -330,7 +246,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        font-size: 0.8rem;
+        font-size: 1.28rem;
         margin-bottom: 10px!important;
     }
     .card_action {
@@ -361,7 +277,7 @@
     .form-row label {
         display: block;
         color: black;
-        font-size: 0.9rem;
+        font-size: 1.44rem;
         text-align: start!important;
     }
     .form-row_input {
@@ -378,7 +294,7 @@
     }
     .form-row_input#email::placeholder, .form-row_input#password::placeholder {
         color:#797777!important;
-        font-size: 0.9rem;
+        font-size: 1.44rem;
     }
     .btn {
         background-color: #243653;
@@ -389,6 +305,8 @@
         border: none;
         position: relative;
         margin: 0 auto;
+        font-size: 1.44rem;
+        width: auto;
     }
     .btn:hover  {
         background-color:#d1515a!important;
@@ -405,7 +323,7 @@
             padding: 30px;
         }
         .card-title {
-            font-size: 1.4rem;
+            font-size: 2.24rem;
         }
         .card-subtitle {
             display: flex;
@@ -428,10 +346,7 @@
         }
         .form-row_input#email::placeholder, .form-row_input#password::placeholder {
             color:#797777!important;
-            font-size: 0.9rem;
-        }
-        .btn {
-            
+            font-size: 1.44rem;
         }
     }
 

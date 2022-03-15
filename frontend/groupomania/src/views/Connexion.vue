@@ -1,11 +1,13 @@
 <template>
 
-    <div class="background-image" alt='Image salle de pause'>
+    <div>
+
         <div class="card">
             Bonjour, envie de nous rejoindre ? <br>
             Connectez-vous !
         </div>
         <Login></Login>
+    
     </div>
 
 </template>
@@ -44,11 +46,33 @@ export default {
     text-align: center;
     padding: 15px 9px;
     box-shadow: 0 0 10px 5px rgba(0,0,0,1);
+    font-size: 1.30rem;
+    font-weight: 500;
 }
 /* Ecrans tablette et plus */
 @media (min-width: 768px) {
     .card {
     max-width: 40%;
+    font-size: 1.44rem;
+    font-weight: 500;
+    }
+}
+
+/* Ecrans ordinateur */
+@media (min-width: 1024px) {
+    .card {
+        max-width: 40%;
+        height: 100px;
+        font-size: 1.60rem;
+    }
+}
+
+/* Ecrans larges */
+@media (min-width: 1440px) {
+    .card {
+        max-width: 25%;
+        height: 100px;
+        font-size: 2rem;
     }
 }
 

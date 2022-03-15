@@ -1,27 +1,40 @@
 <template>
   <div class="container-footer">
-      <h1>Footer</h1>
+      <p>{{ copyright }} </p>
   </div>
 </template>
 
 <script>
-export default {
+import { mapGetters } from 'vuex'
 
+export default {
+  name: "TheFooter",
+  computed: {
+    ...mapGetters(['copyright'])
+  }
 }
+
 </script>
 
 <style scoped>
 .container-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   bottom: 0;
-  height: 50px;
+  height: 30px;
   background: #D1515A;
   opacity: 0.9;
   color: black;
   width: 100%;
-  text-align: center;
-  /* line-height: 50px; */
-  font-size: 1.6rem;
+  
+  
   z-index: 5;
+}
+p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 3px;
 }
 </style>
