@@ -29,14 +29,14 @@ joi
     password: joiPassword.joiPassword
     .string()
     .min(8)
-    .minOfSpecialCharacters(2)
-    .minOfLowercase(2)
-    .minOfUppercase(2)
-    .minOfNumeric(2)
+    .minOfSpecialCharacters(1)
+    .minOfLowercase(1)
+    .minOfUppercase(1)
+    .minOfNumeric(1)
     .noWhiteSpaces()
     .required()
     .messages({
-        "message" :"Votre mot de passe doit comporter au moins 8 caractères, dont minimum 2 majuscules, 2 minuscules, 2 chiffres et 2 caractères spéciaux. Il ne doit pas comporter d'espace."
+        "message" :"Le mot de passe doit comporter au moins 8 caractères, dont minimum 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial. Il ne doit pas comporter d'espace."
     })
 })
 
