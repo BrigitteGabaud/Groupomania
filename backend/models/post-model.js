@@ -31,8 +31,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
     /* 3. option de paramétrage global */
-        timestamps: true, 
-        createdAT: true, // date création
-        updateAt: true   // date modification
+        timestamps: true
     })
 }

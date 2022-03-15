@@ -13,10 +13,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      date: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-      },
       userId: {
         type: DataTypes.INTEGER, 
         allowNull: false,
@@ -34,6 +30,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     }, {
-      timestamps: false
+      timestamps: true
     });
   };
