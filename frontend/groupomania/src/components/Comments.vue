@@ -1,0 +1,244 @@
+<template>
+
+  <div class="comment-container">
+    
+    <div class=comment id="comment">
+
+      <div class="container-avatar">
+        <img class="img" alt="Photo de profil" :src= commentUser.avatar>
+      </div>
+
+      <!-- Informations user: photo, identité, date de publication -->
+      <div class="comment-infos">
+
+        <div class="comment-infos--name-date">
+
+          <div class="comment-infos--fullName">
+            <p><strong>{{ commentUser.firstname }}</strong></p>
+            <p><strong>{{ commentUser.lastname }}</strong></p>
+          </div>
+
+          <div class="comment-infos--date">
+            <p>le {{ dateToLocale(commentDate) }}</p>
+          </div>
+      
+        </div>
+
+        <!-- Contenu du commentaire  non modifié-->
+        <p v-show="commentModified == false" class="comment-content">{{ content }}</p>
+
+      </div>
+
+      <!-- Paramètres user ou admin -->
+      <div class='container-buttons'>
+
+        <a 
+          v-if="commentUserId == user.userId && commentModified == false "
+          @click="commentModified = true"
+          type="submit" 
+          title="Modifier"
+          alt="Modifier le commentaire"
+          id="edit-icon">
+          <fa icon='edit'/>
+        </a>
+
+        <a v-if="commentUserId == user.userId || user.userRole == 'admin' "  
+          @click='deleteComment(commentId)'  
+          type="submit" 
+          title="Supprimer"
+          alt="Supprimer le commentaire">
+          <fa icon='trash'/>
+        </a>
+            
+        </div>
+
+    </div>
+
+    <!-- Contenu du commentaire modifié -->
+    <div v-show="commentModified" class="comment-modify">
+
+      <textarea
+        :id="'commentContentModified' + [[ commentId ]]"
+        name='commentContentModified' 
+        class="form-control"
+        type="text" 
+        v-model="commentContent"
+        placeholder="Ajoutez votre nouveau texte ici.">
+      </textarea><br>
+
+      <button 
+        type="submit" 
+        class="btn mt-2 col-4" 
+        id="button"
+        alt="Publier un nouveau commentaire"
+        :class="{'btn-outline disabled' : !validatedFields}"
+        @click="modifyComment(commentId)">
+        <fa icon= 'paper-plane'/>
+      </button>
+
+    </div>
+
+  </div>
+
+</template>
+
+<script>
+import axios from 'axios'
+import { mapState} from 'vuex'
+
+export default {
+  name:"Comments",
+  props: ['userLoggedIn','commentId', 'commentUserId', 'commentPostId', 'content', 'commentDate', 'getAllComments', 'refreshComments'],
+  data() {
+    return {
+      commentContent: "",
+      user: {},
+      commentUser:"",
+      commentModified: false
+    }
+  },
+  computed: {
+    ...mapState([ "userInfos" ]),
+
+    validatedFields: function() {
+      if (this.content != "") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  methods: {
+    
+    /** 
+     * @description Cette fonction appelle l'API, modifie le post concerné puis réinitialise la liste des posts et l'affiche
+     */
+    modifyComment(commentId) {
+
+      axios({
+        method: "put",
+        url:`http://localhost:3000/api/comment/${commentId}`,
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+        },
+         data: {content: this.commentContent}
+      })
+      .then(() => {
+        this.commentModified == false
+        this.refreshComments()
+      })
+      .catch(error => { if(error.response) { console.log(error.response) }})
+    },
+
+    /** 
+     * @description Cette fonction appelle l'API supprime le post concerné puis réinitialise le liste des posts et l'affiche
+     */
+    deleteComment(commentId) {
+      axios({
+        method: "delete",
+        url: `http://localhost:3000/api/comment/${commentId}`,
+        headers: {
+          Authorization:  `Bearer ${localStorage.getItem("token")}` 
+        }
+      })
+      .then(() => {
+        this.refreshComments()
+      })
+    },
+
+    /** 
+    * @description Cette fonction convertit la date de création du post en format local
+    */
+    dateToLocale(date) {
+
+    return new Date(date).toLocaleString('fr', { year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric' });
+    },
+
+    /** 
+     * @description Cette fonction récupère l'user dans le local storage
+     */
+    getUserInStorage() {
+      let user = localStorage.getItem('user');
+      // let verif = commentUserId == user.userId
+      // console.log('VERIF', verif);
+      
+      if(user) {
+          this.user = JSON.parse(user);
+          console.log('USER FROM COMMENTS', user);
+      }
+    },
+  },
+  created() {
+
+    axios({
+      method: "get",
+      url: `http://localhost:3000/api/user/${this.commentUserId} `,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    })
+    .then((response) => {
+        this.commentUser = response.data
+    })
+    .catch(error => { if (error.response) { console.log(error.response) }})
+  },
+  mounted() {
+    this.getUserInStorage()
+    this.commentContent = this.content
+  }
+
+}
+</script>
+
+<style scoped>
+.comment-container {
+  margin-bottom: 10px;
+}
+#comment {
+  display: flex;
+}
+.container-avatar {
+  width: 50px;
+}
+img {
+  border-radius: 50%;
+}
+.comment-infos {
+  display: flex;
+  flex-direction: column;
+}
+.comment-infos--name-date {
+  display: flex;
+  height: 2.3rem;
+}
+.comment-infos--fullName {
+  display: flex;
+  padding: 5px;
+}
+.comment-infos--date {
+  padding: 5px;
+  font-style: italic;
+}
+.comment-content {
+  padding-left: 5px;
+}
+.container-buttons {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 10px;
+}
+.container-buttons a {
+  padding: 4px  2px 0 5px;
+}
+.svg-inline--fa {
+  color: #243653
+}
+.svg-inline--fa.fa-edit:hover {
+  color: green;
+}
+.svg-inline--fa.fa-trash:hover {
+  color: red;
+}
+</style>
