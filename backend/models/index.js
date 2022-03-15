@@ -33,19 +33,19 @@ db.comments = require('./comment-model')(sequelize, Sequelize);
 
 db.users.hasMany(db.posts, { foreignKey: "userId", as: "posts", onDelete: 'CASCADE' });
 db.posts.belongsTo(db.users, {
-  foreignKey: "userId", // crée FK 'postFkUserId' dans posts
+  foreignKey: "userId", // crée FK 'userId' dans posts
   as: "post_fk_user", // Si je veux l'appeler dans back
 });
 
 db.users.hasMany(db.comments, { foreignKey: "userId", as: "comments", onDelete: 'CASCADE' });
 db.comments.belongsTo(db.users, {
-  foreignKey: "userId", // crée FK 'postFkUserId' dans posts
+  foreignKey: "userId", // crée FK 'userId' dans comments
   as: "comment_fk_user" // Si je veux l'appeler dans back
 });
 
 db.posts.hasMany(db.comments, { foreignKey: "postId", as: "comments", onDelete: 'CASCADE' });
 db.comments.belongsTo(db.posts, {
-  foreignKey: "postId", // crée FK 'postFkUserId' dans posts
+  foreignKey: "postId", // crée FK 'postId' dans comments
   as: "comment_fk_post", // Si je veux l'appeler dans back
 });
 
