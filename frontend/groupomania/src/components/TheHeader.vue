@@ -10,8 +10,6 @@
                 src="@/assets/icon-left-font-monochrome-black_opttt.png" 
                 alt="Logo Groupomania">
 
-
-
             <button
                 class="navbar-toggler "
                 type="button"
@@ -24,6 +22,10 @@
                 <img src="../assets/hamburger.svg" class="navbar-toggler-icon">
 
             </button>
+
+            <div v-if="user" class="container-profile-image">
+                <img class="profile-image" :src="userInfos.avatar" alt="Photo de profil">
+            </div>
 
             <div class="collapse navbar-collapse" id="nav-list">
 
@@ -72,7 +74,7 @@
 
 <script>
 import Login from '@/components/Auth/Login'
-
+import { mapState, mapMutations, mapActions } from "vuex"
 
 export default {
     name: "TheHeader",
@@ -85,12 +87,18 @@ export default {
     components: {
         'login': Login
     },
+    computed: {
+        ...mapState([ "userInfos"]),
+        ...mapMutations(['LOGOUT'])
+    },
     methods: {
+        ...mapActions([ "getUserInfos" ]),
+
         toggleLogin: function() {
             this.reveleLogin = !this.reveleLogin
         },
         isUserLoggedIn: function() {
-            let user = sessionStorage.getItem('user');
+            let user = localStorage.getItem('user');
 
             if(user) {
                 this.user = JSON.parse(user);
@@ -100,14 +108,17 @@ export default {
             }
         },
         logout: function() {
-        this.$store.commit('logout');
-        this.$router.push('/Connexion');
-        window.location.href = 'http://localhost:8080/connexion'
+        this.$store.commit('LOGOUT');
+        setTimeout(() => this.$router.push('/Connexion'), 1000)
+        document.location.reload()
       }
     },
-
-    mounted() {
+    created() {
         this.isUserLoggedIn()
+        
+    },
+    mounted() {
+        this.getUserInfos()
     }
 
 }
@@ -124,13 +135,22 @@ export default {
     z-index: 5;
 }
 .navbar {
-    justify-content: space-between;
+    display: flex;
 }
 img#logo.navbar-brand {
     padding-bottom: 0;
     margin-right: 0;
     height: 4.8rem;
     margin-left: 5%;
+}
+.container-profile-image {
+    width: 40px;
+    border-radius: 3px;
+    position: absolute;
+    right: 10px;
+}
+.profile-image {
+    border-radius: 3px;  
 }
 #nav-list {
     background:rgba(209,81,90,0.9);
@@ -150,6 +170,10 @@ img#logo.navbar-brand {
 .logout {
     cursor: pointer;
     font-size: 1.6rem;
+}
+.navbar-toggler {
+    margin-right: 50px;
+
 }
 button .navbar-toggler-icon  {
     width: 2.5em;
@@ -175,20 +199,28 @@ button:focus {
 
 /* Ecrans tablettes */
 @media (min-width: 768px) {
-    .navbar-expand-md .navbar-collapse {
-        justify-content: flex-end;
-        margin-left: 5%;
-        height: 70px;
-    }
     #nav-list {
         background: none;
-        margin-right: 5%;
+        justify-content: flex-end;
+        height: 70px;
+        margin-left: 2%;
+        margin-right: 70px;
         margin-top: 0.3rem;
         padding: 0;
         font-weight: 500;
     }
     .navbar {
         height: 70px;
+        justify-content: space-between!important
+    }
+    .container-profile-image {
+       width: 50px;
+       right: 40%;
+       position: absolute;
+       right: 15px;
+    }
+    .profile-image {
+        border-radius: 3px;  
     }
     img#logo.navbar-brand {
         height: 6.4rem;
