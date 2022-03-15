@@ -6,10 +6,12 @@ const auth = require('../middlewares/auth');
 const commentCtrl = require('../controllers/comment-controllers');
 
 /* Routes comment */
-router.post('/', auth,  commentCtrl.createComment);
+
+router.post('/:postId', auth, commentCtrl.createComment);
+router.get('/:postId/', auth, commentCtrl.getAllCommentsOfAPost)
 router.get('/:id', auth,  commentCtrl.getOneComment);
-router.put('/:id', auth,  commentCtrl.modifyComment);
-router.delete('/:id', auth,  commentCtrl.deleteComment);
+router.put('/:commentId', auth,  commentCtrl.modifyComment);
+router.delete('/:commentId', auth,  commentCtrl.deleteComment);
 
 
 
