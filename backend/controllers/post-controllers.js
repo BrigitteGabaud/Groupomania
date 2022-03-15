@@ -1,5 +1,6 @@
 "use strict";
 
+const { log } = require('console');
 /* Import dépendances */
 const fs = require('fs'); // Donne accès aux opérations liées aux syst de fichiers (modif /suppr) 
 
@@ -35,21 +36,25 @@ exports.createPost = (req, res) => {
 /***  Export de la fonction RECUPERATION tous les posts (GET) ***/
 exports.getAllPosts = (req, res) => {
   const posts = db.posts;
-  posts.findAll({ include: [
+  posts.findAll({ 
+    include: [
     {
       model: db.comments, 
       as: 'comments',
       include: ['comment_fk_user']
     },
     "post_fk_user"
-  ],
+    ],
+    order: [
+      ['createdAt', 'DESC']
+    ]
   })
   .then(posts => res.status(200).json(posts))
   .catch(error => res.status(400).json({ error: error.message }));
 };
 
 /***  Export de la fonction RECUPERATION tous les posts d'un utilisateur (GET) ***/
-exports.getAllPostFromOneUser = (req, res) => {
+exports.getAllPostsOfOneUser = (req, res) => {
   const id = req.params.userId;
 
   db.users.findByPk(id, {
@@ -61,9 +66,12 @@ exports.getAllPostFromOneUser = (req, res) => {
           { 
             model : db.comments,
             as: 'comments',
-            include : [ "comment_user"]
+            include : [ "comment_fk_user"]
           },
         ],
+        order: [
+          ['createdAt', 'DESC']
+        ]
       },
     ]
   })
@@ -92,47 +100,50 @@ exports.modifyPost = async (req, res) => {
     // Si cet id n'est pas trouvé
     if(!User) {
       return res.status(404).json({ error: 'Utilisateur non trouvé !'}); 
+    } 
+    // Si ok, vérifie que les rôles correspondent (user de la req et user ds db)
+    if (reqUser.userRole !== User.role) {
+      return res.status(403).json({ message: ` L'utilisateur n'est pas autorisé à effectuer cette action.` })
+    } 
+
+    // Si ok cherche le post concerné avec son id
+    const Post = await db.posts.findByPk(postId)
+    console.log('POST', Post);
+    // Si non trouvé
+    if( !Post ) {
+      return res.status(400).json({ message: ` Post non trouvé.` })
+
+    // Si ok, vérifie si admin ou créateur du post
+    } else if (reqUser.userRole !== "admin" && User.id !== Post.userId){
+      console.log(User.id);
+      console.log(Post.userId);
+      console.log('reqUser.userRole !== "admin" && User.id !== Post.userId', reqUser.userRole !== "admin" && User.id !== Post.userId);
+      return res.status(401).json({ error: "L'utilisateur ne dispose pas des droits pour effectuer cette modification" })
+    }  
+    // Si ok et si le post modifié contient une image
+    if(req.file) {
       
-      // Si ok, vérifie que les rôles correspondent (user de la req et user ds db)
-    } else if (reqUser.userRole !== User.role) {
-      return res.status(403).json({ message: ` Vous n'est pas autorisé à effectuer cette action.` })
+      // Génère la nouvelle image url
+      newPost.image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+
+      // Supprime l'ancienne image du dossier 
+      const filename = Post.image.split('/images/')[1];
+      fs.unlink(`images/${filename}`, () => {
+
+        // Puis modifie le post
+        Post.update({...newPost})
+        .then(() => res.status(200).json({ message: 'Post modifié !'}))
+        .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du post` }));
+      })
       
-      // Si ok cherche le post concerné avec son id
-    } else {
-      const Post = await db.posts.findByPk(postId)
-      
-      // Si non trouvé
-      if( !Post ) {
-        return res.status(400).json({ message: ` Post non trouvé.` })
+      // Si le post modifié ne contient pas d'image
+    } else { 
 
-      // Si ok, vérifie si admin ou créateur du post
-      } else if (reqUser.userRole !== "admin" && User.id !== Post.postFkUserId){
-
-        // Si ok et si le post modifié contient une image
-        if(req.file) {
-          
-          // Génère la nouvelle image url
-          newPost.image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-
-          // Supprime l'ancienne image du dossier 
-          const filename = Post.image.split('/images/')[1];
-          fs.unlink(`images/${filename}`, () => {
-
-            // Puis modifie le post
-            Post.update({...newPost})
-            .then(() => res.status(200).json({ message: 'Post modifié !'}))
-            .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du post` }));
-          })
-          // Si le post modifié ne contient pas d'image
-        } else { 
-
-          // Modifie le contenu texte
-          Post.update({...newPost})
-          .then(() => res.status(200).json({ message: 'Post modifié !'}))
-          .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du post` }));
-        }
-      }
-    }       
+      // Modifie le contenu texte
+      Post.update({...newPost})
+      .then(() => res.status(200).json({ message: 'Post modifié !'}))
+      .catch(error => res.status(400).json({error: error.message || `Une erreur s'est produite pendant la modification du post` }));
+    }    
   }
   catch(error) {
     return res.status(500).json({ error: error.message })
@@ -153,7 +164,7 @@ exports.deletePost = async (req, res) => {
 
       // Si ok, vérifie que les rôles correspondent
     } else if (reqUser.userRole !== User.role) {
-      return res.status(403).json({ message: ` Vous n'êtes pas pas autorisé à effectuer cette action.` })
+      return res.status(403).json({ message: `L'utilisateur n'est pas pas autorisé à effectuer cette action.` })
 
       // Si ok cherche le post concerné
     } else  {
