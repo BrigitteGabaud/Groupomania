@@ -156,7 +156,7 @@
 
 <script>
     import axios from 'axios' 
-    import Comments from '../Comments.vue'
+    import Comments from './Comments.vue'
     import { mapActions, mapState } from 'vuex'
 
     export default {
@@ -172,23 +172,6 @@
                 user: {},
                 postUser: "",
                 commentsList: [],
-                // userInfos:{
-                //     firstname:'',
-                //     lastname: '',
-                //     email: '',
-                //     role: '',
-                //     avatar: '',
-                //     bio: '',
-                //     createdAt: '',
-                //     updatedAt: ''
-                // }, 
-                // postInfos: {
-                //     id: '',
-                //     userId: '',
-                //     content: '',
-                //     image: '',
-                //     createdAt:''
-                // },
                 postModified: false,
                 displayComments: false,
             }
@@ -257,31 +240,11 @@
              */
             getUserInStorage() {
                 let user = localStorage.getItem('user');
-                
                 if(user) {
                     this.user = JSON.parse(user);
                 }
             },
-            // getInfosOfUser() {
-            //     let user = JSON.parse(localStorage.getItem('user'))
-            //     //console.log('user local storage' ,user);;
-            //     let userId = user.userId;
-            //     //console.log('userId', userId);
-                
-            //     return axios
-            //     .get(`http://localhost:3000/api/user/` +`${userId}`)
-            //     .then((res) => {
-            //        // console.log(this.userInfos = res.data); 
-            //         this.firstname = res.data.firstname ,
-            //         this.lastname = res.data.lastname,
-            //         this.email = res.data.email,
-            //         this.role = res.data.role,
-            //         this.bio = res.data.bio,
-            //         this.avatar = res.data.avatar,
-            //         this.createdAt = res.data.createdAt,
-            //         this.updatedAt = res.data.updatedAt
-            //     })
-            // },
+
             /** 
              * @description Cette fonction convertit la date de création du post en format local
              */
@@ -393,7 +356,7 @@
 <style scoped>
 #post {
     background-color: rgba(193,178,175, 0.90);
-    box-shadow: 0 0 10px 3px rgba(0,0,0,0.9);
+    box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
     margin-bottom: 10px;
     padding: 1%;
 }

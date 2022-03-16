@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ProfileOfUser from '@/components/Profile/ProfileOfUser'
+import ProfileOfUser from '@/components/ProfileOfUser'
 
 export default {
     name: "Profile",

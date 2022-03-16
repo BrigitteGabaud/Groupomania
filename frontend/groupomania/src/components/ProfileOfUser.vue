@@ -42,8 +42,6 @@
     
     </section>
 
-    <h2>Derniers posts</h2>
-
     <div class="container-posts">
 
       <Posts
@@ -66,7 +64,7 @@
 
 <script>
 import axios from 'axios'
-import Posts from "../Posts/Posts.vue"
+import Posts from "./Posts.vue"
 import { mapGetters } from "vuex"
 
 export default {
@@ -209,10 +207,10 @@ export default {
 .card-profile {
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 80%;
   height: auto;
   background-color: rgba(193,178,175, 0.90);
-  box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.9);
+  box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.9);
   padding: 15px 10px;
   border-radius: 0.4rem;
   margin-bottom: 50px;

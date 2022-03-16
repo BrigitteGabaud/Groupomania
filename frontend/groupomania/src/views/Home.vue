@@ -1,4 +1,5 @@
 <template>
+
     <div class="home">
 
         <div class="container-post-create">
@@ -69,7 +70,7 @@
 
 <script>
 import axios from 'axios'
-import Posts from '../components/Posts/Posts.vue'
+import Posts from '../components/Posts.vue'
 import { mapState, mapActions } from "vuex"
 
 export default {
@@ -191,7 +192,7 @@ export default {
 }
 #post-create {
     background-color: rgba(193,178,175, 0.90);
-    box-shadow: 0 0 10px 3px rgba(0,0,0,0.9);
+    box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
     margin-top: 25%;
     padding: 15px 10px;
 }

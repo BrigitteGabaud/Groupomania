@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import Login from '@/components/Auth/Login'
+import Login from '@/components/Login'
 import { mapState, mapMutations, mapActions } from "vuex"
 
 export default {
