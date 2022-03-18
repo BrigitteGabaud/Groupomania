@@ -2,67 +2,76 @@
 
     <div class="container-header ">
 
-        <nav class="navbar navbar-expand-md">
+        <nav class="navbar navbar-expand">
 
-            <img
+            <!-- Logo -->
+            <div class="container-logo">
+                <img
                 class="navbar-brand"
                 id="logo"
                 src="@/assets/icon-left-font-monochrome-black_opttt.png" 
                 alt="Logo Groupomania">
-
-            <button
-                class="navbar-toggler "
-                type="button"
-                alt="Ouvrir ou fermer la navigation"
-                data-bs-toggle="collapse"
-                data-bs-target="#nav-list"
-                aria-expanded="false"
-                aria-label="Navigation petits écrans">
-
-                <img src="../assets/hamburger.svg" class="navbar-toggler-icon">
-
-            </button>
-
-            <div v-if="user" class="container-profile-image">
-                <img class="profile-image" :src="userInfos.avatar" alt="Photo de profil">
             </div>
 
-            <div class="collapse navbar-collapse" id="nav-list">
+            <!-- Connexion si user DECONNECTE -->
+            <router-link 
+                v-if="!user"  
+                @click="toggleLogin" :toggleLogin="toggleLogin" 
+                class="login" 
+                aria-label="Aller vers la fenêtre de connexion" 
+                to="/Connexion">
 
-                <ul class="navbar-nav">
+                <fa icon='power-off'/> 
 
-                    <li class="nav-item active ">
+            </router-link>
 
-                        <router-link aria-label="Aller vers la page accueil" to="/">Accueil </router-link>
+            <!-- Liste de navigation si user CONNECTE -->
+            <ul v-if="user" class="navbar-nav">
+                
+                <!-- Accueil -->
+                <li v-if="user" class="nav-item active" title="Accueil">
 
-                    </li>
+                    <router-link aria-label="Aller vers la page accueil" to="/">
+                    
+                        <fa icon='house-user'/>
 
-                    <li class="nav-item" >
+                    </router-link>
 
-                        <router-link  aria-label="Aller vers la page profil" to="/Profile" >Profil</router-link>
+                </li>
 
-                    </li>
+                <!-- Profil -->
+                <li v-if="user" class="nav-item" title="Profil">
 
-                    <li class="nav-item"
-                        v-if="!user"
-                        @click="toggleLogin" :toggleLogin="toggleLogin">
+                    <router-link aria-label="Aller vers le profil" to="/Profile">
 
-                        <router-link aria-label="Aller vers la fenêtre de connexion" to="/Connexion">Connexion </router-link>
+                        <img class="profilePicture" :src="userInfos.avatar" alt="Photo de profil">
 
-                    </li>
+                    </router-link>
 
-                    <li 
-                        v-else aria-label="Se déconnecter" 
-                        @click="logout" 
-                        class="nav-item logout">
+                </li>
 
-                        Déconnexion
-                    </li>
+                <!-- Connexion -->
+                <!-- <li 
+                    v-if="!user"
+                    class="nav-item"
+                    @click="toggleLogin" :toggleLogin="toggleLogin">
 
+                    <router-link aria-label="Aller vers la fenêtre de connexion" to="/Connexion">Connexion </router-link>
 
-                </ul>
+                </li> -->
 
-            </div>
+                <!-- Déconnexion -->
+                <li 
+                    v-if="user" 
+                    @click="logout" 
+                    class="nav-item logout"
+                    aria-label="Se déconnecter"
+                    title="Déconnexion">
+
+                    <fa icon='power-off'/>
+                </li>
+
+            </ul>
 
         </nav>
 
@@ -129,109 +138,86 @@ export default {
     position: fixed;
     top: 0;
     width: 100%;
-    height: 70px;
+    height: 55px;
     background:rgba(209,81,90,0.9);
     color: #000000;
     z-index: 5;
 }
-.navbar {
+.navbar-expand {
     display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.navbar-nav {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 7px;
 }
 img#logo.navbar-brand {
     padding-bottom: 0;
     margin-right: 0;
-    height: 4.8rem;
-    margin-left: 5%;
-}
-.container-profile-image {
-    width: 40px;
-    border-radius: 3px;
-    position: absolute;
-    right: 10px;
-}
-.profile-image {
-    border-radius: 3px;  
-}
-#nav-list {
-    background:rgba(209,81,90,0.9);
-    margin-top: 4.5%;
-    padding-left: 4%;
-    padding-bottom: 6%;
-    font-weight: 500;
+    height: 4.5rem;
 }
 .nav-item {
-    margin: 0 10px;
+    margin: 0 5px;
 }
 .nav-item a  {
     text-decoration: none;
     color: black;
     font-size: 1.6rem;
 }
+.login {
+    font-size: 1.6rem;
+    text-decoration: none;
+    color: #000000;
+    font-weight: 500;
+    margin-right: 5%;
+}
+.svg-inline--fa.fa-house-user.fa-w-18{
+    font-size: 1.9rem;
+    margin-top: 8px;
+}
+.profilePicture {
+    width: 23px;
+    border-radius: 3px;
+    border: 1px solid ;
+}
+.svg-inline--fa.fa-power-off.fa-w-16 {
+    font-size: 1.4rem;
+} 
 .logout {
     cursor: pointer;
-    font-size: 1.6rem;
-}
-.navbar-toggler {
-    margin-right: 50px;
-
-}
-button .navbar-toggler-icon  {
-    width: 2.5em;
-    height: 2.5em;
-}
-button:focus {
-    outline: none!important;
-    box-shadow: none;
-}
-
-/* Ecrans mobiles taille moyenne */
-@media (min-width: 375px ) and (max-width: 397px){
-    #nav-list {
-        margin-top: 3.8%;
-    }
-}
-
-@media (min-width: 398px ) and (max-width: 425px){
-    #nav-list {
-        margin-top: 3%;
-    }
 }
 
 /* Ecrans tablettes */
 @media (min-width: 768px) {
-    #nav-list {
-        background: none;
-        justify-content: flex-end;
+    .container-header {
         height: 70px;
-        margin-left: 2%;
-        margin-right: 70px;
-        margin-top: 0.3rem;
-        padding: 0;
-        font-weight: 500;
     }
     .navbar {
         height: 70px;
         justify-content: space-between!important
     }
-    .container-profile-image {
-       width: 50px;
-       right: 40%;
-       position: absolute;
-       right: 15px;
-    }
-    .profile-image {
-        border-radius: 3px;  
+    .container-logo {
+        margin-left: 5%;
     }
     img#logo.navbar-brand {
         height: 6.4rem;
-        margin-left: 5%;
     }
-    .nav-item a  {
-        font-size: 1.92rem;
+    .navbar-nav {
+        margin-right: 5%;
     }
-    .logout {
-        cursor: pointer;
-        font-size: 1.92rem;
+    .nav-item {
+        margin: 0 8px;
+    }
+    .svg-inline--fa.fa-house-user.fa-w-18{
+        font-size: 2.5rem;
+    }
+    .profilePicture {
+        width: 30px;
+    }
+    .svg-inline--fa.fa-power-off.fa-w-16 {
+        font-size: 1.8rem;
     }
 }
 
