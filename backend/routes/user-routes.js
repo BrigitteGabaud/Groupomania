@@ -1,4 +1,5 @@
 "use strict";
+
 /* Import des dépendances  et fonctions */
 const express = require('express');
 const router = express.Router(); //création router = usage "router." et non "app."
@@ -7,21 +8,12 @@ const multer = require('../middlewares/multer-config');
 const userCtrl = require('../controllers/user-controllers');
 const rateLimit = require('../middlewares/rate-limit');
 
-/* Route post: création compte */
+/* Routes user */
 router.post('/signup', rateLimit.Limiter, userCtrl.signup);
-/* Route post: authentification */
 router.post('/login', rateLimit.Limiter, userCtrl.login);
-/* Route get: récupération un user */
 router.get('/:id', auth, userCtrl.getOneUser)
-/* Route get: récupération tous les users */
 router.get('/',auth,  userCtrl.getAllUsers)
-/* Route put: modification user */
 router.put('/:id',auth, multer, userCtrl.modifyUser );
-/* Route delete: suppression user */
 router.delete('/:id',auth, multer, userCtrl.deleteUser );
-
-
-
-
 
 module.exports = router;

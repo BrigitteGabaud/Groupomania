@@ -1,7 +1,8 @@
 <template>
+
   <div id="container-app">
 
-    <the-header></the-header>
+    <the-header/>
 
     <div class="container-views">
 
@@ -9,9 +10,10 @@
       
     </div>
 
-    <the-footer></the-footer>
+    <the-footer/>>
 
   </div>
+
 </template>
 
 <script>
@@ -59,43 +61,19 @@ img {
   border: none;
   border-radius: 3px;
 }
-/* .card__title {
-  text-align:center;
-  font-weight: 800;
-}
-.card__subtitle {
-  text-align: center;
-  color:#667;
-  font-weight: 500;
-} */
 .btn {
-    height: 30px; 
-    line-height: 15px;
-    width: 30px;
-    background-color: #d1515a;
-    box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
-    border-radius: 50%;
-    color: white;
-    outline: none;
-    border: none;
-    position: relative;
-    margin-top:  0.8rem!important;
-    margin-right: 10px;
-    padding: 2px;
-}
- /* .button {
-  background: rgba(209,81,90,255);
-  color:black;
-  border-radius: 8px;
-  font-weight: 800;
-  font-size: 15px;
+  height: 30px; 
+  line-height: 15px;
+  width: 30px;
+  background-color: #d1515a;
+  box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  color: white;
+  outline: none;
   border: none;
-  width: 100%;
-  padding: 16px;
-  transition: .4s background-color;
-} */
-/*.button--disabled {
-  background:#cecece;
-  color:#ececec
-} */
+  position: relative;
+  margin-top:  0.8rem!important;
+  margin-right: 10px;
+  padding: 2px;
+}
 </style>  

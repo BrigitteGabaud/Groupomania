@@ -4,8 +4,9 @@
 
         <!-- Informations user: photo, identité, date de publication -->
         <div class="publication-infos">
+
             <div class="container-avatar">
-            <img class="img" alt="Photo de profil" :src= postUser.avatar>
+                <img class="img" alt="Photo de profil" :src= postUser.avatar>
             </div>
 
             <div class="publication-infos--name-date">
@@ -17,12 +18,11 @@
                 <p id="publication-date">Publié le {{ dateToLocale(postDate) }}</p>
 
             </div>
-            
-            
+             
         </div>    
 
         <!-- Contenu du post non modifié -->
-        <div  v-show="postModified == false && postImage!==null" class="container-post--image">
+        <div  v-show="postModified == false && postImage !== null" class="container-post--image">
             <img :src= "postImage" alt="Image du post">
         </div>
         
@@ -33,12 +33,12 @@
 
             <button 
                 @click="displayOrNotComments"
-                class="btn"
-                id="displayOrNotComments--Button"
-                type="button" 
+                type="button"
                 role="button"
-                title="Afficher les commentaires"
-                alt="Afficher les commentaires">
+                class="btn"
+                id="displayOrNotComments--Button" 
+                alt="Afficher les commentaires"
+                title="Afficher les commentaires">
                     <span>Commentaires</span>
             </button>
 
@@ -56,7 +56,6 @@
                 :commentDate="comment.createdAt"
                 :getAllCommentsOfAPost="getAllCommentsOfAPost"
                 :refreshComments="refreshComments"
-
             />
             
             <label for="Votre commentaire"></label>
@@ -64,22 +63,22 @@
             <div class="input-group-sm mb-1" id="post-input">
 
                 <textarea 
-                    v-model="commentContent"
+                    type="text" 
                     class="post-input--comment " 
                     :id="'post-input--comment' + [[ postId]]"
-                    type="text" 
                     placeholder="Votre commentaire" 
-                    aria-label="Votre commentaire">
+                    aria-label="Votre commentaire"
+                    v-model="commentContent">
                 </textarea><br>
 
                 <button 
                     @click="createComment(commentPostId)"
-                    class="btn btn-input"
-                    id="post-input--button"
                     type="submit" 
                     role="button"
-                    alt="Publier le commentaire"
-                    :class="{'btn-outline disabled' : !validatedFields}">
+                    class="btn btn-input"
+                    :class="{'btn-outline disabled' : !validatedFields}"
+                    id="post-input--button"
+                    alt="Publier le commentaire">
                     <fa icon='comment-dots'/>
                 </button>
                 
@@ -91,10 +90,10 @@
         <div v-show="postModified" class="post-modify">
 
             <textarea
+                type="text" 
+                class="form-control"
                 :id="'postContentModified' + [[ postId ]]"
                 name='postContentModified' 
-                class="form-control"
-                type="text" 
                 :value="content"
                 placeholder="Ajoutez votre nouveau texte ici.">
             </textarea><br>
@@ -102,22 +101,22 @@
             <div  class="post-modify--buttons" >
 
                 <input
-                    id="file"
-                    name='file'
-                    class="file" 
                     type="file" 
+                    class="file"
+                    id="file"
+                    name='file' 
                     tableindex="-1" 
                     accept="image/*">
 
                 <label for="file" alt="Nouvelle image à joindre au post" ><fa icon= 'image'/></label>
                 
                 <button 
+                    @click="modifyPost(postId)"
                     type="submit" 
                     class="btn mt-2 col-4" 
-                    id="button"
-                    alt="Publier un nouveau post"
                     :class="{'btn-outline disabled' : !validatedFields}"
-                    @click="modifyPost(postId)">
+                    id="button"
+                    alt="Publier un nouveau post">
                     <fa icon= 'paper-plane'/>
                 </button>
 
@@ -130,21 +129,22 @@
 
             <a 
                 v-if="postUserId == user.userId && postModified == false "
-                class="modifyPost"
+                @click="postModified = true"
                 type="submit" 
-                title="Modifier"
-                alt="Modifier le post"
+                class="modifyPost"
                 id="edit-icon"
-                @click="postModified = true">
+                alt="Modifier le post"
+                title="Modifier">
                 <fa icon='edit'/>
             </a>
 
-            <a v-if="postUserId == user.userId || user.userRole == 'admin' "  
+            <a 
+                v-if="postUserId == user.userId || user.userRole == 'admin' "  
                 @click='deletePost(postId)'  
-                class="deletePost"
                 type="submit" 
-                title="Supprimer"
-                alt="Supprimer le post">
+                class="deletePost"
+                alt="Supprimer le post"
+                title="Supprimer">
                 <fa icon='trash'/>
             </a>
             
@@ -157,7 +157,7 @@
 <script>
     import axios from 'axios' 
     import Comments from './Comments.vue'
-    import { mapActions, mapState } from 'vuex'
+    import { mapState, mapActions } from 'vuex'
 
     export default {
         name: "PostsList",
@@ -179,7 +179,10 @@
         computed: {
             ...mapState(['userInfos']),
 
-            validatedFields: function() {
+            /** 
+            * @description Cette fonction vérifie si les champs sont remplis
+            */
+            validatedFields() {
                 if (this.content != "") {
                     return true;
                 } else {
@@ -188,9 +191,9 @@
             },
         },
         methods: {
-            ...mapActions(['isUserConnected']),
+            ...mapActions(['isUserConnected', "getUserInfos"]),
            
-           /** 
+            /** 
              * @description Cette fonction appelle l'API, modifie le post concerné puis réinitialise la liste des posts et l'affiche
              */
             modifyPost(postId) {
@@ -249,13 +252,12 @@
              * @description Cette fonction convertit la date de création du post en format local
              */
             dateToLocale(date) {
-
                 return new Date(date).toLocaleString('fr', { year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric' });
             },
             
-            /*********************************************COMMENTS***********************************/
+            /********************************************* COMMENTS ***********************************/
             /** 
-            * @description Cette fonction montre ou non la section des commentaires
+            * @description Cette fonction affiche ou non la section des commentaires
             */
             displayOrNotComments() {
               if(this.displayComments == false) {
@@ -266,11 +268,8 @@
             },
 
             /** 
-             * @description Cette fonction appelle l'API pour récupérer tous les commentaires d'un post
-             * 
-             * @return {object} objet avec les posts, commentaires et infos user
-             *  
-             */
+            * @description Cette fonction appelle l'API pour récupérer tous les commentaires d'un post 
+            */
             getAllCommentsOfAPost() {
 
                 axios({
@@ -289,16 +288,16 @@
             },
 
             /**
-             * @description Cette fonction raffraîchit la liste de commentaires
-             */
+            * @description Cette fonction raffraîchit la liste de commentaires
+            */
             refreshComments() {
                 this.commentsList = []
                 this.getAllCommentsOfAPost()
             },
 
             /** 
-             * @description Cette fonction appelle l'API et crée un commentaire
-             */
+            * @description Cette fonction appelle l'API et crée un commentaire
+            */
             createComment() {
                 
                 axios({
@@ -311,15 +310,17 @@
                     data: {content: this.commentContent}
                 })
                 .then(() => {
+                    this.isUserConnected()
                     this.refreshComments();
                     this.commentContent = ""
                 })
                 .catch(error => { if(error.response) { console.log(error.response) }})
             }, 
         },
-         /** 
-         * @description Cette fonction appelle l'API pour récupérer les infos du user créant le post (photo profile / nom) et les stocke dans les data
-         */
+
+        /** 
+        * @description Cette fonction appelle l'API pour récupérer les infos du user créant le post (photo profile / nom) et les stocke dans les datas
+        */
         created() {
             this.isUserConnected()
 
@@ -332,23 +333,16 @@
             })
             .then((response) => {
                 this.postUser = response.data
-                console.log('postUser', this.postUser);
                 this.getAllCommentsOfAPost()
             })
             .catch(error => { if (error.response) { console.log(error.response) }})
-
-            
         },
+        /** 
+        * @description Quand la page est montée: vérifie si l'user est connecté
+        */
         mounted() {
-            if (this.$store.state.user.userId == -1) { // = non connecté
-            this.$router.push('/Connexion');
-            return ;
-            }
-            //this.getAllPosts()
             this.getUserInStorage()
-            //this.getInfosOfUser()
         }
-    
     }
 </script>
 

@@ -45,7 +45,7 @@ export default {
     opacity: 0.95;
     text-align: center;
     padding: 15px 9px;
-    box-shadow: 0 0 10px 5px rgba(0,0,0,1);
+    box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
     font-size: 1.30rem;
     font-weight: 500;
 }

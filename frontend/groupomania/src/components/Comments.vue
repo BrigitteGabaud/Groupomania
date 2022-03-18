@@ -4,18 +4,17 @@
     
     <div class=comment id="comment">
 
+      <!-- Informations user: photo, identité, date de publication -->
       <div class="container-avatar">
         <img class="img" alt="Photo de profil" :src= commentUser.avatar>
       </div>
 
-      <!-- Informations user: photo, identité, date de publication -->
       <div class="comment-infos">
 
         <div class="comment-infos--name-date">
 
           <div class="comment-infos--fullName">
-            <p><strong>{{ commentUser.firstname }}</strong></p>
-            <p><strong>{{ commentUser.lastname }}</strong></p>
+            <p><strong>{{ fullName }}</strong></p>
           </div>
 
           <div class="comment-infos--date">
@@ -36,21 +35,21 @@
           v-if="commentUserId == user.userId && commentModified == false "
           @click="commentModified = true"
           type="submit" 
-          title="Modifier"
+          id="edit-icon"
           alt="Modifier le commentaire"
-          id="edit-icon">
+          title="Modifier">
           <fa icon='edit'/>
         </a>
 
         <a v-if="commentUserId == user.userId || user.userRole == 'admin' "  
           @click='deleteComment(commentId)'  
           type="submit" 
-          title="Supprimer"
-          alt="Supprimer le commentaire">
+          alt="Supprimer le commentaire"
+          title="Supprimer">
           <fa icon='trash'/>
         </a>
             
-        </div>
+      </div>
 
     </div>
 
@@ -59,20 +58,20 @@
 
       <textarea
         :id="'commentContentModified' + [[ commentId ]]"
-        name='commentContentModified' 
-        class="form-control"
         type="text" 
-        v-model="commentContent"
-        placeholder="Ajoutez votre nouveau texte ici.">
+        class="form-control"
+        placeholder="Ajoutez votre nouveau texte ici."
+        name='commentContentModified' 
+        v-model="commentContent">
       </textarea><br>
 
       <button 
+        @click="modifyComment(commentId)"
         type="submit" 
         class="btn mt-2 col-4" 
-        id="button"
-        alt="Publier un nouveau commentaire"
         :class="{'btn-outline disabled' : !validatedFields}"
-        @click="modifyComment(commentId)">
+        id="button"
+        alt="Publier un nouveau commentaire">
         <fa icon= 'paper-plane'/>
       </button>
 
@@ -84,7 +83,7 @@
 
 <script>
 import axios from 'axios'
-import { mapState} from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name:"Comments",
@@ -99,6 +98,7 @@ export default {
   },
   computed: {
     ...mapState([ "userInfos" ]),
+    ...mapGetters(["fullName"]),
 
     validatedFields: function() {
       if (this.content != "") {
@@ -160,17 +160,16 @@ export default {
      */
     getUserInStorage() {
       let user = localStorage.getItem('user');
-      // let verif = commentUserId == user.userId
-      // console.log('VERIF', verif);
       
       if(user) {
           this.user = JSON.parse(user);
-          console.log('USER FROM COMMENTS', user);
       }
     },
   },
   created() {
-
+    /** 
+     * @description Cette fonction récupère les informations du user
+     */
     axios({
       method: "get",
       url: `http://localhost:3000/api/user/${this.commentUserId} `,
@@ -203,6 +202,7 @@ export default {
 }
 img {
   border-radius: 50%;
+  margin-bottom: 5px;
 }
 .comment-infos {
   display: flex;

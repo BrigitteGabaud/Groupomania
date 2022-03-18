@@ -1,4 +1,5 @@
 "use strict";
+
 /* Import package gestion de fichiers */
 const multer = require('multer');
 
@@ -28,4 +29,4 @@ const storage = multer.diskStorage({ // enregistre sur le disque
 });
 
 /* Exporte middleware multer en passant objet storage + méthode single = fichier unique + précise = fichiers image */
-module.exports = multer({ storage}).single('image');
+module.exports = multer({ storage }).single('image');

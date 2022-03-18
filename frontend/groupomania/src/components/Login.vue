@@ -5,6 +5,7 @@
 
         <div class="login card">
             
+            <!-- Titre et sous-titres selon le souhait du user -->
             <h1
                 v-if="mode == 'login'" 
                 class="card-title"
@@ -28,6 +29,7 @@
 
             <div class="container-form">
 
+                <!-- Formulaire inscription / connexion -->
                 <form class="form-bloc">
 
                     <div  
@@ -126,13 +128,8 @@
     </div>
 
 </template>
- <p v-if="mode == 'login' && status == 'error_login'">
-                        Adresse mail et/ou mot de passe invalide.</p>
-<p v-if="!passwordIsValid" class="error-message">Votre mot de passe doit comporter minimum 8 caractères, dont 2 majuscules, 2 minuscules, 2 chiffres et 2 caractères spéciaux. Il ne doit pas comporter d'espace.</p>
 
 <script>
-    //import axios from 'axios'
-    
     import { mapState } from 'vuex' 
     
     export default {
@@ -174,16 +171,23 @@
                     }
                 }
             },
-            ...mapState(['status']) // = récupère state "status" dans store = status variable
+            ...mapState(['status']) 
         },
         methods: {
-            switchToCreateAccount: function() {
+            /** 
+             * @description Ces fonctions passent en mode 'login'(connexion) ou 'create'(inscription)
+             */
+            switchToCreateAccount() {
                 this.mode = 'create';
             },
-            switchToLogin: function() {
+            switchToLogin() {
                 this.mode = 'login';
             },
-            login: function() {
+
+            /** 
+             * @description Cette fonction appelle l'API et connecte l'utilisateur
+             */
+            login() {
                 //const self = this;
                 this.$store.dispatch('login', {
                     email: this.email,
@@ -196,7 +200,10 @@
                 })
             },
             
-            signup: function() {
+            /** 
+             * @description Cette fonction appelle l'API et crée un compte utilisateur
+             */
+            signup() {
                 const self = this;
                 this.$store.dispatch('signup', { // appel APi via actions dans store/index
                     firstname: this.firstname,
@@ -217,6 +224,7 @@
 
 <style scoped>
     #bloc-login {
+        margin-top: 100px;
         margin: 0 auto;
         width: 100%;
         opacity: 1 !important;
@@ -232,6 +240,7 @@
         right: 0;
     }
     .login {
+        margin-top: 100px;
         background: rgb(193,178,175);
         color: #333;
         padding: 15px;
@@ -349,7 +358,5 @@
             font-size: 1.44rem;
         }
     }
-
-
 
 </style>   

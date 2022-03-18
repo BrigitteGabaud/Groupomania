@@ -1,4 +1,5 @@
 "use strict";
+
 // Import Joi
 const joi = require('joi');
 const joiPassword = require("joi-password");

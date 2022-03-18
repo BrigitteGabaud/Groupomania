@@ -1,6 +1,6 @@
 "use strict";
 
-/** Déclaration modele user **/
+/*** Déclaration modele user ***/
 
 /* Export fonction + 2 params: 
     1. 'sequelize'= objet représentant connexion BDD : possède méthode 'define' pour créer un nveau modele
@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         avatar: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: ('http://localhost:3000/images/Bestiole_jaune.jpg')
+            defaultValue: ('http://localhost:3000/images/default_avatar.png')
         },
         bio: {
             type: DataTypes.STRING(255),

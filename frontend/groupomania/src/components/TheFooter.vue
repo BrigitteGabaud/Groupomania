@@ -28,13 +28,21 @@ export default {
   opacity: 0.9;
   color: black;
   width: 100%;
-  
-  
   z-index: 5;
 }
 p {
   font-size: 1.2rem;
   font-weight: 500;
   margin-top: 3px;
+}
+
+/* Ecrans tablettes */
+@media (min-width: 768px) {
+  .container-footer {
+    height: 40px;
+  }
+  p {
+  font-size: 1.6rem;
+  }
 }
 </style>

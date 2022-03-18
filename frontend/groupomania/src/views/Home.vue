@@ -65,9 +65,6 @@
 
 </template>
 
-
-
-
 <script>
 import axios from 'axios'
 import Posts from '../components/Posts.vue'
@@ -84,13 +81,11 @@ export default {
             postsList: [],
         }
     },
-   
     computed: {
         ...mapState([ 'userInfos' ]),
 
         validatedFields: function() {
             if (this.content != "") {
-                console.log(this.content);
                 return true;
             } else {
                 return false;
@@ -98,7 +93,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions([ 'getUserInfos', 'isUserConnected']),
+        ...mapActions(['isUserConnected']),
 
         /** 
          * @description Cette fonction appelle l'API pour récupérer tous les posts
@@ -117,7 +112,6 @@ export default {
             })
             .then(response => {
                 this.postsList.push(...response.data)
-                //console.log('liste posts', ...response.data);
             })
             .catch(error => { if(error.response) { console.log(error.response.data.error) }})
         },
@@ -136,11 +130,9 @@ export default {
         createPost() {
             let formData = new FormData();
             let file = document.getElementById("file")
-
+           
             formData.append("content", this.content)
             formData.append("userId", JSON.stringify(this.user.userId))
-
-            console.log('IMAGE FROM HOME',document.getElementById("file").value);
 
             if(file.value !== "") {
                 formData.append('image', file.files[0])
@@ -156,7 +148,6 @@ export default {
                 data: formData
                 
             })
-            
             .then(() => {
                this.refreshPost()
                this.content = ""
@@ -169,8 +160,7 @@ export default {
         this.getAllPosts()
     },
     mounted() {
-
-       this.user = JSON.parse(localStorage.getItem('user'))
+        this.user = JSON.parse(localStorage.getItem('user'))
     }
 }
 </script>
@@ -193,7 +183,7 @@ export default {
 #post-create {
     background-color: rgba(193,178,175, 0.90);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
-    margin-top: 25%;
+    margin-top: 100px;
     padding: 15px 10px;
 }
 #post-create h1 {

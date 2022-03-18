@@ -7,14 +7,14 @@ import App from './App.vue'
 // Design
 import { FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCommentDots, faEdit, faTrash, faImage, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faCommentDots, faEdit, faTrash, faImage, faPaperPlane, faPowerOff, faHouseUser } from '@fortawesome/free-solid-svg-icons'
 import 'bootstrap' 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import interceptor from "./helpers/interceptor"
 
 // Importation icons
-library.add(faCommentDots, faEdit, faTrash, faImage, faPaperPlane)
+library.add(faCommentDots, faEdit, faTrash, faImage, faPaperPlane, faPowerOff, faHouseUser)
 
 // Création app
 createApp(App)
