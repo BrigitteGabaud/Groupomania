@@ -3,12 +3,22 @@ import { createRouter, createWebHistory } from 'vue-router'
 // Pages
 import Home from '@/views/Home.vue'
 import Profile from '@/views/Profile.vue'
+import ProfileEdit from '@/views/ProfileEdit.vue'
 import Connexion from '@/views/Connexion.vue'
 import Admin from '@/views/Admin.vue'
 
 
 // Création du routes
 const routes = [
+  {
+    path: '/Connexion',
+    name: 'Connexion',
+    component: Connexion,
+    meta: {
+      title: 'Connexion',
+      needLoggedIn: false 
+    }
+  },
   {
     path: '/',
     name: 'Home',
@@ -28,12 +38,12 @@ const routes = [
     }
   },
   {
-    path: '/Connexion',
-    name: 'Connexion',
-    component: Connexion,
+    path: '/ProfileEdit',
+    name: 'ProfileEdit',
+    component: ProfileEdit,
     meta: {
-      title: 'Connexion',
-      needLoggedIn: false 
+      title: 'Modification Profil',
+      needLoggedIn: true
     }
   },
   {
@@ -55,7 +65,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   if(to.meta.needLoggedIn && !localStorage.getItem('user')) {
-    return '/connexion'
+    return '/Connexion'
   }
 })
 
