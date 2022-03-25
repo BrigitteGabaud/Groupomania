@@ -48,7 +48,7 @@
 
           <button @click="modifyUser" type="button" class="btn" id="modifyUser" aria-label="Valider mon nouveau profil">Valider</button>
 
-          <button @click="deleteProfile" type="button" class="btn" id="deleteProfile" title="Supprimer mon profil"><fa icon='trash'/></button>
+          <button @click="deleteUser" type="button" class="btn" id="deleteUser" title="Supprimer mon profil"><fa icon='trash'/></button>
 
         </div>
       </form>
@@ -68,7 +68,7 @@ export default {
     }
   },
   computed: {
-    ...mapState([ "userInfos"])
+    ...mapState(["user", "userInfos"])
   },
   methods: {
     ...mapActions(["isUserConnected", "getUserInfos"]),
@@ -109,8 +109,35 @@ export default {
       })
       .catch(error => { if(error.response) {console.log( this.info = error.response.data)}});
     },
+
+    /**
+    * @description Cette fonction récupère les informations de l'utilisateur et le supprime
+    */
+    deleteUser() {
+      let user = this.user;
+      let userId = user.userId;
+
+      axios({
+        method: "delete",
+        url: `http://localhost:3000/api/user/${userId}`,
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+      .then(response => {
+        this.info = `${response.data.message}`
+        localStorage.removeItem('user')
+        setTimeout(() => this.$router.push('/Connexion'), 1000)
+      })
+      .catch(error => {if(error.response) {this.info = error.response.data.error}})
+    }
+  },
+  created() {
+    this.isUserConnected()
+    this.getUserInfos()
   }
 }
+
 </script>
 
 <style scoped>
@@ -183,7 +210,7 @@ h1 {
   color: white;
   font-weight: 500;
 }
-#deleteProfile:hover {
+#deleteUser:hover {
   background-color: red!important;
   color: white;
 }

@@ -4,13 +4,12 @@
 
     <section class="container-card-profile" >
 
+      <!-- Informations user -->
       <div class="card-profile">
       
         <h1 class="card-title">{{ fullName }} </h1>
 
         <div><hr></div>
-
-        <p class="info" v-if="info !== ''">{{ info }}</p>
 
         <div  id="infos-profile" :class="userInfos">
 
@@ -18,30 +17,32 @@
             <h2 class="infos-title" id="profilePicture">Photo de profil:</h2>
 
             <div class="container-img">
-              <img class="img" :src= avatar>
-              <button @onclick="modifyProfileImage" type="button" class="imageModify--button">Changer ma photo de profil</button>
+              <img class="img" alt="photo de profil" :src= userInfos.avatar>
             </div>
           </div>
 
           <div class="infos">
             <h2 class="infos-title"> E-mail:</h2>
-            <p>{{ email }} </p>
+            <p>{{ userInfos.email }} </p>
             <h2 class="infos-title"> À propos:</h2>
-            <p>{{ bio }} </p>
+            <p>{{ userInfos.bio }} </p>
           </div>
 
         </div>
 
         <div><hr></div>
 
-        <button class="btn" @click="deleteUser" type="button" alt="Supprimer mon profil" title="Supprimer mon profil">
-          <fa icon='trash'/>
-        </button>
+        <div class="profilEdit-btn" role="button" aria-label="Modifier mon profil">
+          <router-link to="/ProfileEdit" class="btn">
+            Modifier mon Profil
+          </router-link>
+        </div>
 
       </div>
     
     </section>
 
+    <!-- Posts de l'utilisateur -->
     <div class="container-posts">
 
       <Posts
@@ -65,7 +66,7 @@
 <script>
 import axios from 'axios'
 import Posts from "./Posts.vue"
-import { mapGetters } from "vuex"
+import { mapGetters, mapState, mapActions } from "vuex"
 
 export default {
   name: 'ProfileOfUser',
@@ -74,70 +75,38 @@ export default {
   },
   data() {
     return { 
-      userInfos:{
-        id :'',
-        firstname:'',
-        lastname: '',
-        email: '',
-        role: '',
-        avatar: '',
-        bio: '',
-        createdAt: '',
-        updatedAt: ''
-      },
       info : '',
-      postsProfile: []
+      postsProfile: [],
+      profileModified: false
     }
   },
   beforeCreate() {
-    console.log('state user depuis GetOneUser' , this.$store.state.user.userId);
+    console.log('verif status depuis profil');
     if(this.$store.state.user.userId == -1) { // = déconnecté
-    this.$router.push('/Connexion'); // --> rebascule vers login + affiche erreur
-    
+    this.$router.push('/Connexion'); // --> rebascule vers login 
     return;
     } 
   },
   computed: {
-    ...mapGetters(["fullName"])
+    ...mapGetters(["fullName"]),
+    ...mapState(["user", "userInfos"])
   },
   methods: {
-    getInfosOfUser() {
-      let user = localStorage.getItem('user');
-      console.log('user local storage' ,user);
-      user = JSON.parse(user);
-      console.log(user);
-      let userId = user.userId;
-      console.log('userId', userId);
-      
-        return axios
-        .get(`http://localhost:3000/api/user/${userId}`)
-        .then((res) => {
-          console.log(this.userInfos = res.data); 
-          this.firstname = res.data.firstname ,
-          this.lastname = res.data.lastname,
-          this.email = res.data.email,
-          this.role = res.data.role,
-          this.bio = res.data.bio,
-          this.avatar = res.data.avatar,
-          this.createdAt = res.data.createdAt,
-          this.updatedAt = res.data.updatedAt
-        })
-    },
-
+    ...mapActions(["isUserConnected", "getUserInfos"]),
+  
     /**
-     * @description Cette fonction raffraîchit la liste de posts
-     */
+    * @description Cette fonction raffraîchit la liste de posts
+    */
     refreshPosts() {
       this.postsProfile = []
     },
 
+    /**
+    * @description Cette fonction récupère la liste des posts de l'tuilisateur et les envoie dans  *               'postsProfile' 
+    */
     getPostsOfOneUser() {
-      let user = localStorage.getItem('user');
-      console.log('user local storage' ,user);
-      user = JSON.parse(user);
-      console.log(user);
+      let user = this.user;
       let userId = user.userId;
-      console.log('userId', userId);
 
       axios({
         method: "get",
@@ -146,44 +115,16 @@ export default {
           "Authorization": `Bearer ${localStorage.getItem("token")}`
         }
       })
-
       .then(response => {
-        console.log('RESPONSE', response.data.posts);
         this.postsProfile.push(...response.data.posts)
       })
-      .catch(error => {if(error.response) {this.info = error.response.data.error}})
-    },
-
-    deleteUser() {
-      let user = localStorage.getItem('user');
-      console.log('user local storage' ,user);
-      user = JSON.parse(user);
-      console.log(user);
-      let userId = user.userId;
-      console.log('userId', userId);
-
-      axios({
-        method: "delete",
-        url: `http://localhost:3000/api/user/${userId}`,
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
-        }
-      })
-      .then(response => {
-        this.info = `${response.data.message}`
-        setTimeout(() => this.$router.push('/Connexion'), 1000)
-      })
-      .catch(error => {if(error.response) {this.info = error.response.data.error}})
+      .catch(error => {if(error.response) { console.log(error.response) }})
     }
-    
   },
   created() {
-    //this.isUserConnected()
+    this.isUserConnected()
+    this.getUserInfos()
     this.getPostsOfOneUser()
-  },
-  mounted(){
-    this.getInfosOfUser()
-  
   }
 }
 </script>
@@ -195,7 +136,7 @@ export default {
 }
 .container-card-profile {
   position: relative;
-  padding-top:150px;
+  padding-top:100px;
   width: 100%;
   height: auto;
   display: flex;
@@ -250,24 +191,14 @@ export default {
   height: auto;
   border-radius: 3px!important;
 }
-.imageModify--button {
-  text-align: center;
-  font-weight: 400;
-  font-style: italic;
-  padding: 4px;
-  border: none;
-  background-color: rgba(193,178,175, 0.90) ;
-  width: 100%;
-}
-.imageModify--button:hover{
-   background-color:#d1515a!important;
-    color: white;
-}
 .infos {
   padding:10px;
   margin-top: 10px;
   text-align: center;
   font-size: 1.44rem;
+}
+.profilEdit-btn {
+  display: flex;
 }
 .btn {
   background-color: #243653;
@@ -280,6 +211,11 @@ export default {
   margin: 0 auto;
   font-size: 1.20rem;
   width: auto;
+}
+.btn:hover {
+  color: black;
+  font-weight: 500;
+  border: none;
 }
 .svg-inline--fa.fa-trash:hover {
   color: red;
@@ -315,10 +251,5 @@ export default {
     margin-right: 50px;
 
   }
-  /* .btn  {
-    justify-content: center;
-    top: 10px;
-    right: 10px;
-  } */
 }
 </style>
