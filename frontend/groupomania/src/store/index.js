@@ -17,8 +17,6 @@ const defaultUser = {
 
 // Local Storage
 let user = localStorage.getItem('user');
-console.log('user:', user)
-
 if (!user) {
  user = defaultUser;
  console.log('user2:', user)
@@ -40,11 +38,9 @@ if (!user) {
     status: '', // status de base
     user: user,
     userInfos: [{
-      id:'',
       firstname:'',
       lastname: '',
       email: '',
-      password: '',
       role: '',
       avatar: '',
       bio: ''
@@ -61,37 +57,41 @@ if (!user) {
     },
     copyright: (state) => {
 			const currentYear = new Date().getFullYear()
-			return `© ${state.webSiteName} ${currentYear}`
+			return `© ${state.webSiteName} ${currentYear} tous droits réservés.`
 		}
   },
   mutations: {
     
     SET_STATUS(state, status) { // Défini le status
-      state.status= status;
+      state.status = status;
     },
     LOG_USER(state, user) { // user loggé
       instance.defaults.headers.common['Authorization'] = user.token; // quand logué récupère token dans header
-      localStorage.setItem('user', JSON.stringify(user));// sauvegarde token
-      state.user = user;
+      if(user.token !== undefined) {
+        const newUser= localStorage.setItem('user', JSON.stringify(user)); // sauvegarde token
+        state.user = newUser;
+      }
     },
-    USER_INFOS(state, userInfos) { // récupère infos user
-      state.userInfos = userInfos;
-      console.log('userinfos depuis mut', state.userInfos);
-    },
+    // USER_INFOS(state, userInfos) { // récupère infos user
+    //   state.userInfos = userInfos;
+    // },
     EDIT_FIRST_NAME(state, value) {
       state.userInfos.firstname = value
     }, 
     EDIT_LAST_NAME(state, value) {
       state.userInfos.lastname = value
     }, 
+    EDIT_EMAIL(state, value) {
+      state.userInfos.email = value
+    }, 
+    EDIT_ROLE(state, value) {
+      state.userInfos.role = value
+    }, 
     EDIT_AVATAR(state, value) {
       state.userInfos.avatar = value
     }, 
     EDIT_BIO(state, value) {
       state.userInfos.bio = value
-    }, 
-    EDIT_ROLE(state, value) {
-      state.userInfos.role = value
     }, 
     POST_INFOS: function (state, postInfos) { // récupère infos post
       state.postInfos = postInfos;
@@ -103,6 +103,33 @@ if (!user) {
 
   },
   actions: {
+    /**
+     * @description Fonction actualisant le user à partir des userInfos
+     */
+     getUserInfos({ commit }) {
+      axios({
+        method: "get",
+        url: `http://localhost:3000/api/user/${user.userId}`,
+        headers: {
+          "Content-type": "application/json",
+          "Authorization": ` Bearer ${user.token}`
+        }
+      })
+      .then(user => {
+        commit("EDIT_FIRST_NAME", user.data.firstname)
+        commit("EDIT_LAST_NAME", user.data.lastname)
+        commit("EDIT_EMAIL", user.data.email)
+        commit("EDIT_ROLE", user.data.role)
+        commit("EDIT_AVATAR", user.data.avatar)
+        commit("EDIT_BIO", user.data.bio)
+      })
+      .catch(error => {
+        console.log(error.response)
+        localStorage.clear()
+        router.push({ name: "Connexion"})
+      })
+    },
+
     /**
      * @description Fonction permettant la connexion du user
      */
@@ -147,42 +174,13 @@ if (!user) {
     },
 
     /**
-     * @description Fonction actualisant le user à partir des userInfos
-     */
-    getUserInfos({ commit }) {
-      //console.log(localStorage.getItem('user'));
-      axios({
-        method: "get",
-        url: `http://localhost:3000/api/user/${user.userId}`,
-        headers: {
-          "Content-type": "application/json",
-          "Authorization": ` Bearer ${user.token}`
-        }
-      })
-
-      .then(user => {
-        commit("EDIT_FIRST_NAME", user.data.firstname)
-        commit("EDIT_LAST_NAME", user.data.lastname)
-        commit("EDIT_AVATAR", user.data.avatar)
-        commit("EDIT_BIO", user.data.bio)
-        commit("EDIT_ROLE", user.data.role)
-      })
-      .catch(error => {
-        console.log(error.response)
-        localStorage.clear()
-        router.push({ name: "Connexion"})
-      })
-    },
-
-    
-    /**
      * @description Fonction vérifiant si l'user est connecté
      */
     isUserConnected() {
       if(!user.token || !user.userId) {
         console.log('user token from index',user.token);
-        console.log(user.userId);
-        router.push({ name: "Connexion"})
+        router.push({ name: "Connexion"});
+        location.reload()
       }
     }
   },
