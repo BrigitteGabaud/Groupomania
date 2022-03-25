@@ -2,10 +2,12 @@
 
     <div>
 
-        <div class="card">
-            Bonjour, envie de nous rejoindre ? <br>
-            Connectez-vous !
-        </div>
+        <section class="card">
+            <h1>
+                Bonjour, envie de nous rejoindre ? <br>
+                Connectez-vous !
+            </h1>
+        </section>
         <Login></Login>
     
     </div>
@@ -24,14 +26,6 @@ export default {
 </script>
 
 <style scoped>
-.background-image {
-    background-color: #1D1B1E;
-    background-image: url("../assets/break_room.jpg");
-    background-position: 8% 50%;
-    width: 100%;
-    height:100vh;
-    position: relative;
-}
 .card {
     position: absolute;
     top: 50%;
@@ -41,20 +35,24 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #BEBCBD;
+    background-color: #c1b2af;
     opacity: 0.95;
     text-align: center;
     padding: 15px 9px;
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
-    font-size: 1.30rem;
+}
+h1 {
+    font-size: 1.40rem;
     font-weight: 500;
 }
 /* Ecrans tablette et plus */
 @media (min-width: 768px) {
     .card {
-    max-width: 40%;
-    font-size: 1.44rem;
-    font-weight: 500;
+        max-width: 40%;
+    }
+    h1 {
+        font-size: 1.44rem;
+        font-weight: 500;
     }
 }
 
@@ -63,7 +61,9 @@ export default {
     .card {
         max-width: 40%;
         height: 100px;
-        font-size: 1.60rem;
+    }
+    h1 {
+        font-size: 1.80rem;
     }
 }
 
@@ -71,7 +71,8 @@ export default {
 @media (min-width: 1440px) {
     .card {
         max-width: 25%;
-        height: 100px;
+    }
+    h1 {
         font-size: 2rem;
     }
 }

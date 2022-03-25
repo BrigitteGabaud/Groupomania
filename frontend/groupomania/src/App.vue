@@ -4,13 +4,13 @@
 
     <the-header/>
 
-    <div class="container-views">
+    <main class="container-views">
 
       <router-view/>
       
-    </div>
+    </main>
 
-    <the-footer/>>
+    <the-footer/>
 
   </div>
 

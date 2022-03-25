@@ -2,7 +2,7 @@
 
   <div class="comment-container">
     
-    <div class=comment id="comment">
+    <div class=comment>
 
       <!-- Informations user: photo, identité, date de publication -->
       <div class="container-avatar">
@@ -35,7 +35,6 @@
           v-if="commentUserId == user.userId && commentModified == false "
           @click="commentModified = true"
           type="submit" 
-          id="edit-icon"
           alt="Modifier le commentaire"
           title="Modifier">
           <fa icon='edit'/>
@@ -56,6 +55,7 @@
     <!-- Contenu du commentaire modifié -->
     <div v-show="commentModified" class="comment-modify">
 
+      <label for="commentContentModified" class="visuallyhidden">Ajoutez votre nouveau texte ici</label>
       <textarea
         :id="'commentContentModified' + [[ commentId ]]"
         type="text" 
@@ -68,10 +68,9 @@
       <button 
         @click="modifyComment(commentId)"
         type="submit" 
-        class="btn mt-2 col-4" 
+        class="button" 
         :class="{'btn-outline disabled' : !validatedFields}"
-        id="button"
-        alt="Publier un nouveau commentaire">
+        aria-label="Publier un nouveau commentaire">
         <fa icon= 'paper-plane'/>
       </button>
 
@@ -194,7 +193,7 @@ export default {
 .comment-container {
   margin-bottom: 10px;
 }
-#comment {
+.comment {
   display: flex;
 }
 .container-avatar {
@@ -240,5 +239,16 @@ img {
 }
 .svg-inline--fa.fa-trash:hover {
   color: red;
+}
+
+/* Ecrans ordinateur et plus */
+@media (min-width: 1024px) {
+  .comment-infos {
+    font-size: 1.3rem;
+  }
+  .svg-inline--fa {
+    width: 15px;
+    height: 15px;
+  }
 }
 </style>

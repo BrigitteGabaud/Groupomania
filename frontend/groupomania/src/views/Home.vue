@@ -1,6 +1,6 @@
 <template>
 
-    <div class="home">
+    <main class="home">
 
         <div class="container-post-create">
 
@@ -8,32 +8,33 @@
                 
                 <h1>Bonjour {{ userInfos.firstname }} : quoi de neuf ?</h1> <br>
 
-                <label for="Ajoutez votre texte ici."></label>
+                <form >
+                    <label for="content" class="visuallyhidden">Ajoutez votre texte ici</label>
 
-                <textarea 
-                    id="content" 
-                    v-model="content"  
-                    class="form-control" 
-                    type="text" 
-                    placeholder="Ajoutez votre texte ici.">
-                </textarea><br>
+                    <textarea 
+                        id="content" 
+                        v-model="content"  
+                        class="form-control" 
+                        type="text" 
+                        placeholder="Ajoutez votre texte ici.">
+                    </textarea><br>
+                </form>
 
                 <div class="post-create--buttons"  >
 
                     <input 
                         type="file" 
-                        id="file" 
-                        class="file" 
+                        id="addFile" 
                         tableindex="-1" 
                         accept="image/*">
 
-                    <label for="file" alt="image à joindre au post" ><fa icon= 'image'/></label>
+                    <label for="addFile" class="visuallyhidden" alt="choisir l'image à joindre au post" >Choisir une image</label>
                     
                     <button 
                         type="submit" 
                         class="btn mt-2 col-4" 
                         id="button"
-                        alt="Publier mon post"
+                        aria-label="Publier mon post"
                         :class="{'btn-outline disabled' : !validatedFields}"
                         @click="createPost()">
                         <fa icon= 'paper-plane'/>
@@ -61,7 +62,7 @@
 
         </div>
 
-    </div>
+    </main>
 
 </template>
 
@@ -113,7 +114,7 @@ export default {
             .then(response => {
                 this.postsList.push(...response.data)
             })
-            .catch(error => { if(error.response) { console.log(error.response.data.error) }})
+            .catch(error => { if(error.response) { console.log(error.response) }})
         },
 
          /**
@@ -129,7 +130,7 @@ export default {
          */
         createPost() {
             let formData = new FormData();
-            let file = document.getElementById("file")
+            let file = document.getElementById("addFile")
            
             formData.append("content", this.content)
             formData.append("userId", JSON.stringify(this.user.userId))
@@ -184,7 +185,8 @@ export default {
     background-color: rgba(193,178,175, 0.90);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
     margin-top: 100px;
-    padding: 15px 10px;
+    margin-bottom: 5%;
+    padding: 10px 4px;
 }
 #post-create h1 {
     font-size: 1.45rem;
@@ -193,6 +195,9 @@ export default {
     padding-bottom: 2%;
 }
 br {
+    display: none;
+}
+.visuallyhidden {
     display: none;
 }
 #content::placeholder {
@@ -205,7 +210,7 @@ textarea.form-control {
     display: flex;
     justify-content: space-between;
 }
-.file {
+#addFile {
     opacity: 0;
     width: 0.1px;
     height: 0.1px;
@@ -213,33 +218,36 @@ textarea.form-control {
 }
 .post-create--buttons label {
     position: relative;
-    width: 30px;
+    font-size: 1.20rem;
+    width: fit-content;
     height: 30px;
+    margin-left: 1px;
     margin-top: 0.8rem!important;
-    border-radius: 10px!important;
-    background: #d1515a;
+    padding: 5px;
+    border-radius: 3px!important;
+    background: #243653;
     box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: white;
     cursor: pointer;
     transition: transform .2s ease-out;
-    margin-left: 10px;
+    
 }
 #button {
     height: 30px; 
     line-height: 15px;
     width: 30px;
-    background-color: #d1515a;
+    background-color: #243653;
     box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
-    border-radius: 10px;
+    border-radius: 3px;
     color: white;
     outline: none;
     border: none;
     position: relative;
+    margin-right: 1px;
     margin-top:  0.8rem!important;
-    margin-right: 10px;
     padding: 2px;
 }
 .svg-inline--fa.fa-w-16  {
@@ -249,7 +257,7 @@ textarea.form-control {
     height: 1.5em;
 }
 .btn:hover, .post-create--buttons label:hover  {
-    background-color:#243653!important;
+    background-color:#d1515a!important;
     color: white;
     top: 2px;
 }
@@ -272,7 +280,7 @@ textarea.form-control {
         height: 25%;
         margin-top: 15%;
         margin-bottom: 5%;
-        padding: 15px 10px;
+        padding: 10px 4px;
     }
     #post-create h1 {
         font-size: 1.7rem;

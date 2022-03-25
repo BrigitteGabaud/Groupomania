@@ -1,10 +1,13 @@
 <template>
-    <div id="bloc-login" v-if="reveleLogin">
+
+    <main id="bloc-login" v-if="reveleLogin">
 
         <div  class="overlay"></div>
 
         <div class="login card">
             
+            <div v-on:click="toggleLogin" class="btn-login ">X</div>
+
             <!-- Titre et sous-titres selon le souhait du user -->
             <h1
                 v-if="mode == 'login'" 
@@ -20,12 +23,12 @@
                 v-if="mode == 'login'"
                 class="card-subtitle" 
                 @click="switchToCreateAccount">Pas encore de compte ?&nbsp; 
-                <span class="card_action" >Créer un compte </span></p>
+                <span class="card_action" role="button">Créer un compte </span></p>
 
             <p  
                 v-else class="card-subtitle"
                 @click="switchToLogin">Déjà un compte ? &nbsp;
-                <span class="card_action" > Se connecter</span></p>
+                <span class="card_action" role="button"> Se connecter</span></p>
 
             <div class="container-form">
 
@@ -46,7 +49,7 @@
                             required
                             placeholder="Prénom"/>
                             
-                        <p v-if="!firstnameIsValid" class="error-message">Votre prénom doit comporter entre 3 et 30 caractères alphabétiques.</p>
+                        <p v-if="!firstnameIsValid" class="error-message"></p>
                     
                         <label for="laststname">Entrez votre nom</label>  
                         <input 
@@ -56,7 +59,7 @@
                             required
                             placeholder="Nom"/>
 
-                        <p v-if="!lastnameIsValid" class="error-message">Votre nom doit comporter entre 3 et 30 caractères alphabétiques.</p>
+                        <p v-if="!lastnameIsValid" class="error-message"></p>
 
                     </div>
 
@@ -125,7 +128,7 @@
 
         </div>
 
-    </div>
+    </main>
 
 </template>
 
@@ -241,9 +244,16 @@
     }
     .login {
         margin-top: 100px;
-        background: rgb(193,178,175);
+        background: #c1b2af;
         color: #333;
         padding: 15px;
+    }
+    .btn-login {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-weight: 600;
+        color: black;
     }
     .card-title {
         text-align: center;
@@ -259,9 +269,13 @@
         margin-bottom: 10px!important;
     }
     .card_action {
-        color: #d1515a;
+        color: black;
+        font-weight: 500;
         text-decoration: none;
         cursor: pointer;
+    }
+    .card_action:hover {
+        text-decoration: underline;
     }
     .container-form {
         margin: 0 auto;
@@ -330,6 +344,9 @@
         }
         .login {
             padding: 30px;
+        }
+        .btn-login {
+            font-size: 15px;
         }
         .card-title {
             font-size: 2.24rem;

@@ -1,12 +1,12 @@
 <template>
 
-    <div class="card" id="post">
+    <div class="card">
 
         <!-- Informations user: photo, identité, date de publication -->
         <div class="publication-infos">
 
             <div class="container-avatar">
-                <img class="img" alt="Photo de profil" :src= postUser.avatar>
+                <img class="avatar" alt="Photo de profil" :src= postUser.avatar>
             </div>
 
             <div class="publication-infos--name-date">
@@ -15,7 +15,7 @@
                     <p><strong>{{ postUser.firstname }}</strong></p>
                     <p><strong>{{ postUser.lastname }}</strong></p>
                 </div>
-                <p id="publication-date">Publié le {{ dateToLocale(postDate) }}</p>
+                <p class="publication-date">Publié le {{ dateToLocale(postDate) }}</p>
 
             </div>
              
@@ -35,8 +35,7 @@
                 @click="displayOrNotComments"
                 type="button"
                 role="button"
-                class="btn"
-                id="displayOrNotComments--Button" 
+                class="displayOrNotComments--Button"
                 alt="Afficher les commentaires"
                 title="Afficher les commentaires">
                     <span>Commentaires</span>
@@ -58,9 +57,9 @@
                 :refreshComments="refreshComments"
             />
             
-            <label for="Votre commentaire"></label>
+            <label for="'post-input--comment' + [[ postId]]" class="visuallyhidden">Votre commentaire</label>
 
-            <div class="input-group-sm mb-1" id="post-input">
+            <div class="post-input">
 
                 <textarea 
                     type="text" 
@@ -77,8 +76,7 @@
                     role="button"
                     class="btn btn-input"
                     :class="{'btn-outline disabled' : !validatedFields}"
-                    id="post-input--button"
-                    alt="Publier le commentaire">
+                    aria-label="Publier le commentaire">
                     <fa icon='comment-dots'/>
                 </button>
                 
@@ -88,6 +86,8 @@
 
         <!-- Contenu du post modifié -->
         <div v-show="postModified" class="post-modify">
+            
+            <label for="postContentModified" class="visuallyhidden">Ajoutez votre nouveau texte ici</label>
 
             <textarea
                 type="text" 
@@ -95,7 +95,8 @@
                 :id="'postContentModified' + [[ postId ]]"
                 name='postContentModified' 
                 :value="content"
-                placeholder="Ajoutez votre nouveau texte ici.">
+                placeholder="Ajoutez votre nouveau texte ici."
+                aria-label="Ajoutez votre nouveau texte ici">
             </textarea><br>
             
             <div  class="post-modify--buttons" >
@@ -103,8 +104,9 @@
                 <input
                     type="file" 
                     class="file"
-                    id="file"
-                    name='file' 
+                    :id="'file' + [[ postId ]]"
+                    name="file" 
+                    aria-label="Nouvelle image à joindre au post"
                     tableindex="-1" 
                     accept="image/*">
 
@@ -113,10 +115,9 @@
                 <button 
                     @click="modifyPost(postId)"
                     type="submit" 
-                    class="btn mt-2 col-4" 
+                    class="button" 
                     :class="{'btn-outline disabled' : !validatedFields}"
-                    id="button"
-                    alt="Publier un nouveau post">
+                    aria-label="Publier un nouveau post">
                     <fa icon= 'paper-plane'/>
                 </button>
 
@@ -132,7 +133,6 @@
                 @click="postModified = true"
                 type="submit" 
                 class="modifyPost"
-                id="edit-icon"
                 alt="Modifier le post"
                 title="Modifier">
                 <fa icon='edit'/>
@@ -348,13 +348,13 @@
 
 
 <style scoped>
-#post {
+.card {
     background-color: rgba(193,178,175, 0.90);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
     margin-bottom: 10px;
-    padding: 1%;
+    padding: 4px;
 }
-#post:last-of-type {
+.card:last-of-type {
     margin-bottom: 100px;
 }
 .publication-infos {
@@ -364,17 +364,20 @@
 .container-avatar {
     width: 50px;
 }
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+}
 .publication-infos--name-date p {
     margin: 0;
     padding: 2px 0 2px 5px;
+    font-size: 1.15rem;
+    font-style: italic;
 }
 .publication-infos--fullName {
     display: flex;
     font-size: 1.28rem;
-}
-#publication-date {
-    font-size: 1.15rem;
-    font-style: italic;
 }
 .container-post--image {
     width: 100%;
@@ -390,20 +393,24 @@ img {
     padding: 5px;
     font-size: 1.20rem;
 }
-#displayOrNotComments--Button {
+.displayOrNotComments--Button {
     width: 100px;
+    height: 30px;
     background-color: #243653;
-    box-shadow: none;
+    box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
+    border: none;
     border-radius: 3px;
     color: white;
     font-size: 1.30rem;
     font-weight: 400;
     margin: 5px 0 10px 0;
 }
-displayOrNotComments--Button:hover {
-    background-color: #aa9591!important;
+.displayOrNotComments--Button:hover {
+    background-color: #d1515a;
+    color: black;
+    font-weight: 500;
 }
-#post-input {
+.post-input {
     display: flex;
 }
 .post-input--comment  {
@@ -421,15 +428,20 @@ displayOrNotComments--Button:hover {
     background-clip: padding-box;
     border: 1px solid #ced4da;
 }
+.visuallyhidden {
+    display: none;
+}
 .post-input--comment:focus{
     border-color: #243653!important;
     outline-color: #243653!important;
+    outline-width: 0.5px;
 }
-#post-input--button{
-    border-radius: 0  3px 3px 0;
+.btn-input {
+    border-radius: 0  3px 3px 0!important;
     box-shadow: none;
     margin-top: 0!important;
     height: 43px!important;
+    transition: none;
 }
 .svg-inline--fa.fa-w-18, 
 .svg-inline--fa.fa-w-14 {
@@ -500,7 +512,7 @@ p {
     transition: transform .2s ease-out;
     margin-left: 10px;
 }
-#button {
+.button {
     height: 30px; 
     line-height: 15px;
     width: 30px;
@@ -528,10 +540,10 @@ p {
 @media (min-width: 768px) {
     .card {
         width: 50%;
-        padding: 1%;
+        padding: 4px;
     }
     .container-avatar {
-        width: 20%;
+        width: 60px;
     }
     .publication-infos--name-date p{
         margin: 0;
@@ -548,7 +560,7 @@ p {
     .post-comment--title {
         font-size: 1.44rem;
     }
-    #post-input {
+    .post-input {
         height: 40px;
     }
     .form-control {
@@ -562,16 +574,12 @@ p {
         max-width: 40%;
     }
     .publication-infos--name-date p{
-        font-size: 1.80rem;
-    }
-    #publication-date {
-        font-size: 1.30rem;
-        font-style: italic;
+        font-size: 1.35rem;
     }
     .post-content {
-    margin: 0;
-    padding: 5px;
-    font-size: 1.35rem;
+        margin: 0;
+        padding: 5px;
+        font-size: 1.35rem;
     }
     .svg-inline--fa.fa-w-18, 
     .svg-inline--fa.fa-w-14 {

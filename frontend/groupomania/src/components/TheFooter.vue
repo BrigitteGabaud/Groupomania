@@ -1,7 +1,7 @@
 <template>
-  <div class="container-footer">
+  <footer class="container-footer">
       <p>{{ copyright }} </p>
-  </div>
+  </footer>
 </template>
 
 <script>
