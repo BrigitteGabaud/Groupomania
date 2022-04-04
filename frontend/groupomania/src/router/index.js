@@ -5,7 +5,7 @@ import Home from '@/views/Home.vue'
 import Profile from '@/views/Profile.vue'
 import ProfileEdit from '@/views/ProfileEdit.vue'
 import Connexion from '@/views/Connexion.vue'
-import Admin from '@/views/Admin.vue'
+import NotFoundPage from '@/views/NotFound.vue'
 
 
 // Création du routes
@@ -47,13 +47,9 @@ const routes = [
     }
   },
   {
-    path: '/Admin',
-    name: 'Admin',
-    component: Admin,
-    meta: {
-      title: 'Administrateur',
-      needLoggedIn: true 
-    }
+    path: '/:wrongPath',
+    name: 'NotFound', 
+    component: NotFoundPage
   }
 ]
 
@@ -63,9 +59,10 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async(to) => {
   if(to.meta.needLoggedIn && !localStorage.getItem('user')) {
-    return '/Connexion'
+    console.log('hop là !');
+    return { name:'Connexion'}
   }
 })
 
