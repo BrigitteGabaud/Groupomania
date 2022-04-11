@@ -80,13 +80,6 @@ export default {
       profileModified: false
     }
   },
-  beforeCreate() {
-    console.log('verif status depuis profil');
-    if(this.$store.state.user.userId == -1) { // = déconnecté
-    this.$router.push('/Connexion'); // --> rebascule vers login 
-    return;
-    } 
-  },
   computed: {
     ...mapGetters(["fullName"]),
     ...mapState(["user", "userInfos"])
@@ -99,6 +92,7 @@ export default {
     */
     refreshPosts() {
       this.postsProfile = []
+      this.getAllPosts()
     },
 
     /**
@@ -122,7 +116,11 @@ export default {
     }
   },
   created() {
-    this.isUserConnected()
+   // this.isUserConnected()
+    // this.getUserInfos()
+    // this.getPostsOfOneUser()
+  },
+  mounted() {
     this.getUserInfos()
     this.getPostsOfOneUser()
   }

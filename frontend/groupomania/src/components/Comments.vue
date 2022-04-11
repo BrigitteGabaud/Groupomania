@@ -219,8 +219,8 @@ img {
   padding: 5px;
   font-style: italic;
 }
-.comment-content {
-  padding-left: 5px;
+.comment-modify {
+  display: flex;
 }
 .container-buttons {
   display: flex;

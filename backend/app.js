@@ -1,4 +1,5 @@
 "use strict";
+
 /* Import des dépendances */
 require('dotenv').config()
 const express = require('express');
@@ -13,7 +14,7 @@ const commentRoutes = require('./routes/comment-routes');
 /* Crée application express */
 const app = express();
 
-/* Configuration headers appliquée à toutes les routes (CORS)  */
+/**  Configuration headers appliquée à toutes les routes (CORS)  **/
 /* Permet au front-end d'accéder à l'API */
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*'); // =  ok accès à tout le monde
@@ -34,9 +35,10 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 const db = require('./models')
 db.sequelize.sync()
-   /* db.sequelize.sync({force:true}).then(() => {
-     console.log("Drop and re-sync db.");
-});  */
+    // Utile pour debug --> uniquement en développement
+    //  db.sequelize.sync({force:true}).then(() => {
+    //  console.log("Drop and re-sync db.");
+    //  });  
 
 
 /* Enregistrement routers */

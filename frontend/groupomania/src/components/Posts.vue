@@ -110,7 +110,9 @@
                     tableindex="-1" 
                     accept="image/*">
 
-                <label for="file" alt="Nouvelle image à joindre au post" ><fa icon= 'image'/></label>
+                <label :for="'file' + [[ postId ]]" alt="Nouvelle image à joindre au post" 
+                aria-label="Nouvelle image à joindre au post"
+                ><fa icon= 'image'/><span class="visually-hidden">Image</span> </label>
                 
                 <button 
                     @click="modifyPost(postId)"
@@ -168,7 +170,7 @@
         data() {
             return{
                 el: 'body',
-                userLoggedIn: localStorage.getItem("userId"),
+                //userLoggedIn: localStorage.getItem("userId"),
                 user: {},
                 postUser: "",
                 commentsList: [],
@@ -198,8 +200,8 @@
              */
             modifyPost(postId) {
                 const formData = new FormData()
-                let file = document.getElementById('file')
-                
+                let file = document.getElementById(`file${postId}`)
+                console.log('file', file);
                 formData.set("content", document.getElementById(`postContentModified${postId}`).value)
 
                 if(file.value !== "") {
@@ -310,7 +312,7 @@
                     data: {content: this.commentContent}
                 })
                 .then(() => {
-                    this.isUserConnected()
+                    //this.isUserConnected()
                     this.refreshComments();
                     this.commentContent = ""
                 })
@@ -322,7 +324,7 @@
         * @description Cette fonction appelle l'API pour récupérer les infos du user créant le post (photo profile / nom) et les stocke dans les datas
         */
         created() {
-            this.isUserConnected()
+            //this.isUserConnected()
 
             axios({
                 method: "get",

@@ -1,7 +1,6 @@
 import { createStore, createLogger } from 'vuex'
 import axios from 'axios'
-import router from '../router/index';
-//const axios = require('axios').default;
+//import router from '../router/index';
 
 // Configuration axios
 const instance = axios.create({
@@ -18,7 +17,7 @@ const defaultUser = {
 // Local Storage
 let user = localStorage.getItem('user');
 if (!user) {
- user = defaultUser;
+ //user = defaultUser;
  console.log('user2:', user)
 } else {
   try {
@@ -66,15 +65,13 @@ if (!user) {
       state.status = status;
     },
     LOG_USER(state, user) { // user loggé
+      console.log('log user');
       instance.defaults.headers.common['Authorization'] = user.token; // quand logué récupère token dans header
-      if(user.token !== undefined) {
-        const newUser= localStorage.setItem('user', JSON.stringify(user)); // sauvegarde token
-        state.user = newUser;
-      }
+      
+      localStorage.setItem('user', JSON.stringify(user)); // sauvegarde token
+      state.user = user;
+      
     },
-    // USER_INFOS(state, userInfos) { // récupère infos user
-    //   state.userInfos = userInfos;
-    // },
     EDIT_FIRST_NAME(state, value) {
       state.userInfos.firstname = value
     }, 
@@ -103,46 +100,24 @@ if (!user) {
 
   },
   actions: {
-    /**
-     * @description Fonction actualisant le user à partir des userInfos
-     */
-     getUserInfos({ commit }) {
-      axios({
-        method: "get",
-        url: `http://localhost:3000/api/user/${user.userId}`,
-        headers: {
-          "Content-type": "application/json",
-          "Authorization": ` Bearer ${user.token}`
-        }
-      })
-      .then(user => {
-        commit("EDIT_FIRST_NAME", user.data.firstname)
-        commit("EDIT_LAST_NAME", user.data.lastname)
-        commit("EDIT_EMAIL", user.data.email)
-        commit("EDIT_ROLE", user.data.role)
-        commit("EDIT_AVATAR", user.data.avatar)
-        commit("EDIT_BIO", user.data.bio)
-      })
-      .catch(error => {
-        console.log(error.response)
-        localStorage.clear()
-        router.push({ name: "Connexion"})
-      })
-    },
+   
 
     /**
      * @description Fonction permettant la connexion du user
      */
-    login: ({commit}, userInfos) => {
-      
+    login: ({commit, dispatch}, userInfos) => {
+      console.log(userInfos);
       commit('SET_STATUS', 'loading'); // défini status en mode loading
       return new Promise((resolve, reject) => {
-      instance.post('/user/login', userInfos) // instance = axios
+      instance.post('/user/login', userInfos)
 
         .then(function(response) {
+          console.log('response', response.data);
           commit('SET_STATUS', ''); // = si logué
-          commit('LOG_USER', response.data); // commit LOG_USER + récupère données
-          resolve(response);
+          dispatch('test', response.data)
+          .then(() => {
+            resolve(response);
+          })
         })
         .catch(function(error) {
           commit('SET_STATUS', 'error_login'); // si erreur
@@ -151,6 +126,11 @@ if (!user) {
         
         })
       })
+    },
+
+    test: ({commit}, value) => {
+      console.log('ICI 3');
+      commit('LOG_USER', value); // commit LOG_USER + récupère données
     },
 
     /**
@@ -173,16 +153,48 @@ if (!user) {
       })
     },
 
+    //  /**
+    //  * @description Fonction actualisant le user à partir des userInfos
+    //  */
+    async getUserInfos({ commit }) {
+      console.log(user.userId, 'userid');
+       
+         await axios({
+            method: "get",
+            url: `http://localhost:3000/api/user/${user.userId}`,
+            headers: {
+              "Content-type": "application/json",
+              "Authorization": ` Bearer ${user.token}`
+            }
+          })
+          .then(user => {
+            console.log("USER", user);
+            commit("EDIT_FIRST_NAME", user.data.firstname)
+            commit("EDIT_LAST_NAME", user.data.lastname)
+            commit("EDIT_EMAIL", user.data.email)
+            commit("EDIT_ROLE", user.data.role)
+            commit("EDIT_AVATAR", user.data.avatar)
+            commit("EDIT_BIO", user.data.bio)
+          })
+        
+          .catch(error => {
+            console.log(error)
+            //localStorage.clear()
+           // router.push({ name: "Connexion"})
+          })
+  
+        
+      },
+
     /**
      * @description Fonction vérifiant si l'user est connecté
      */
-    isUserConnected() {
-      if(!user.token || !user.userId) {
-        console.log('user token from index',user.token);
-        router.push({ name: "Connexion"});
-        location.reload()
-      }
-    }
+    // isUserConnected() {
+    //   console.log('ICI 2 ');
+    //   if(user == undefined || user.token == undefined || user.userId == undefined) {
+    //     //router.push({ name: "Connexion"});
+    //   }
+    //}
   },
 
 

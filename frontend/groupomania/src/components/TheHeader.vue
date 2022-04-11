@@ -6,27 +6,19 @@
 
             <!-- Logo -->
             <div class="container-logo">
-                <img
-                class="navbar-brand"
-                id="logo"
-                src="@/assets/icon-left-font-monochrome-black_opttt.png" 
-                alt="Logo Groupomania">
+
+                <router-link aria-label="Aller vers la page accueil" to="/">
+                    <img
+                    class="navbar-brand"
+                    id="logo"
+                    src="@/assets/icon-left-font-monochrome-black_opttt.png" 
+                    alt="Logo Groupomania">
+                </router-link>
+
             </div>
 
-            <!-- Connexion si user DECONNECTE -->
-            <router-link 
-                v-if="!user"  
-                @click="toggleLogin" :toggleLogin="toggleLogin" 
-                class="login" 
-                aria-label="Aller vers la fenêtre de connexion" 
-                to="/Connexion">
-
-                <fa icon='power-off'/> 
-
-            </router-link>
-
             <!-- Liste de navigation si user CONNECTE -->
-            <ul v-if="user" class="navbar-nav">
+            <ul v-show="user" class="navbar-nav">
                 
                 <!-- Accueil -->
                 <li v-if="user" class="nav-item active" title="Accueil">
@@ -50,16 +42,6 @@
 
                 </li>
 
-                <!-- Connexion -->
-                <!-- <li 
-                    v-if="!user"
-                    class="nav-item"
-                    @click="toggleLogin" :toggleLogin="toggleLogin">
-
-                    <router-link aria-label="Aller vers la fenêtre de connexion" to="/Connexion">Connexion </router-link>
-
-                </li> -->
-
                 <!-- Déconnexion -->
                 <li 
                     v-if="user" 
@@ -74,27 +56,19 @@
             </ul>
 
         </nav>
-
-        <login :reveleLogin="reveleLogin" :toggleLogin="toggleLogin" ></login>
-
     </div>
 
 </template>
 
 <script>
-import Login from '@/components/Login'
 import { mapState, mapMutations, mapActions } from "vuex"
 
 export default {
     name: "TheHeader",
     data() {
         return {
-            reveleLogin: false, // = props
             user: false
         }
-    },
-    components: {
-        'login': Login
     },
     computed: {
         ...mapState([ "userInfos"]),
@@ -103,12 +77,9 @@ export default {
     methods: {
         ...mapActions([ "getUserInfos" ]),
 
-        toggleLogin: function() {
-            this.reveleLogin = !this.reveleLogin
-        },
         isUserLoggedIn: function() {
             let user = localStorage.getItem('user');
-
+            console.log('user from header', user);
             if(user) {
                 this.user = JSON.parse(user);
                 this.user == true
@@ -118,9 +89,9 @@ export default {
         },
         logout: function() {
         this.$store.commit('LOGOUT');
-        setTimeout(() => this.$router.push('/Connexion'), 1000)
-        document.location.reload()
-      }
+        this.user == false
+       // this.$router.push('/Connexion')
+        }
     },
     created() {
         this.isUserLoggedIn()

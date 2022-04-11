@@ -47,7 +47,8 @@ exports.signup = async (req, res) => {
     })
     .catch(error => res.status(500).json({ error: error.message })); 
   } catch(err){
-    return res.status(500).json({ err })
+    //return res.status(500).json({ err: err.message })
+    console.log(err.message)
   }
 }
 
@@ -64,7 +65,7 @@ exports.login = async (req, res)=> {
 
     /* si elle n'y est pas*/    
     if(!user) {
-        return res.status(401).json({ error: 'Utilisateur non trouvé !'}); 
+      return res.status(401).json({ error: 'Utilisateur non trouvé !'}); 
     }
     /* Compare mdp req à celui db */
     bcrypt.compare(req.body.password, user.password)
@@ -81,7 +82,7 @@ exports.login = async (req, res)=> {
           token: jwt.sign( // appel fonction jwt
             { userId: user.id, userRole: user.role  }, // 1er arg = "paylod" avec données à encoder == backend
             process.env.SECRET_KEY_JWT, // 2e arg = clé secrète pour encodage
-            { expiresIn: '1h'} // 3e arg config delai expiration token
+            { expiresIn: '8h'} // 3e arg config delai expiration token
           )
         });
     }) 
@@ -116,17 +117,32 @@ exports.modifyUser = async (req, res) => {
     /* Vérifie si la requête correspond au schemaUserModify */
     const joiValidator = await schemaUserModify.validateAsync(req.body)
     if(!joiValidator){
-      return res.status(400).json({ error: 'Modification impossible certaines données sont incorrectes' })
+      return res.status(400).json({ error: 'Modification impossible: certaines données sont incorrectes' })
     }
-   
-    const newUser = req.body;
+    console.log('REQ BOODYYYY', req.body);
+    // Récupère les données du body
+    const newUser = {}
+    if(req.body.firstname) {
+      newUser.firstname = req.body.firstname
+    }
+    if(req.body.lastname) {
+      newUser.lastname = req.body.lastname
+    }
+    if(req.body.email) {
+      newUser.email = req.body.email
+    }
+    if(req.body.bio) {
+      newUser.bio = req.body.bio;
+    }
     // Récupère l'id de l'utilisateur effectuant la requête
     const reqUserId = req.user.userId;
     
     if(req.file) {
+      console.log(req.file, 'REQ FILE ****');
+      // génère nouvelle image
       newUser.avatar = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     }
-
+    console.log('new user', newUser);
     // Cherche l'user concerné dans la BDD 
     db.users.findOne({where :{id: req.params.id}}) 
     .then(User => {
@@ -138,17 +154,23 @@ exports.modifyUser = async (req, res) => {
         return res.status(401).json({ error: "L'utilisateur ne dispose pas des droits pour effectuer cette modification" })
       }  
       
+      // Si fichier img dans la requête
       if(req.file){
-
-        if(User.avatar) {
+          console.log('REQ FILE', req.file);
           const filename = User.avatar.split('/images/')[1];
-          fs.unlink(`images/${filename}`, () => {
-
-            // Puis modifie le user
-            User.update({...newUser})
-            .then(() => res.status(200).json({ message: 'User modifié !'}))
-            .catch(error => res.status(400).json({ error: error.message }));
-        })}
+          console.log('FILENAME', filename);
+          console.log('USER AVATAR', User.avatar);
+        // if(User.avatar) {
+        //   console.log(User.avatar, '/// USER AVATAR ///');
+        //   const filename = User.avatar.split('/images/')[1];
+        //   console.log('FILENAME', filename);
+        //   if(User.avatar !== 'http://localhost:3000/images/default_avatar.png'){
+        //   fs.unlink(`images/${filename}`, () => {
+        //     // Puis modifie le user
+        //     User.update({...newUser})
+        //     .then(() => res.status(200).json({ message: 'User modifié !'}))
+        //     .catch(error => res.status(400).json({ error: error.message }));
+        // })}}
 
       } else { 
         // Modifie le contenu texte
@@ -167,72 +189,65 @@ exports.modifyUser = async (req, res) => {
 /*** Export de la fonction supression user (DELETE) ***/
 exports.deleteUser = (req, res) => {
   const reqUser = req.user;
-  const reqUserId = req.user.userId;
   const id = req.params.id;
 
-  db.users.findByPk(id) 
+   db.users.findByPk(id)  
   .then(userResponse => {
-    if(! userResponse) {
+    if(!userResponse) {
       return res.status(404).json({message: `Utilisateur non trouvé` })
     }
     // Si l'userId de la BDD est différent de celui de la requête
-    if(userResponse.id !== reqUserId ) {
-      return res.status(401).json({message: `L'utilisateur n'est pas autorisé à effectuer cette action.` })
+    if( (userResponse.id !== reqUser.userId) || (userResponse.userRole !== reqUser.role) ) {
+      return res.status(403).json({message: `L'utilisateur n'est pas autorisé à effectuer cette action.` })
     }
-    if (userResponse.userRole !== reqUser.role) {
-      return res.status(403).json({ message: `L'utilisateur n'est pas pas autorisé à effectuer cette action.` })
-    }
-
     /* Accède à l'objet pour récup posts/commentaires/images */
-    db.users.findOne({ where: { id : req.params.id }}) 
-    
-    .then(User => {
-      if (User.role !== "admin" && reqUserId !== User.id) {
-        return res.status(403).json({ message: `L'utilisateur n'est pas pas autorisé à effectuer cette action.` })
-      } else return db.posts.findAll({ where : {userId: reqUserId} })
-    })
-
-    .then(comments => {
-      if(comments == "") {
-        return db.posts.findAll({ where: {userId: reqUserId}})
-      } else {
-        for (let comment in comments) {
-          comments[comment].destroy()
-        }
-        return db.posts.findAll({ where: {userId: reqUserId}})
-      }
-    })
-
-    .then(posts => {
-      if(posts == "") {
-        return db.users.findAll({ where: {id: reqUserId}})
-      } else {
-        for (let post in posts) {
-          if(posts[post].image) {
-            const filename = post[post].image.split("/images/")[1];
-            fs.unlink(`images/${filename}`, () => {
-              posts[post].destroy()
-            })
-          } else {
-            post[post].destroy()
-          }
-        }
-        return db.users.findOne({ where: {id: reqUserId}})
-      }
-    })
-
-    .then(user => {
-      const User = user[0]
-      const avatar = user[0].avatar
-
-      if(user.avatar !== 'http://localhost:3000/images/default_avatar.png') {
-        const filename = avatar.split("/images/")[1];
-        fs.unlink(`images/${filename}`, () => {
-        User.destroy()
-        return res.status(200).json({ message: "Utilisateur supprimé !" })
-        })
-      }
-    })
+    return db.users.findOne({ where: { id : reqUser.userId }}) 
   })
+
+
+  .then(User => {
+    if (User.role !== "admin" && reqUser.userId !== User.id) {
+      return res.status(403).json({ message: `L'utilisateur n'est pas pas autorisé à effectuer cette action.` })
+    } else return db.comments.findAll({ where : {userId: reqUser.userId} })
+  })
+
+  .then(comments => {
+    if(comments) {
+      for (let comment in comments) {
+        comments[comment].destroy()
+      }
+    }
+    return db.posts.findAll({ where: {userId: reqUser.userId}})
+  })
+
+  .then(posts => {
+    if(posts) {
+      for (let post in posts) {
+        if(posts[post].image) {
+          const filename = posts[post].image.split("/images/")[1];
+          fs.unlink(`images/${filename}`, () => {
+            posts[post].destroy()
+          })
+        }
+        posts[post].destroy()
+      }
+    }
+    return db.users.findOne({ where: {id: reqUser.userId}})
+  })
+
+  .then(user => {
+    if(user.avatar !== 'http://localhost:3000/images/default_avatar.png') {
+      const filename = user.avatar.split("/images/")[1];
+      fs.unlink(`images/${filename}`, (err) => {
+        return err ? console.log(err) : console.log('image supprimée !');
+      })
+    }
+    return user.destroy()
+  })
+  
+  .then(() => {
+     res.status(200).json({ message: "Utilisateur supprimé !" })
+  })
+
   .catch(error => res.status(500).json({ message: error.message }));
 }

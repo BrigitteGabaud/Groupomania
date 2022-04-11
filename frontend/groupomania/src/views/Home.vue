@@ -98,9 +98,6 @@ export default {
 
         /** 
          * @description Cette fonction appelle l'API pour récupérer tous les posts
-         * 
-         * @return {object} objet avec les posts, commentaires et infos user
-         *  
          */
         getAllPosts() {
 
@@ -112,12 +109,13 @@ export default {
                 }
             })
             .then(response => {
+                console.log('reponse post', response.data);
                 this.postsList.push(...response.data)
             })
-            .catch(error => { if(error.response) { console.log(error.response) }})
+            .catch(error => { if(error.response) { console.log('ERROR !',error.response) }})
         },
 
-         /**
+        /**
          * @description Cette fonction raffrîchit la liste de posts
          */
         refreshPost() {
@@ -157,11 +155,17 @@ export default {
         }
     },
     created() {
-        this.isUserConnected()
-        this.getAllPosts()
+        console.log('ICI??');
+       // this.$store.dispatch('isUserConnected');
+
+       // this.isUserConnected()
+        console.log('here?');
+        //this.getAllPosts()
     },
     mounted() {
-        this.user = JSON.parse(localStorage.getItem('user'))
+       this.user = JSON.parse(localStorage.getItem('user'))
+        console.log('user from home', this.user);
+        this.getAllPosts()
     }
 }
 </script>

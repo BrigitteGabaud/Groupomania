@@ -173,17 +173,20 @@ export default {
          * @description Cette fonction appelle l'API et connecte l'utilisateur
          */
         login: function () {
-           const self = this;
-           console.log("this", this);
+           try {
+                const self = this;
             this.$store.dispatch('login', {
                 email: this.email,
                 password: this.password,
             }).then(function() {
-                console.log('test')
-                self.$router.push('/');
+                console.log('in login?');
+                self.$router.push('/Profile');
             }, function(error) {
                 console.log(error);
             })
+           } catch {
+               console.log("ERROR");
+           }
         },
 
          /** 
@@ -266,9 +269,10 @@ label {
     padding: 5px 0;
     border: none;
     background:none;
-    border-bottom: 2px solid black;
+    border-bottom: 1px solid black;
     outline-color: #d1515a;
     font-style: italic;
+    font-size: 1.25rem;
 }
 .form-row_input#email::placeholder, .form-row_input#password::placeholder {
     color:#797777!important;
