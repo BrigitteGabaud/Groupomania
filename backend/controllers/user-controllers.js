@@ -119,8 +119,20 @@ exports.modifyUser = async (req, res) => {
     if(!joiValidator){
       return res.status(400).json({ error: 'Modification impossible: certaines données sont incorrectes' })
     }
-    console.log('REQ BOODYYYY', req.body);
-    // Récupère les données du body
+   
+    // Si ok cherche l'user concerné dans la BDD 
+    const User = await db.users.findOne({where :{id: req.params.id}}) 
+    
+    // Si le user n'est pas trouvé
+    if(!User) {
+      return res.status(404).json({ error: "Utilisateur non trouvé !" })
+    } 
+    // Si les rôles ne correspondent pas
+    if (User.role !== "admin" && User.id !== reqUserId){
+      return res.status(401).json({ error: "L'utilisateur ne dispose pas des droits pour effectuer cette modification" })
+    }  
+    
+    // Si ok récupère les données du body
     const newUser = {}
     if(req.body.firstname) {
       newUser.firstname = req.body.firstname
@@ -137,49 +149,28 @@ exports.modifyUser = async (req, res) => {
     // Récupère l'id de l'utilisateur effectuant la requête
     const reqUserId = req.user.userId;
     
+    // Si la requête contient une image
     if(req.file) {
-      console.log(req.file, 'REQ FILE ****');
-      // génère nouvelle image
+      // génère la nouvelle image url
       newUser.avatar = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    }
-    console.log('new user', newUser);
-    // Cherche l'user concerné dans la BDD 
-    db.users.findOne({where :{id: req.params.id}}) 
-    .then(User => {
-  
-      if(!User) {
-        return res.status(404).json({ error: "Utilisateur non trouvé !" })
-      } 
-      if (User.role !== "admin" && User.id !== reqUserId){
-        return res.status(401).json({ error: "L'utilisateur ne dispose pas des droits pour effectuer cette modification" })
-      }  
       
-      // Si fichier img dans la requête
-      if(req.file){
-          console.log('REQ FILE', req.file);
-          const filename = User.avatar.split('/images/')[1];
-          console.log('FILENAME', filename);
-          console.log('USER AVATAR', User.avatar);
-        // if(User.avatar) {
-        //   console.log(User.avatar, '/// USER AVATAR ///');
-        //   const filename = User.avatar.split('/images/')[1];
-        //   console.log('FILENAME', filename);
-        //   if(User.avatar !== 'http://localhost:3000/images/default_avatar.png'){
-        //   fs.unlink(`images/${filename}`, () => {
-        //     // Puis modifie le user
-        //     User.update({...newUser})
-        //     .then(() => res.status(200).json({ message: 'User modifié !'}))
-        //     .catch(error => res.status(400).json({ error: error.message }));
-        // })}}
+      // Supprime l'ancienne image du dossier suaf si avatar par default
+      const filename = User.avatar.split('/images/')[1];
 
-      } else { 
+        if(newUser.avatar !== 'http://localhost:3000/images/default_avatar.png'){
+        fs.unlink(`images/${filename}`, () => {
+
+          // Puis modifie le user
+          User.update({...newUser})
+          .then(() => res.status(200).json({ message: 'User modifié !'}))
+          .catch(error => res.status(400).json({ error: error.message }));
+      })}
+    } else { 
         // Modifie le contenu texte
         User.update({...newUser})
         .then(() => res.status(200).json({ message: 'User modifié !'}))
         .catch(error => res.status(400).json({ error: error.message }));
-      }    
-    }) 
-    .catch(error => res.status(500).json({ error: error.message }))
+    }  
   }
   catch(err){
     return res.status(500).json({ err: err.message })
@@ -203,7 +194,6 @@ exports.deleteUser = (req, res) => {
     /* Accède à l'objet pour récup posts/commentaires/images */
     return db.users.findOne({ where: { id : reqUser.userId }}) 
   })
-
 
   .then(User => {
     if (User.role !== "admin" && reqUser.userId !== User.id) {
