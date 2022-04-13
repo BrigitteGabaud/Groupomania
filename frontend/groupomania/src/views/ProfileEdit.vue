@@ -63,7 +63,7 @@
 
 <script>
 import axios from 'axios' 
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'ProfilEdit',
@@ -73,10 +73,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(["user", "userInfos"])
+    ...mapState(["user", "userInfos"]),
+    ...mapMutations(['LOGOUT'])
   },
   methods: {
-    ...mapActions(["isUserConnected", "getUserInfos"]),
+    ...mapActions(["getUserInfos"]),
 
     /**
     * @description Cette fonction modifie le profil de l'utilisateur
@@ -135,14 +136,15 @@ export default {
       .then(response => {
         this.info = `${response.data.message}`
         localStorage.removeItem('user')
-        //this.$router.push('/Connexion')
+        this.$store.commit('LOGOUT');
+        this.$router.push('/Connexion')
       })
       .catch(error => {if(error.response) {this.info = error.response.data.error}})
     }
   },
   created() {
-   // this.isUserConnected()
-    //this.getUserInfos()
+   console.log('get user infos from profgil edit');
+    this.getUserInfos()
   }
 }
 
