@@ -122,7 +122,7 @@
                     aria-label="Publier un nouveau post">
                     <fa icon= 'paper-plane'/>
                 </button>
-
+                
             </div>
 
         </div>
@@ -169,8 +169,8 @@
         },
         data() {
             return{
+                commentContent:"",
                 el: 'body',
-                //userLoggedIn: localStorage.getItem("userId"),
                 user: {},
                 postUser: "",
                 commentsList: [],
@@ -185,7 +185,7 @@
             * @description Cette fonction vérifie si les champs sont remplis
             */
             validatedFields() {
-                if (this.content != "") {
+                if (this.commentContent != "") {
                     return true;
                 } else {
                     return false;
@@ -428,7 +428,7 @@ img {
     color: #212529;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
+    border: 1px solid #243653;
 }
 .visuallyhidden {
     display: none;
@@ -443,7 +443,7 @@ img {
     box-shadow: none;
     margin-top: 0!important;
     height: 43px!important;
-    transition: none;
+    transition: none!important;
 }
 .svg-inline--fa.fa-w-18, 
 .svg-inline--fa.fa-w-14 {

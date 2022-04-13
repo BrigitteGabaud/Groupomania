@@ -1,5 +1,6 @@
 "use strict";
 
+const { log } = require('console');
 /* Import dépendances */
 const fs = require('fs'); // Donne accès aux opérations liées aux syst de fichiers (modif /suppr) 
 
@@ -123,15 +124,23 @@ exports.modifyPost = async (req, res) => {
       // Génère la nouvelle image url
       newPost.image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
 
-      // Supprime l'ancienne image du dossier 
+      // Supprime l'ancienne image du dossier si présente
+      if(Post.image !== null) {
       const filename = Post.image.split('/images/')[1];
+
       fs.unlink(`images/${filename}`, () => {
 
         // Puis modifie le post
         Post.update({...newPost})
         .then(() => res.status(200).json({ message: 'Post modifié !'}))
         .catch(error => res.status(400).json({ error: error.message }));
-      })
+
+        // Si pas d'image à supprimer
+      })} else {
+        Post.update({...newPost})
+        .then(() => res.status(200).json({ message: 'Post modifié !'}))
+        .catch(error => res.status(400).json({ error: error.message }));
+      }
       
     // Si le post modifié ne contient pas d'image
     } else { 

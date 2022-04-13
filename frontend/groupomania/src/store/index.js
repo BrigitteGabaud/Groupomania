@@ -1,23 +1,23 @@
 import { createStore, createLogger } from 'vuex'
 import axios from 'axios'
-//import router from '../router/index';
+import router from '../router/index';
 
 // Configuration axios
 const instance = axios.create({
   baseURL: "http://localhost:3000/api"
 })
 
-// état par défaut du user
-const defaultUser = {
-  userId: -1,
-  token: '',
-  role: ''
-}
+// // état par défaut du user
+// const defaultUser = {
+//   userId: -1,
+//   token: '',
+//   role: ''
+// }
 
 // Local Storage
 let user = localStorage.getItem('user');
 if (!user) {
- //user = defaultUser;
+ user = null;
  console.log('user2:', user)
 } else {
   try {
@@ -26,7 +26,7 @@ if (!user) {
     
   } catch (ex) {
     console.log('erreur recup' ,ex.data);
-    user = defaultUser;
+    user = null;
   }
 }
 
@@ -94,7 +94,7 @@ if (!user) {
       state.postInfos = postInfos;
     }, 
     LOGOUT: function(state) {
-      state.user = defaultUser;
+      state.user = null;
       localStorage.removeItem('user');
     }
 
@@ -156,35 +156,40 @@ if (!user) {
     //  /**
     //  * @description Fonction actualisant le user à partir des userInfos
     //  */
-    async getUserInfos({ commit }) {
-      console.log(user.userId, 'userid');
-       
-         await axios({
-            method: "get",
-            url: `http://localhost:3000/api/user/${user.userId}`,
-            headers: {
-              "Content-type": "application/json",
-              "Authorization": ` Bearer ${user.token}`
-            }
-          })
-          .then(user => {
-            console.log("USER", user);
-            commit("EDIT_FIRST_NAME", user.data.firstname)
-            commit("EDIT_LAST_NAME", user.data.lastname)
-            commit("EDIT_EMAIL", user.data.email)
-            commit("EDIT_ROLE", user.data.role)
-            commit("EDIT_AVATAR", user.data.avatar)
-            commit("EDIT_BIO", user.data.bio)
-          })
-        
-          .catch(error => {
-            console.log(error)
-            //localStorage.clear()
-           // router.push({ name: "Connexion"})
-          })
-  
-        
-      },
+    getUserInfos({ commit }) {
+      const userFromLocalStorage = JSON.parse(localStorage.getItem('user'))
+      console.log("***USER ***", userFromLocalStorage);
+      if(userFromLocalStorage == undefined){
+      console.log("***USER 1 ***", userFromLocalStorage);
+        return 
+      } else {  
+        console.log("***USER 2***", userFromLocalStorage);
+        instance({
+          method: "get",
+          url: `http://localhost:3000/api/user/${userFromLocalStorage.userId}`,
+          headers: {
+            "Content-type": "application/json",
+            "Authorization": ` Bearer ${userFromLocalStorage.token}`
+          }
+        })
+        // instance.get(`user/${userFromLocalStorage.userId}`)
+        .then(user => {
+          console.log("USER", user);
+          commit("EDIT_FIRST_NAME", user.data.firstname)
+          commit("EDIT_LAST_NAME", user.data.lastname)
+          commit("EDIT_EMAIL", user.data.email)
+          commit("EDIT_ROLE", user.data.role)
+          commit("EDIT_AVATAR", user.data.avatar)
+          commit("EDIT_BIO", user.data.bio)
+        })
+      
+        .catch(error => {
+          console.log(error)
+          localStorage.removeItem('user');
+          router.push({ name: "Connexion"})
+        })
+      }
+    },
 
     /**
      * @description Fonction vérifiant si l'user est connecté
@@ -192,9 +197,9 @@ if (!user) {
     // isUserConnected() {
     //   console.log('ICI 2 ');
     //   if(user == undefined || user.token == undefined || user.userId == undefined) {
-    //     //router.push({ name: "Connexion"});
+    //     router.push({ name: "Connexion"});
     //   }
-    //}
+    // }
   },
 
 

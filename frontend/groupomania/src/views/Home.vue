@@ -94,7 +94,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(['isUserConnected']),
+        ...mapActions(['getUserInfos']),
 
         /** 
          * @description Cette fonction appelle l'API pour récupérer tous les posts
@@ -154,18 +154,12 @@ export default {
             })
         }
     },
-    created() {
-        console.log('ICI??');
-       // this.$store.dispatch('isUserConnected');
-
-       // this.isUserConnected()
-        console.log('here?');
-        //this.getAllPosts()
-    },
     mounted() {
-       this.user = JSON.parse(localStorage.getItem('user'))
+        this.user = JSON.parse(localStorage.getItem('user'))
         console.log('user from home', this.user);
         this.getAllPosts()
+        console.log('get user infos from connexion');
+        this.getUserInfos()
     }
 }
 </script>

@@ -21,7 +21,7 @@
             <ul v-show="user" class="navbar-nav">
                 
                 <!-- Accueil -->
-                <li v-if="user" class="nav-item active" title="Accueil">
+                <li :v-if="user !== null" class="nav-item active" title="Accueil">
 
                     <router-link aria-label="Aller vers la page accueil" to="/">
                     
@@ -32,7 +32,7 @@
                 </li>
 
                 <!-- Profil -->
-                <li v-if="user" class="nav-item" title="Profil">
+                <li :v-if="user !== null" class="nav-item" title="Profil">
 
                     <router-link aria-label="Aller vers le profil" to="/Profile">
 
@@ -44,7 +44,7 @@
 
                 <!-- Déconnexion -->
                 <li 
-                    v-if="user" 
+                    :v-if="user !== null"
                     @click="logout" 
                     class="nav-item logout"
                     aria-label="Se déconnecter"
@@ -65,42 +65,21 @@ import { mapState, mapMutations, mapActions } from "vuex"
 
 export default {
     name: "TheHeader",
-    data() {
-        return {
-            user: false
-        }
-    },
     computed: {
-        ...mapState([ "userInfos"]),
+        ...mapState([ "user", "userInfos"]),
         ...mapMutations(['LOGOUT'])
     },
     methods: {
         ...mapActions([ "getUserInfos" ]),
 
-        isUserLoggedIn: function() {
-            let user = localStorage.getItem('user');
-            console.log('user from header', user);
-            if(user) {
-                this.user = JSON.parse(user);
-                this.user == true
-            } else {
-                this.user == false
-            }
-        },
         logout: function() {
-        this.$store.commit('LOGOUT');
-        this.user == false
-       // this.$router.push('/Connexion')
+            this.$store.commit('LOGOUT');
+            this.$router.push({ name:'Connexion' })
         }
     },
     created() {
-        this.isUserLoggedIn()
-        
-    },
-    mounted() {
         this.getUserInfos()
     }
-
 }
 </script>
 
@@ -110,7 +89,7 @@ export default {
     top: 0;
     width: 100%;
     height: 55px;
-    background:rgba(209,81,90,0.9);
+    background:#d1515ae6;
     color: #000000;
     z-index: 5;
 }

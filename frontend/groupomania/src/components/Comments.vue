@@ -68,7 +68,7 @@
       <button 
         @click="modifyComment(commentId)"
         type="submit" 
-        class="button" 
+        class="btn btn-input" 
         :class="{'btn-outline disabled' : !validatedFields}"
         aria-label="Publier un nouveau commentaire">
         <fa icon= 'paper-plane'/>
@@ -100,7 +100,7 @@ export default {
     ...mapGetters(["fullName"]),
 
     validatedFields: function() {
-      if (this.content != "") {
+      if (this.commentContent != "") {
         return true;
       } else {
         return false;
@@ -219,8 +219,33 @@ img {
   padding: 5px;
   font-style: italic;
 }
+.comment-content{
+  margin-left: 5px;
+}
 .comment-modify {
   display: flex;
+}
+.form-control {
+  border: 1px solid #d1515ae6;
+}
+.btn-input {
+  width: 30px;
+  height: 46px!important;
+  background-color: #d1515ae6;
+  color: white;
+  outline: none;
+  border: none;
+  position: relative;
+  margin-right: 5px;
+  padding: 1px;
+  text-align: center;
+  border-radius: 0 3px 3px 0!important;
+  box-shadow: none;
+  margin-top: 0!important;
+  transition: none;
+}
+.svg-inline--fa .fa-paper-plane .fa-w-16 {
+  color: white;
 }
 .container-buttons {
   display: flex;
@@ -231,9 +256,9 @@ img {
 .container-buttons a {
   padding: 4px  2px 0 5px;
 }
-.svg-inline--fa {
+/* .svg-inline--fa {
   color: #243653
-}
+} */
 .svg-inline--fa.fa-edit:hover {
   color: green;
 }

@@ -59,14 +59,15 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach(async(to, next) => {
-//   let user = localStorage.getItem('user');
-//   console.log('user from router 1', to.meta.needLoggedIn && !user);
-//   if(to.meta.needLoggedIn && !user) {
-//     console.log('user from router', to.meta.needLoggedIn && !user);
-//     //return { name:'Connexion'}
-//   }
-// })
+router.beforeEach(async(to) => {
+  let user = localStorage.getItem('user');
+  console.log('user from router 1', to.meta.needLoggedIn && !user);
+  if(to.meta.needLoggedIn && !user) {
+    console.log('user from router', to.meta.needLoggedIn && !user);
+    localStorage.removeItem('user');
+    return { name:'Connexion'}
+  }
+})
 
 // Exportation du router
 export default router

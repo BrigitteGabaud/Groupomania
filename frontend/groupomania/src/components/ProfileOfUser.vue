@@ -115,12 +115,8 @@ export default {
       .catch(error => {if(error.response) { console.log(error.response) }})
     }
   },
-  created() {
-   // this.isUserConnected()
-    // this.getUserInfos()
-    // this.getPostsOfOneUser()
-  },
   mounted() {
+    console.log('get user infos from profil of user');
     this.getUserInfos()
     this.getPostsOfOneUser()
   }
