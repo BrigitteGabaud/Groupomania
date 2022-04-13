@@ -28,13 +28,12 @@
             <div class="container-form">
 
                 <!-- Formulaire inscription / connexion -->
-                <form class="form-bloc">
+                <form class="form-bloc" @submit.prevent="submitForm">
 
                     <div  
                         class="form-row" 
                         id="identity"
-                        v-if="mode == 'create'"
-                        @submit.prevent="submitForm">
+                        v-if="mode == 'create'">
 
                         <label for="firstname">Entrez votre prénom</label>    
                         <input 
@@ -46,7 +45,7 @@
                             
                         <p v-if="!firstnameIsValid" class="error-message"></p>
                     
-                        <label for="laststname">Entrez votre nom</label>  
+                        <label for="lastname" id="lastname">Entrez votre nom</label>  
                         <input 
                             v-model="lastname" 
                             class="form-row_input" 
@@ -87,9 +86,6 @@
                             required
                             placeholder="Mot de passe"/>
                        
-                        
-                       
-
                     </div>
 
                     <div class="form-row">
@@ -125,7 +121,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex' 
+import { mapState, mapActions } from 'vuex' 
 
 export default {
     name: "Connexion",
@@ -159,6 +155,8 @@ export default {
         ...mapState(['status']) 
     },
     methods: {
+        ...mapActions(['getUserInfos']),
+
         /** 
          * @description Ces fonctions passent en mode 'login'(connexion) ou 'create'(inscription)
          */
@@ -175,12 +173,12 @@ export default {
         login: function () {
            try {
                 const self = this;
-            this.$store.dispatch('login', {
+                this.$store.dispatch('login', {
                 email: this.email,
                 password: this.password,
             }).then(function() {
                 console.log('in login?');
-                self.$router.push('/Profile');
+                self.$router.push({ name: "Home"});
             }, function(error) {
                 console.log(error);
             })
@@ -189,7 +187,7 @@ export default {
            }
         },
 
-         /** 
+        /** 
          * @description Cette fonction appelle l'API et crée un compte utilisateur
          */
         signup() {
@@ -201,8 +199,7 @@ export default {
                 email: this.email,
                 password: this.password,
             }).then(function() {
-                //self.switchToLogin(); // redirige vers fenêtre login
-                self.login()
+                self.switchToLogin(); // redirige vers fenêtre login
             }).catch(function(error) {
                 console.log(error)
             })
@@ -261,6 +258,9 @@ export default {
 }
 label {
     font-size: 1.25rem;
+}
+#lastname {
+    margin-top: 12px;
 }
 .form-row_input {
     display: block;
