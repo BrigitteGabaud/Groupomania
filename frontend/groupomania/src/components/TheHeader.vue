@@ -7,7 +7,7 @@
             <!-- Logo -->
             <div class="container-logo">
 
-                <router-link aria-label="Aller vers la page accueil" to="/">
+                <router-link aria-label="Vers la page accueil" to="/">
                     <img
                     class="navbar-brand"
                     id="logo"
@@ -89,7 +89,7 @@ export default {
     top: 0;
     width: 100%;
     height: 55px;
-    background:#d1515ae6;
+    background:rgb(209, 81, 90);
     color: #000000;
     z-index: 5;
 }

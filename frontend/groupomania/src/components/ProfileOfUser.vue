@@ -32,8 +32,8 @@
 
         <div><hr></div>
 
-        <div class="profilEdit-btn" role="button" aria-label="Modifier mon profil">
-          <router-link to="/ProfileEdit" class="btn">
+        <div class="profilEdit-btn">
+          <router-link to="/ProfileEdit" role="button" class="btn" aria-label="Modifier mon profil">
             Modifier mon Profil
           </router-link>
         </div>
@@ -144,7 +144,7 @@ export default {
   flex-direction: column;
   width: 80%;
   height: auto;
-  background-color: rgba(193,178,175, 0.90);
+  background-color: rgb(193,178,175);
   box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.9);
   padding: 15px 10px;
   border-radius: 0.4rem;
@@ -218,7 +218,7 @@ export default {
 /* Ecrans tablette et plus */
 @media (min-width: 768px) {
   .card-profile {
-    max-width: 500px;
+    max-width: 40%;
     padding: 20px;
   }
   .card-title {

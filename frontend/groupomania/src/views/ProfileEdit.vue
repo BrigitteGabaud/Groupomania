@@ -167,7 +167,7 @@ export default {
   flex-direction: column;
   width: 80%;
   height: auto;
-  background-color: rgba(193,178,175, 0.90);
+  background-color: rgb(193,178,175);
   box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.9);
   padding: 15px 10px;
   border-radius: 0.4rem;

@@ -1,6 +1,6 @@
 <template>
 
-    <main class="home">
+    <div class="home">
 
         <div class="container-post-create">
 
@@ -62,7 +62,7 @@
 
         </div>
 
-    </main>
+    </div>
 
 </template>
 
@@ -180,7 +180,7 @@ export default {
     height: auto;
 }
 #post-create {
-    background-color: rgba(193,178,175, 0.90);
+    background-color: rgb(193,178,175);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
     margin-top: 100px;
     margin-bottom: 5%;

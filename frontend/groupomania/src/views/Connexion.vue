@@ -42,8 +42,6 @@
                             type="text" 
                             required
                             placeholder="Prénom"/>
-                            
-                        <p v-if="!firstnameIsValid" class="error-message"></p>
                     
                         <label for="lastname" id="lastname">Entrez votre nom</label>  
                         <input 
@@ -52,8 +50,6 @@
                             type="text" 
                             required
                             placeholder="Nom"/>
-
-                        <p v-if="!lastnameIsValid" class="error-message"></p>
 
                     </div>
 
@@ -69,7 +65,7 @@
                             placeholder="Adresse mail"/> 
                         
                         
-                        <p v-if="mode == 'create' && status == 'error_create'">
+                        <p v-if="mode == 'create' && status == 'error_create'" class="error-message">
                         Adresse mail déjà utilisée.</p>
                 
 
@@ -135,6 +131,7 @@ export default {
         }
     },
     computed: {
+
         // Vérification des champs
         completedFields: function() {
             if (this.mode == 'create') {
@@ -218,8 +215,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #c1b2af;
-    opacity: 0.95;
+    background-color: rgb(193, 178, 175);
     text-align: center;
     padding: 15px 9px;
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
@@ -278,6 +274,9 @@ label {
     color:#797777!important;
     font-size: 1.44rem;
 }
+.error-message {
+    color: #d1515a;
+}
 .btn {
     background-color: #243653;
     box-shadow:  0 4px 7px rgba(0, 0, 0, 0.4);
@@ -295,10 +294,11 @@ label {
     color: white;
     top: 2px;
 }
+
 /* Ecrans tablette et plus */
 @media (min-width: 768px) {
     .card {
-        max-width: 40%;
+        max-width: 50%;
     }
     h1 {
         font-size: 1.44rem;
@@ -309,8 +309,7 @@ label {
 /* Ecrans ordinateur */
 @media (min-width: 1024px) {
     .card {
-        max-width: 40%;
-        height: 100px;
+        max-width: 50%;
     }
     h1 {
         font-size: 1.80rem;
@@ -320,7 +319,7 @@ label {
 /* Ecrans larges */
 @media (min-width: 1440px) {
     .card {
-        max-width: 25%;
+        max-width: 30%;
     }
     h1 {
         font-size: 2rem;

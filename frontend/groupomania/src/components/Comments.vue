@@ -61,6 +61,7 @@
         type="text" 
         class="form-control"
         placeholder="Ajoutez votre nouveau texte ici."
+        aria-label="Ajoutez votre nouveau texte ici."
         name='commentContentModified' 
         v-model="commentContent">
       </textarea><br>

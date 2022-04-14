@@ -351,7 +351,7 @@
 
 <style scoped>
 .card {
-    background-color: rgba(193,178,175, 0.90);
+    background-color: rgb(193,178,175);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
     margin-bottom: 10px;
     padding: 4px;
@@ -545,7 +545,7 @@ p {
         padding: 4px;
     }
     .container-avatar {
-        width: 60px;
+        width: 80px;
     }
     .publication-infos--name-date p{
         margin: 0;
@@ -574,6 +574,9 @@ p {
 @media (min-width: 1024px) {
     .card {
         max-width: 40%;
+    }
+    .container-avatar {
+        width: 100px;
     }
     .publication-infos--name-date p{
         font-size: 1.35rem;
