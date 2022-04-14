@@ -18,14 +18,12 @@ const instance = axios.create({
 let user = localStorage.getItem('user');
 if (!user) {
  user = null;
- console.log('user2:', user)
 } else {
   try {
     user = JSON.parse(user); // récupère user depuis local storage
     instance.defaults.headers.common['Authorization'] = user.token; // défini header autorisation pour utiliser token
     
   } catch (ex) {
-    console.log('erreur recup' ,ex.data);
     user = null;
   }
 }
@@ -65,7 +63,6 @@ if (!user) {
       state.status = status;
     },
     LOG_USER(state, user) { // user loggé
-      console.log('log user');
       instance.defaults.headers.common['Authorization'] = user.token; // quand logué récupère token dans header
       
       localStorage.setItem('user', JSON.stringify(user)); // sauvegarde token
@@ -105,32 +102,21 @@ if (!user) {
     /**
      * @description Fonction permettant la connexion du user
      */
-    login: ({commit, dispatch}, userInfos) => {
-      console.log(userInfos);
+    login: ({commit}, userInfos) => {
       commit('SET_STATUS', 'loading'); // défini status en mode loading
       return new Promise((resolve, reject) => {
       instance.post('/user/login', userInfos)
 
         .then(function(response) {
-          console.log('response', response.data);
           commit('SET_STATUS', ''); // = si logué
-          dispatch('test', response.data)
-          .then(() => {
-            resolve(response);
-          })
+          commit('LOG_USER', response.data); // commit LOG_USER + récupère données
+          resolve(response);
         })
         .catch(function(error) {
           commit('SET_STATUS', 'error_login'); // si erreur
-          console.log(error.message)
           reject(error.message);
-        
         })
       })
-    },
-
-    test: ({commit}, value) => {
-      console.log('ICI 3');
-      commit('LOG_USER', value); // commit LOG_USER + récupère données
     },
 
     /**
@@ -158,12 +144,9 @@ if (!user) {
     //  */
     getUserInfos({ commit }) {
       const userFromLocalStorage = JSON.parse(localStorage.getItem('user'))
-      console.log("***USER ***", userFromLocalStorage);
       if(userFromLocalStorage == undefined){
-      console.log("***USER 1 ***", userFromLocalStorage);
         return 
       } else {  
-        console.log("***USER 2***", userFromLocalStorage);
         instance({
           method: "get",
           url: `http://localhost:3000/api/user/${userFromLocalStorage.userId}`,
@@ -174,7 +157,6 @@ if (!user) {
         })
         // instance.get(`user/${userFromLocalStorage.userId}`)
         .then(user => {
-          console.log("USER", user);
           commit("EDIT_FIRST_NAME", user.data.firstname)
           commit("EDIT_LAST_NAME", user.data.lastname)
           commit("EDIT_EMAIL", user.data.email)
@@ -189,17 +171,7 @@ if (!user) {
           router.push({ name: "Connexion"})
         })
       }
-    },
-
-    /**
-     * @description Fonction vérifiant si l'user est connecté
-     */
-    // isUserConnected() {
-    //   console.log('ICI 2 ');
-    //   if(user == undefined || user.token == undefined || user.userId == undefined) {
-    //     router.push({ name: "Connexion"});
-    //   }
-    // }
+    }
   },
 
 

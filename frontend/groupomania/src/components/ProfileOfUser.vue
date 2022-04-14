@@ -116,7 +116,6 @@ export default {
     }
   },
   mounted() {
-    console.log('get user infos from profil of user');
     this.getUserInfos()
     this.getPostsOfOneUser()
   }

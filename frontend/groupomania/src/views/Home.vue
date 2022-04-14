@@ -109,7 +109,6 @@ export default {
                 }
             })
             .then(response => {
-                console.log('reponse post', response.data);
                 this.postsList.push(...response.data)
             })
             .catch(error => { if(error.response) { console.log('ERROR !',error.response) }})
@@ -156,9 +155,7 @@ export default {
     },
     mounted() {
         this.user = JSON.parse(localStorage.getItem('user'))
-        console.log('user from home', this.user);
         this.getAllPosts()
-        console.log('get user infos from connexion');
         this.getUserInfos()
     }
 }

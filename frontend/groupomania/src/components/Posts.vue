@@ -201,7 +201,6 @@
             modifyPost(postId) {
                 const formData = new FormData()
                 let file = document.getElementById(`file${postId}`)
-                console.log('file', file);
                 formData.set("content", document.getElementById(`postContentModified${postId}`).value)
 
                 if(file.value !== "") {

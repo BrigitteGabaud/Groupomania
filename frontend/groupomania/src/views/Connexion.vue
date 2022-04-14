@@ -174,7 +174,6 @@ export default {
                 email: this.email,
                 password: this.password,
             }).then(function() {
-                console.log('in login?');
                 self.$router.push({ name: "Home"});
             }, function(error) {
                 console.log(error);

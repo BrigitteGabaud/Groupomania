@@ -31,7 +31,12 @@
         <!-- Nouvelle biographie -->
         <div class="mb-3">
           <label for="bio" class="form-label">À propos:</label>
-          <input type="text" class="form-control" id="bio" :value="userInfos.bio">
+          <input 
+            type="text" 
+            class="form-control" 
+            id="bio" 
+            placeholder="Veuillez renseigner ce champ" 
+            :value="userInfos.bio">
         </div>
 
         <!--  Nouvelle photo -->
@@ -97,7 +102,6 @@ export default {
       formData.set("bio", document.getElementById("bio").value)
 
       if(document.getElementById("avatar").value !== "") {
-        console.log(document.getElementById("avatar").value, 'value');
         formData.set("image", document.getElementById("avatar").files[0])
       }
       axios({
@@ -110,11 +114,8 @@ export default {
         data: formData
       })
       .then(response => { 
-        console.log('in then ?');
         this.info = `${response.data.message}`
-        console.log(this.info);
         this.$router.push({ name: "Profile" })
-        console.log('info', this.info);
       })
       .catch(error => { if(error.response) {console.log( this.info = error.response.data)}});
     },
@@ -143,7 +144,6 @@ export default {
     }
   },
   created() {
-   console.log('get user infos from profgil edit');
     this.getUserInfos()
   }
 }
