@@ -47,8 +47,7 @@ exports.signup = async (req, res) => {
     })
     .catch(error => res.status(500).json({ error: error.message })); 
   } catch(err){
-    //return res.status(500).json({ err: err.message })
-    console.log(err.message)
+    return res.status(500).json({ err: err.message })
   }
 }
 
@@ -122,7 +121,10 @@ exports.modifyUser = async (req, res) => {
    
     // Si ok cherche l'user concerné dans la BDD 
     const User = await db.users.findOne({where :{id: req.params.id}}) 
-    
+
+    // Récupère l'id de l'utilisateur effectuant la requête
+    const reqUserId = req.user.userId;
+
     // Si le user n'est pas trouvé
     if(!User) {
       return res.status(404).json({ error: "Utilisateur non trouvé !" })
@@ -146,25 +148,26 @@ exports.modifyUser = async (req, res) => {
     if(req.body.bio) {
       newUser.bio = req.body.bio;
     }
-    // Récupère l'id de l'utilisateur effectuant la requête
-    const reqUserId = req.user.userId;
     
     // Si la requête contient une image
     if(req.file) {
       // génère la nouvelle image url
       newUser.avatar = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-      
-      // Supprime l'ancienne image du dossier suaf si avatar par default
+     
+      // Supprime l'ancienne image du dossier sauf si avatar par default
       const filename = User.avatar.split('/images/')[1];
-
-        if(newUser.avatar !== 'http://localhost:3000/images/default_avatar.png'){
+        if(User.avatar !== 'http://localhost:3000/images/default_avatar.png'){;
         fs.unlink(`images/${filename}`, () => {
 
           // Puis modifie le user
           User.update({...newUser})
           .then(() => res.status(200).json({ message: 'User modifié !'}))
           .catch(error => res.status(400).json({ error: error.message }));
-      })}
+      })} else {
+        User.update({...newUser})
+        .then(() => res.status(200).json({ message: 'User modifié !'}))
+        .catch(error => res.status(400).json({ error: error.message }));
+      }
     } else { 
         // Modifie le contenu texte
         User.update({...newUser})
