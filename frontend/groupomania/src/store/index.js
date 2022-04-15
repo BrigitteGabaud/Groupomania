@@ -98,7 +98,6 @@ if (!user) {
   },
   actions: {
    
-
     /**
      * @description Fonction permettant la connexion du user
      */

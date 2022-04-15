@@ -108,7 +108,7 @@ export default {
         method: "put",
         url: `http://localhost:3000/api/user/${userId}`,
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          // "Authorization": `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "multipart/form-data"
         },
         data: formData
@@ -131,7 +131,7 @@ export default {
         method: "delete",
         url: `http://localhost:3000/api/user/${userId}`,
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
+          // "Authorization": `Bearer ${localStorage.getItem("token")}`
         }
       })
       .then(response => {

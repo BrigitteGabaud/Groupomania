@@ -119,7 +119,7 @@ export default {
         method: "put",
         url:`http://localhost:3000/api/comment/${commentId}`,
         headers: {
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            // "Authorization": `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
         },
          data: {content: this.commentContent}
@@ -139,7 +139,7 @@ export default {
         method: "delete",
         url: `http://localhost:3000/api/comment/${commentId}`,
         headers: {
-          Authorization:  `Bearer ${localStorage.getItem("token")}` 
+          // Authorization:  `Bearer ${localStorage.getItem("token")}` 
         }
       })
       .then(() => {
@@ -174,7 +174,7 @@ export default {
       method: "get",
       url: `http://localhost:3000/api/user/${this.commentUserId} `,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        // Authorization: `Bearer ${localStorage.getItem("token")}`
         }
     })
     .then((response) => {

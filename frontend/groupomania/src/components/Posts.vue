@@ -211,7 +211,7 @@
                     method: "put",
                     url:`http://localhost:3000/api/post/${postId}`,
                     headers: {
-                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                        // "Authorization": `Bearer ${localStorage.getItem("token")}`,
                         "Content-Type": "multipart/form-data",
                     },
                     data: formData
@@ -231,7 +231,7 @@
                     method: "delete",
                     url: `http://localhost:3000/api/post/${postId}`,
                     headers: {
-                        Authorization:  `Bearer ${localStorage.getItem("token")}` 
+                        // Authorization:  `Bearer ${localStorage.getItem("token")}` 
                     }
                 })
                 .then(() => {
@@ -277,7 +277,7 @@
                     method:"get",
                     url: `http://localhost:3000/api/comment/${this.postId}`,
                     headers:{
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    // "Authorization": `Bearer ${localStorage.getItem("token")}`
                     }
                 })
                 .then(response => {
@@ -305,7 +305,7 @@
                     method: "post",
                     url:`http://localhost:3000/api/comment/${this.postId}`,
                     headers: {
-                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                        // "Authorization": `Bearer ${localStorage.getItem("token")}`,
                         "Content-Type": "application/json",
                     },
                     data: {content: this.commentContent}
@@ -569,7 +569,7 @@ p {
     }
 }
 
-/* Ecrans ordinateur et plus */
+/* Ecrans ordinateur */
 @media (min-width: 1024px) {
     .card {
         max-width: 40%;
@@ -590,6 +590,13 @@ p {
         width: 1.8em;
         height: 1.8em;
         margin: 5px ;
+    }
+}
+
+/* Ecrans larges */
+@media (min-width: 1024px) {
+     .card {
+        max-width: 25%;
     }
 }
 </style>

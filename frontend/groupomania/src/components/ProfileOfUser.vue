@@ -106,7 +106,7 @@ export default {
         method: "get",
         url: `http://localhost:3000/api/post/user/${userId}`,
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
+          // "Authorization": `Bearer ${localStorage.getItem("token")}`
         }
       })
       .then(response => {
@@ -136,7 +136,7 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 3;
-  margin: 0!important;
+  margin-top: 100px;
 }
 .card-profile {
   display: flex;
@@ -217,7 +217,7 @@ export default {
 /* Ecrans tablette et plus */
 @media (min-width: 768px) {
   .card-profile {
-    max-width: 40%;
+    max-width: 50%;
     padding: 20px;
   }
   .card-title {

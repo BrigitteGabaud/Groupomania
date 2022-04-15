@@ -66,7 +66,7 @@
                         
                         
                         <p v-if="mode == 'create' && status == 'error_create'" class="error-message">
-                        Adresse mail déjà utilisée.</p>
+                        Adresse mail déjà utilisée ou invalide.</p>
                 
 
                     </div>
@@ -310,7 +310,7 @@ label {
     .card {
         max-width: 50%;
     }
-    h1 {
+    .card-title {
         font-size: 1.80rem;
     }
 }
@@ -320,8 +320,8 @@ label {
     .card {
         max-width: 30%;
     }
-    h1 {
-        font-size: 2rem;
+    .card-title {
+        font-size: 2.5rem;
     }
 }
 

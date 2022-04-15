@@ -23,7 +23,7 @@
     flex-direction: column;
     align-items: center;
     height: auto;
-    background-color: rgba(193,178,175, 0.90);
+    background-color: rgb(193,178,175);
     box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.9);
     padding: 15px 10px;
     border-radius: 0.4rem;
@@ -40,5 +40,12 @@ button {
     font-size: 1.44rem;
     width: auto;
     margin-top: 10px;
+}
+
+/* Ecrans tablette et plus */
+@media (min-width: 768px) {
+    .card {
+        max-width: 40%;
+    }
 }
 </style>

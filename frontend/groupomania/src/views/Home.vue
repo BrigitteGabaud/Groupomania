@@ -105,7 +105,7 @@ export default {
                 method:"get",
                 url:"http://localhost:3000/api/post",
                 headers:{
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    // "Authorization": `Bearer ${localStorage.getItem("token")}`
                 }
             })
             .then(response => {
@@ -141,7 +141,7 @@ export default {
                 url: `http://localhost:3000/api/post`,
                 headers: {
                     "Content-Type":"multipart/form-data",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                    // "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 },
                 data: formData
                 
@@ -179,7 +179,7 @@ export default {
 #post-create {
     background-color: rgb(193,178,175);
     box-shadow: 3px 3px 5px 0 rgba(0,0,0,0.9);
-    margin-top: 100px;
+    margin-top: 80px;
     margin-bottom: 5%;
     padding: 10px 4px;
 }
@@ -296,5 +296,13 @@ textarea.form-control {
     #post-create {
         max-width: 40%;
     }
+}
+
+/* Ecrans larges */
+@media (min-width: 1024px) {
+    #post-create {
+    max-width: 25%;
+    margin-top: 100px;
+}
 }
 </style>
